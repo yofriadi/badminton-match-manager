@@ -41,6 +41,12 @@
   --sidebar-accent-foreground: oklch(0.205 0 0);
   --sidebar-border: oklch(0.922 0 0);
   --sidebar-ring: oklch(0.708 0 0);
+  --component-inactive-color: var(--muted-foreground);
+  --component-bg: var(--card);
+  --component-shadow: var(--border);
+  --component-active-bg: var(--secondary);
+  --component-line-inactive-color: var(--border);
+  --component-active-color-default: var(--accent-foreground);
 }
 
 .dark {
@@ -76,6 +82,12 @@
   --sidebar-accent-foreground: oklch(0.985 0 0);
   --sidebar-border: oklch(0.269 0 0);
   --sidebar-ring: oklch(0.439 0 0);
+  --component-inactive-color: var(--muted-foreground);
+  --component-bg: var(--card);
+  --component-shadow: var(--border);
+  --component-active-bg: var(--secondary);
+  --component-line-inactive-color: var(--muted-foreground);
+  --component-active-color-default: var(--accent-foreground);
 }
 
 @theme inline {
@@ -115,6 +127,33 @@
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
+  --component-active-color-default: var(--component-active-color-default);
+  --component-line-inactive-color: var(--component-line-inactive-color);
+  --component-active-bg: var(--component-active-bg);
+  --component-shadow: var(--component-shadow);
+  --component-bg: var(--component-bg);
+  --component-inactive-color: var(--component-inactive-color);
+  --color-color-chart-5: var(--color-chart-5);
+  --color-color-chart-4: var(--color-chart-4);
+  --color-color-chart-3: var(--color-chart-3);
+  --color-color-chart-2: var(--color-chart-2);
+  @keyframes iconBounce {
+  0%, 100% {
+    transform: translateY(0);
+    }
+  20% {
+    transform: translateY(-0.3em);
+    }
+  40% {
+    transform: translateY(0);
+    }
+  60% {
+    transform: translateY(-0.1em);
+    }
+  80% {
+    transform: translateY(0);
+    }
+  }
 }
 
 @layer base {
@@ -123,5 +162,89 @@
   }
   body {
     @apply bg-background text-foreground;
+  }
+}
+
+@layer components {
+  .menu {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: stretch;
+    gap: 0.5rem;
+    padding: 0.75rem;
+    background-color: var(--component-bg);
+    border: 1px solid var(--component-shadow);
+    border-radius: 0.75rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+
+  .menu__item {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1rem;
+    background: transparent;
+    border: none;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    position: relative;
+    color: var(--component-inactive-color);
+    flex: 1;
+  }
+
+  .menu__item:hover {
+    background-color: var(--component-active-bg);
+  }
+
+  .menu__item.active {
+    background-color: var(--component-active-bg);
+    color: var(--component-active-color);
+  }
+
+  .menu__item.active::after {
+    content: '';
+    position: absolute;
+    bottom: 0.25rem;
+    left: 50%;
+    transform: translateX(-50%);
+    width: var(--lineWidth, 0);
+    height: 2px;
+    background-color: var(--component-active-color, var(--accent-foreground));
+    transition: width 0.3s ease;
+  }
+
+  .menu__icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.25rem;
+    height: 1.25rem;
+  }
+
+  .menu__icon .icon {
+    width: 1.25rem;
+    height: 1.25rem;
+    transition: all 0.2s ease;
+  }
+
+  .menu__item.active .menu__icon .icon {
+    animation: iconBounce 0.6s ease-in-out;
+  }
+
+  .menu__text {
+    font-weight: 600;
+    font-size: 0.875rem;
+    text-transform: capitalize;
+    opacity: 0.8;
+    text-align: center;
+    transition: all 0.2s ease;
+  }
+
+  .menu__text.active {
+    opacity: 1;
   }
 }
