@@ -24,7 +24,7 @@ import {
 import { PlaysProps } from "@/app/schedule/lib/types";
 
 export const Schedule: React.FC<PlaysProps> = ({ schedule }) => {
-  const { hall, price, date, sessions } = schedule;
+  const { hall, price, date, sessions, tags } = schedule;
   return (
     <Card className="w-full max-w-[calc(100vw)] overflow-hidden px-6 space-y-8">
       <CardHeader>
@@ -37,20 +37,16 @@ export const Schedule: React.FC<PlaysProps> = ({ schedule }) => {
           <span className="text-xs text-gray-500">per person</span>
         </CardDescription>
       </CardHeader>
-      <CardContent className="space-y-4">
+      <CardContent className="space-y-6">
         {sessions.map((session, i) => (
-          <div key={i}>
-            <div className="flex items-center justify-between mb-2">
-              <div className="flex items-center gap-3">
-                <span className="text-base font-bold">{session.timeStart}</span>
-                <div className="w-8 h-px bg-gray-300"></div>
-                <span className="text-base font-bold">{session.timeEnd}</span>
-              </div>
-
-              <p className={"text-sm font-medium text-right"}>
-                {session.playerLevel}
-              </p>
+          <div key={i} className="space-y-1">
+            <div className="flex items-center gap-1">
+              <span className="text-base font-bold">{session.timeStart}</span>
+              <div className="w-8 h-px bg-gray-300"></div>
+              <span className="text-base font-bold">{session.timeEnd}</span>
             </div>
+
+            <p className={"text-sm font-medium"}>{session.playerLevel}</p>
 
             <div className="flex items-center gap-2 mb-2">
               {(Array.isArray(session.court)
@@ -82,22 +78,21 @@ export const Schedule: React.FC<PlaysProps> = ({ schedule }) => {
                 </svg>
               ))}
             </div>
-
-            <div className="overflow-x-auto scrollbar-hide -mx-6 px-6">
-              <div className="flex gap-2 min-w-max">
-                {session.tags.map((tag, tagIndex) => (
-                  <Badge
-                    key={tagIndex}
-                    variant="secondary"
-                    className="text-xs whitespace-nowrap font-normal"
-                  >
-                    {tag}
-                  </Badge>
-                ))}
-              </div>
-            </div>
           </div>
         ))}
+        <div className="overflow-x-auto scrollbar-hide -mx-6 px-6">
+          <div className="flex gap-2 min-w-max">
+            {tags.map((tag, tagIndex) => (
+              <Badge
+                key={tagIndex}
+                variant="secondary"
+                className="text-xs whitespace-nowrap font-normal"
+              >
+                {tag}
+              </Badge>
+            ))}
+          </div>
+        </div>
       </CardContent>
       <CardFooter className="mb-4 flex w-full justify-center gap-8">
         <AlertDialog>

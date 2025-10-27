@@ -1,10 +1,16 @@
-'use client'
+"use client";
 
 import * as React from "react";
 import Link from "next/link";
-import { Card, CardHeader, CardTitle, CardContent, CardFooter } from "@workspace/ui/components/card";
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardContent,
+  CardFooter,
+} from "@workspace/ui/components/card";
 import { Button } from "@workspace/ui/components/button";
-import type { HallBlueprintProps } from "../lib/types";
+import type { HallBlueprintProps } from "../../lib/types";
 import { layoutRows, measureRows } from "@/lib/layout";
 
 const DEFAULT_FILL = "rgb(209,213,219)";
@@ -25,7 +31,11 @@ export const HallBlueprint: React.FC<HallBlueprintProps> = ({
     [rows, courtSize, spacing],
   );
 
-  const { rows: laidOutRows, totalHeight, totalWidth } = React.useMemo(
+  const {
+    rows: laidOutRows,
+    totalHeight,
+    totalWidth,
+  } = React.useMemo(
     () => layoutRows(measurements, padding, spacing),
     [measurements, padding, spacing],
   );

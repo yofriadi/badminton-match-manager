@@ -13,16 +13,15 @@ export const schedules: ScheduleData[] = [
         timeEnd: "22:00",
         court: ["9", "10", "11"],
         playerLevel: "beginner - advanced",
-        tags: ["Include shuttlecocks", "Minimum 3 plays"],
       },
       {
         timeStart: "21:00",
         timeEnd: "22:00",
         court: ["14"],
         playerLevel: "intermediate - advanced",
-        tags: ["Include shuttlecocks", "Equipment provided", "Coach available"],
       },
     ],
+    tags: ["Include shuttlecocks", "Equipment provided", "Coach available"],
   },
   {
     id: "jifi-arena-badminton-oct-22",
@@ -36,16 +35,15 @@ export const schedules: ScheduleData[] = [
         timeEnd: "22:00",
         court: ["1", "2"],
         playerLevel: "beginner - advanced",
-        tags: ["Include shuttlecocks", "Minimum 3 plays"],
       },
       {
         timeStart: "21:00",
         timeEnd: "22:00",
         court: ["3"],
         playerLevel: "intermediate - advanced",
-        tags: ["Include shuttlecocks", "Equipment provided", "Coach available"],
       },
     ],
+    tags: ["Include shuttlecocks", "Equipment provided", "Coach available"],
   },
   {
     id: "jifi-arena-badminton-oct-26",
@@ -59,9 +57,9 @@ export const schedules: ScheduleData[] = [
         timeEnd: "22:00",
         court: ["1", "2"],
         playerLevel: "beginner - advanced",
-        tags: ["Include shuttlecocks", "Minimum 3 plays"],
       },
     ],
+    tags: ["Include shuttlecocks", "Minimum 3 plays"],
   },
 ];
 

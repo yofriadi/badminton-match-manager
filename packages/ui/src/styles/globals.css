@@ -138,20 +138,21 @@
   --color-color-chart-3: var(--color-chart-3);
   --color-color-chart-2: var(--color-chart-2);
   @keyframes iconBounce {
-  0%, 100% {
-    transform: translateY(0);
+    0%,
+    100% {
+      transform: translateY(0);
     }
-  20% {
-    transform: translateY(-0.3em);
+    20% {
+      transform: translateY(-0.3em);
     }
-  40% {
-    transform: translateY(0);
+    40% {
+      transform: translateY(0);
     }
-  60% {
-    transform: translateY(-0.1em);
+    60% {
+      transform: translateY(-0.1em);
     }
-  80% {
-    transform: translateY(0);
+    80% {
+      transform: translateY(0);
     }
   }
 }
@@ -206,7 +207,7 @@
   }
 
   .menu__item.active::after {
-    content: '';
+    content: "";
     position: absolute;
     bottom: 0.25rem;
     left: 50%;
@@ -247,4 +248,26 @@
   .menu__text.active {
     opacity: 1;
   }
+}
+
+@property --r {
+  syntax: "<angle>";
+  initial-value: 0deg;
+  inherits: false;
+}
+
+@keyframes rotating-gradient-spin {
+  to {
+    --r: 360deg;
+  }
+}
+
+.rotatingGradient {
+  background-image: conic-gradient(
+    from var(--r),
+    var(--color-background),
+    var(--color-foreground),
+    var(--color-background)
+  );
+  animation: rotating-gradient-spin 3s linear infinite;
 }

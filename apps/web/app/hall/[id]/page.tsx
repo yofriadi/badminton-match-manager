@@ -15,13 +15,14 @@ import { Schedule } from "./components/schedule";
 import { schedules } from "../../schedule/lib/data";
 
 type HallDetailPageProps = {
-  params: {
+  params: Promise<{
     id: string;
-  };
+  }>;
 };
 
-export default function HallDetailPage({ params }: HallDetailPageProps) {
-  const hall = getHallById(params.id);
+export default async function HallDetailPage({ params }: HallDetailPageProps) {
+  const { id } = await params;
+  const hall = getHallById(id);
 
   if (!hall) {
     notFound();

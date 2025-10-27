@@ -1,40 +1,126 @@
 const NEUTRAL_TEXT = "#111827"; // slate-900
 
 export interface Court {
-  id: number;
+  id?: number;
+  game: number;
+  type: "Men Doubles" | "Women Doubles" | "Mix Doubles";
   number: number;
   players: string[]; // up to 4; we will map [A1, A2, B1, B2]
   isOccupied: boolean;
+  time: string;
 }
 
 export const CourtBlueprint = ({ court }: { court: Court }) => {
   const [P1 = "—", P2 = "—", P3 = "—", P4 = "—"] = court.players;
   return (
     <div className="relative aspect-[133/200] overflow-hidden rounded-lg">
-      <svg viewBox="0 0 266 400" className="h-full w-full" preserveAspectRatio="xMidYMid meet" >
+      <svg
+        viewBox="0 0 266 400"
+        className="h-full w-full"
+        preserveAspectRatio="xMidYMid meet"
+      >
         {/* === Outer boundary (full doubles court) === */}
         <rect x="0" y="0" width="266" height="400" fill="rgb(209,213,219)" />
 
         {/* === Court lines === */}
         <line x1="16" y1="17" x2="16" y2="383" stroke="white" strokeWidth="2" />
         <line x1="38" y1="17" x2="38" y2="383" stroke="white" strokeWidth="2" />
-        <line x1="228" y1="17" x2="228" y2="383" stroke="white" strokeWidth="2" />
-        <line x1="250" y1="17" x2="250" y2="383" stroke="white" strokeWidth="2" />
+        <line
+          x1="228"
+          y1="17"
+          x2="228"
+          y2="383"
+          stroke="white"
+          strokeWidth="2"
+        />
+        <line
+          x1="250"
+          y1="17"
+          x2="250"
+          y2="383"
+          stroke="white"
+          strokeWidth="2"
+        />
         <line x1="16" y1="17" x2="250" y2="17" stroke="white" strokeWidth="2" />
-        <line x1="16" y1="383" x2="250" y2="383" stroke="white" strokeWidth="2" />
+        <line
+          x1="16"
+          y1="383"
+          x2="250"
+          y2="383"
+          stroke="white"
+          strokeWidth="2"
+        />
         <line x1="16" y1="39" x2="250" y2="39" stroke="white" strokeWidth="2" />
-        <line x1="16" y1="361" x2="250" y2="361" stroke="white" strokeWidth="2" />
-        <line x1="16" y1="144" x2="250" y2="144" stroke="white" strokeWidth="2" />
-        <line x1="16" y1="256" x2="250" y2="256" stroke="white" strokeWidth="2" />
-        <line x1="133" y1="17" x2="133" y2="144" stroke="white" strokeWidth="2" />
-        <line x1="133" y1="256" x2="133" y2="383" stroke="white" strokeWidth="2" />
+        <line
+          x1="16"
+          y1="361"
+          x2="250"
+          y2="361"
+          stroke="white"
+          strokeWidth="2"
+        />
+        <line
+          x1="16"
+          y1="144"
+          x2="250"
+          y2="144"
+          stroke="white"
+          strokeWidth="2"
+        />
+        <line
+          x1="16"
+          y1="256"
+          x2="250"
+          y2="256"
+          stroke="white"
+          strokeWidth="2"
+        />
+        <line
+          x1="133"
+          y1="17"
+          x2="133"
+          y2="144"
+          stroke="white"
+          strokeWidth="2"
+        />
+        <line
+          x1="133"
+          y1="256"
+          x2="133"
+          y2="383"
+          stroke="white"
+          strokeWidth="2"
+        />
 
         {/* === Net line (striped, centered across court) === */}
-        <line x1="16" y1="200" x2="250" y2="200" stroke="white" strokeWidth="1" strokeDasharray="4 6" strokeLinecap="round" />
+        <line
+          x1="16"
+          y1="200"
+          x2="250"
+          y2="200"
+          stroke="white"
+          strokeWidth="1"
+          strokeDasharray="4 6"
+          strokeLinecap="round"
+        />
 
         {/* === Split each singles box into two equal columns (within 55–245) === */}
-        <line x1="133" y1="39" x2="133" y2="144" stroke="white" strokeWidth="2" />
-        <line x1="133" y1="256" x2="133" y2="361" stroke="white" strokeWidth="2" />
+        <line
+          x1="133"
+          y1="39"
+          x2="133"
+          y2="144"
+          stroke="white"
+          strokeWidth="2"
+        />
+        <line
+          x1="133"
+          y1="256"
+          x2="133"
+          y2="361"
+          stroke="white"
+          strokeWidth="2"
+        />
 
         {/* === Names (auto-wrap to two lines if multi-syllable) === */}
         {/* top left / top right */}

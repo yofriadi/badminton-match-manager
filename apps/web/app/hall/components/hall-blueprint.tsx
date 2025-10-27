@@ -1,15 +1,22 @@
-'use client'
+"use client";
 
 import * as React from "react";
 import Link from "next/link";
-import { Card, CardHeader, CardTitle, CardContent, CardFooter } from "@workspace/ui/components/card";
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardContent,
+  CardFooter,
+} from "@workspace/ui/components/card";
 import { Button } from "@workspace/ui/components/button";
 import type {
-  Hall,
   HallBlueprintProps,
   RowMeasurement,
   CourtLayout,
-  RowLayout
+  Row,
+  RowLayout,
+  RowOrientation,
 } from "../lib/types";
 
 const DEFAULT_FILL = "rgb(209,213,219)";
@@ -31,8 +38,7 @@ const measureRows = (
     const orientedSize = getCourtSize(row.orientation, courtSize);
     const courtCount = Math.max(row.courts.length, 1);
     const rowWidth =
-      courtCount * orientedSize.width +
-      (courtCount - 1) * spacing.court;
+      courtCount * orientedSize.width + (courtCount - 1) * spacing.court;
     return {
       row,
       courtSize: orientedSize,
@@ -93,7 +99,8 @@ const layoutRows = (
   return {
     rows,
     totalWidth: widestRow + padding * 2,
-    totalHeight: measurements.reduce((acc, measurement) => acc + measurement.height, 0) +
+    totalHeight:
+      measurements.reduce((acc, measurement) => acc + measurement.height, 0) +
       padding * 2 +
       spacing.row * Math.max(measurements.length - 1, 0),
   };
@@ -105,7 +112,7 @@ export const HallBlueprint: React.FC<HallBlueprintProps> = ({
   courtSize = { width: 133, height: 200 },
   spacing = { row: 36, court: 18 },
   detailHref,
-  detailLabel = "detail",
+  detailLabel = "Detail",
   renderCard = true,
 }) => {
   const { label, rows } = hall;
@@ -115,7 +122,11 @@ export const HallBlueprint: React.FC<HallBlueprintProps> = ({
     [rows, courtSize, spacing],
   );
 
-  const { rows: laidOutRows, totalHeight, totalWidth } = React.useMemo(
+  const {
+    rows: laidOutRows,
+    totalHeight,
+    totalWidth,
+  } = React.useMemo(
     () => layoutRows(measurements, padding, spacing),
     [measurements, padding, spacing],
   );
@@ -128,13 +139,17 @@ export const HallBlueprint: React.FC<HallBlueprintProps> = ({
     >
       {laidOutRows.flatMap((row) =>
         row.courts.map((court) => {
-          const isAvailable = court.isAvailable;
+          /*const isAvailable = court.isAvailable;
           const fill = isAvailable
-            ? court.fill ?? DEFAULT_FILL
+            ? (court.fill ?? DEFAULT_FILL)
             : "transparent";
           const stroke = isAvailable ? "none" : DEFAULT_FILL;
           const strokeWidth = isAvailable ? 0 : 2;
-          const textColor = isAvailable ? "white" : DEFAULT_FILL;
+          const textColor = isAvailable ? "white" : DEFAULT_FILL;*/
+          const fill = "transparent";
+          const stroke = DEFAULT_FILL;
+          const strokeWidth = 2;
+          const textColor = DEFAULT_FILL;
 
           return (
             <React.Fragment key={`${row.number}-${court.index}`}>
@@ -185,7 +200,7 @@ export const HallBlueprint: React.FC<HallBlueprintProps> = ({
       <CardContent>{blueprintSvg}</CardContent>
       {detailHref ? (
         <CardFooter className="mb-4 mt-2 flex w-full justify-center">
-          <Button className="hover:bg-gray-800 rounded-full w-[80%]" asChild>
+          <Button className="hover:bg-gray-800 rounded-full w-[70%]" asChild>
             <Link href={detailHref}>{detailLabel}</Link>
           </Button>
         </CardFooter>

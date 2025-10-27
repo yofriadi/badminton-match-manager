@@ -1,13 +1,7 @@
 "use client";
 
 import React, { useMemo, useState } from "react";
-import { Users } from "lucide-react";
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-} from "@workspace/ui/components/card";
+import { Card, CardContent, CardHeader } from "@workspace/ui/components/card";
 import {
   Carousel,
   CarouselContent,
@@ -19,16 +13,52 @@ export const MatchSchedule: React.FC = () => {
   const [courts] = useState<Court[]>([
     {
       game: 1,
+      type: "Mix Doubles",
       number: 1,
       players: ["Yofriadi Yahya", "Suhailah Oktaviana", "Dinda", "Andri"],
       isOccupied: true,
-      time: '20:02'
+      time: "20:02",
     },
-    { game: 1, number: 2, players: ["Jordan", "Casey"], isOccupied: true, time: '20:22' },
-    { game: 2, number: 1, players: [], isOccupied: false, time: '20:44' },
-    { game: 2, number: 2, players: ["Taylor", "Morgan"], isOccupied: true, time: '21:04' },
-    { game: 3, number: 1, players: [], isOccupied: false, time: '21:24' },
-    { game: 3, number: 2, players: ["Riley", "Drew"], isOccupied: true, time: '21:44' },
+    {
+      game: 1,
+      type: "Men Doubles",
+      number: 2,
+      players: ["Jordan", "Casey"],
+      isOccupied: true,
+      time: "20:22",
+    },
+    {
+      game: 2,
+      type: "Women Doubles",
+      number: 1,
+      players: [],
+      isOccupied: false,
+      time: "20:44",
+    },
+    {
+      game: 2,
+      type: "Men Doubles",
+      number: 2,
+      players: ["Taylor", "Morgan"],
+      isOccupied: true,
+      time: "21:04",
+    },
+    {
+      game: 3,
+      type: "Mix Doubles",
+      number: 1,
+      players: [],
+      isOccupied: false,
+      time: "21:24",
+    },
+    {
+      game: 3,
+      type: "Men Doubles",
+      number: 2,
+      players: ["Riley", "Drew"],
+      isOccupied: true,
+      time: "21:44",
+    },
   ]);
 
   const [selectedCourt, setSelectedCourt] = useState<string | null>(null);
@@ -72,17 +102,21 @@ export const MatchSchedule: React.FC = () => {
                   return (
                     <CarouselItem key={courtKey}>
                       <Card
-                        className={`w-full overflow-hidden border-1 transition-all cursor-pointer ${
-                          isSelected
+                        className={`w-full overflow-hidden border-1 transition-all cursor-pointer pb-4 ${isSelected
                             ? "border-black"
                             : "border-gray-300 hover:border-gray-500"
-                        }`}
+                          }`}
                         onClick={() => setSelectedCourt(courtKey)}
                       >
                         <CardHeader className="flex flex-row items-center justify-between p-4">
-                          <span className="text-xs font-semibold uppercase tracking-wider text-gray-600">
-                            Game {court.game}
-                          </span>
+                          <div className="flex flex-col gap-1">
+                            <span className="text-xs font-semibold uppercase text-gray-601">
+                              {court.type}
+                            </span>
+                            <span className="text-xs">
+                              Intermediate - Advanced
+                            </span>
+                          </div>
                           <span className="text-xs font-semibold uppercase tracking-wider text-gray-600">
                             {court.time}
                           </span>
@@ -90,17 +124,6 @@ export const MatchSchedule: React.FC = () => {
                         <CardContent className="px-4">
                           <CourtBlueprint court={court} />
                         </CardContent>
-                        <CardFooter className="justify-between p-4">
-                          <span className="text-sm font-medium">
-                            {court.isOccupied ? "Occupied" : "Available"}
-                          </span>
-                          {court.isOccupied && court.players.length > 0 && (
-                            <div className="flex items-center gap-1 text-xs text-gray-600">
-                              <Users className="h-3 w-3" />
-                              <span>{court.players.length}</span>
-                            </div>
-                          )}
-                        </CardFooter>
                       </Card>
                     </CarouselItem>
                   );

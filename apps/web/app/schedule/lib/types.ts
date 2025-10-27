@@ -3,7 +3,6 @@ export interface PlaySession {
   timeEnd: string;
   court: string | string[];
   playerLevel: string;
-  tags: string[];
 }
 
 export interface ScheduleData {
@@ -12,6 +11,7 @@ export interface ScheduleData {
   hall: string;
   price: string;
   date: string;
+  tags: string[];
   sessions: PlaySession[];
 }
 

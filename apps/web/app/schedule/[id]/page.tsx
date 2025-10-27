@@ -3,26 +3,26 @@ import { notFound } from "next/navigation";
 import { MobileNavigation } from "@/components/ui/mobile-navigation";
 import { HallBlueprint } from "@/app/hall/[id]/components/hall-blueprint";
 import { getHallById } from "@/app/hall/lib/data";
-import type { Player, SkillLevel } from "@/app/hall/lib/types";
+import type { Player } from "@/app/hall/lib/types";
 
 import { Badge } from "@workspace/ui/components/badge";
-import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-} from "@workspace/ui/components/carousel";
-import { Schedule } from "@/app/hall/[id]/components/schedule";
 import { getScheduleById, schedules } from "../../schedule/lib/data";
-import { MatchSchedule } from "./components/match-schedule"
+import { MatchSchedule } from "./components/match-schedule";
+import {
+  SkillLegend,
+  getSkillInitial,
+  getSkillColor,
+} from "@/components/ui/skill-legend";
 
 type HallDetailPageProps = {
-  params: {
+  params: Promise<{
     id: string;
-  };
+  }>;
 };
 
-export default function HallDetailPage({ params }: HallDetailPageProps) {
-  const currentSchedule = getScheduleById(params.id);
+export default async function HallDetailPage({ params }: HallDetailPageProps) {
+  const { id } = await params;
+  const currentSchedule = getScheduleById(id);
   if (!currentSchedule) {
     notFound();
   }
@@ -32,25 +32,6 @@ export default function HallDetailPage({ params }: HallDetailPageProps) {
   if (!hall) {
     notFound();
   }
-
-  const getSkillInitial = (level: SkillLevel) => {
-    const mapping: Record<SkillLevel, string> = {
-      beginner: "B",
-      novice: "N",
-      intermediate: "I",
-      advanced: "A",
-      pro: "P",
-    };
-    return mapping[level];
-  };
-
-  const skillLegend: { initial: string; label: string }[] = [
-    { initial: "B", label: "Beginner" },
-    { initial: "N", label: "Novice" },
-    { initial: "I", label: "Intermediate" },
-    { initial: "A", label: "Advanced" },
-    { initial: "P", label: "Professional" },
-  ];
 
   const playersByGender = (gender: Player["gender"]) =>
     hall.players.filter((player) => player.gender === gender);
@@ -93,16 +74,15 @@ export default function HallDetailPage({ params }: HallDetailPageProps) {
           <p className="text-xs uppercase tracking-wide text-gray-400 pb-1">
             Time
           </p>
-          <p className="text-sm font-medium text-gray-900">
-            20:00 - 22:00
-          </p>
+          <p className="text-sm font-medium text-gray-900">20:00 - 22:00</p>
         </div>
         <div>
           <p className="text-xs uppercase tracking-wide text-gray-400 pb-1">
             Price
           </p>
           <p className="text-sm font-medium text-gray-900">
-            {currentSchedule.price} <span className="text-xs text-gray-400">/ person</span>
+            {currentSchedule.price}{" "}
+            <span className="text-xs text-gray-400">/ person</span>
           </p>
         </div>
         <div>
@@ -127,21 +107,6 @@ export default function HallDetailPage({ params }: HallDetailPageProps) {
           <p className="text-xs uppercase tracking-wide text-gray-400 pb-2">
             Players
           </p>
-          <div className="overflow-x-auto scrollbar-hide -mx-4 px-4 pb-3">
-            <div className="flex gap-4 min-w-max text-xs text-gray-600">
-              {skillLegend.map((item) => (
-                <span
-                  key={item.initial}
-                  className="whitespace-nowrap text-gray-400"
-                >
-                  <span className="font-semibold text-gray-400">
-                    {item.initial}
-                  </span>{" "}
-                  {item.label}
-                </span>
-              ))}
-            </div>
-          </div>
           <div className="grid grid-cols-2 gap-4 text-sm text-gray-900">
             <div className="space-y-2">
               <p className="text-xs uppercase tracking-wide text-gray-400">
@@ -154,7 +119,10 @@ export default function HallDetailPage({ params }: HallDetailPageProps) {
                     className="flex items-center justify-between gap-4"
                   >
                     <span>{player.name}</span>
-                    <span className="text-xs font-semibold text-gray-500 text-center w-6 shrink-0">
+                    <span
+                      className="text-xs font-semibold text-center w-6 shrink-0"
+                      style={{ color: getSkillColor(player.skillLevel) }}
+                    >
                       {getSkillInitial(player.skillLevel)}
                     </span>
                   </div>
@@ -172,7 +140,10 @@ export default function HallDetailPage({ params }: HallDetailPageProps) {
                     className="flex items-center justify-between gap-4"
                   >
                     <span>{player.name}</span>
-                    <span className="text-xs font-semibold text-gray-500 text-center w-6 shrink-0">
+                    <span
+                      className="text-xs font-semibold text-center w-6 shrink-0"
+                      style={{ color: getSkillColor(player.skillLevel) }}
+                    >
                       {getSkillInitial(player.skillLevel)}
                     </span>
                   </div>
@@ -180,6 +151,7 @@ export default function HallDetailPage({ params }: HallDetailPageProps) {
               </div>
             </div>
           </div>
+          <SkillLegend />
         </div>
       </div>
       <p className="text-xs uppercase tracking-wide text-gray-400 pb-2 ml-4">
