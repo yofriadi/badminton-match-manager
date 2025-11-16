@@ -24,7 +24,7 @@ export const HallBlueprint: React.FC<HallBlueprintProps> = ({
   detailLabel = "detail",
   renderCard = true,
 }) => {
-  const { label, rows } = hall;
+  const { name, rows } = hall;
 
   const measurements = React.useMemo(
     () => measureRows(rows, courtSize, spacing),
@@ -96,7 +96,7 @@ export const HallBlueprint: React.FC<HallBlueprintProps> = ({
     <Card className="w-full max-w-[calc(100vw-2rem)] overflow-hidden mx-4 mt-4">
       <CardHeader>
         <CardTitle className="flex items-baseline justify-between px-4 pt-4">
-          <span>{label}</span>
+          <span>{name}</span>
         </CardTitle>
       </CardHeader>
       <CardContent>{blueprintSvg}</CardContent>

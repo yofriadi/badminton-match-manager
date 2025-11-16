@@ -29,7 +29,7 @@ export interface Player {
 
 export interface Hall {
   id: string;
-  label: string;
+  name: string;
   address: string;
   description: string;
   priceRange: string;

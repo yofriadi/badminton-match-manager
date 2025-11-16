@@ -3,7 +3,7 @@ import type { Hall } from "./types";
 export const halls: Hall[] = [
   {
     id: "pasar-tebet-sport-center",
-    label: "Pasar Tebet Sport Center",
+    name: "Pasar Tebet Sport Center",
     address: "Jl. Tebet Barat Dalam Raya No. 12, Tebet, Jakarta Selatan",
     description:
       "A community-driven complex with well-maintained courts suitable for casual games, leagues, and private coaching sessions.",
@@ -70,7 +70,7 @@ export const halls: Hall[] = [
   },
   {
     id: "jifi-arena-badminton",
-    label: "JiFi Arena Badminton",
+    name: "JiFi Arena Badminton",
     address: "Jl. Kemang Raya No. 45, Mampang Prapatan, Jakarta Selatan",
     description:
       "Modern indoor arena offering tournament-grade lighting and flooring, favored by intermediate and advanced players.",

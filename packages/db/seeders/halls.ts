@@ -5,9 +5,7 @@ import { getDatabaseUrl, schema } from "../index.js";
 import { halls as hallsTable, type NewHall } from "../schema.js";
 import { generateHallSvg } from "../../../apps/web/lib/svg.js";
 import { DEFAULT_BLUEPRINT_DIMENSIONS } from "../../../apps/web/lib/layout.js";
-import {
-	halls as hallFixtures,
-} from "../../../apps/web/app/hall/lib/data.js";
+import { hallSeedData } from "../fixtures/halls.js";
 
 export async function seedHalls() {
 	const pool = new Pool({
@@ -20,7 +18,7 @@ export async function seedHalls() {
 
 	const db = drizzle(pool, { schema });
 
-	const hallRecords: NewHall[] = hallFixtures.map((hall) => {
+	const hallRecords: NewHall[] = hallSeedData.map((hall) => {
 		const { padding, courtSize, spacing } = DEFAULT_BLUEPRINT_DIMENSIONS;
 		const layout = {
 			padding,
@@ -39,7 +37,7 @@ export async function seedHalls() {
 
 		return {
 			id: hall.id,
-			label: hall.label,
+			label: hall.name,
 			address: hall.address,
 			description: hall.description,
 			priceRange: hall.priceRange,

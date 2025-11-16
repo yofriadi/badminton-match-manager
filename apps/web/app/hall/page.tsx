@@ -1,11 +1,14 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import { MobileNavigation } from "@/components/ui/mobile-navigation";
 import GradientButton from "@/components/ui/animated-cta-button";
 import { HallBlueprint } from "./components/hall-blueprint";
 import { halls } from "./lib/data";
 
 export default function Hall() {
+  const router = useRouter();
+
   return (
     <div className="min-h-screen bg-white flex flex-col">
       {halls.map((hall) => (
@@ -17,7 +20,7 @@ export default function Hall() {
       ))}
       <div className="flex w-full justify-center items-center my-16">
         <GradientButton
-          onClick={() => console.log("clicked")}
+          onClick={() => router.push("/hall/create")}
           width="300px"
           height="60px"
           disabled={false}

@@ -64,7 +64,7 @@ const registeredPlayersOptions = [
 ];
 
 const hallOptions = halls.map((hall) => ({
-  label: hall.label,
+  label: hall.name,
   value: hall.id,
 }));
 

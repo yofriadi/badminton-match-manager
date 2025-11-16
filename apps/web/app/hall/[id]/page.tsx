@@ -51,14 +51,14 @@ export default async function HallDetailPage({ params }: HallDetailPageProps) {
     hall.players.filter((player) => player.gender === gender);
 
   const hallSchedules = schedules.filter(
-    (schedule) => schedule.hall === hall.label,
+    (schedule) => schedule.hallId === hall.id,
   );
 
   return (
     <div className="min-h-screen bg-white flex flex-col">
       <div className="px-4 pt-6 pb-4 space-y-4">
         <div className="space-y-1">
-          <h1 className="text-2xl font-semibold">{hall.label}</h1>
+          <h1 className="text-2xl font-semibold">{hall.name}</h1>
           <p className="text-sm text-gray-500">{hall.address}</p>
         </div>
       </div>
@@ -106,7 +106,7 @@ export default async function HallDetailPage({ params }: HallDetailPageProps) {
             <CarouselContent className="touch-pan-x">
               {hallSchedules.map((schedule, index) => (
                 <CarouselItem
-                  key={`${schedule.hall}-${schedule.date}-${index}`}
+                  key={`${schedule.hallId}-${schedule.date}-${index}`}
                 >
                   <Schedule schedule={schedule} />
                 </CarouselItem>
