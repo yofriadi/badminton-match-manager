@@ -1,10 +1,8 @@
 import { notFound } from "next/navigation";
-
 import { MobileNavigation } from "@/components/ui/mobile-navigation";
 import { HallBlueprint } from "./components/hall-blueprint";
-import { getHallById } from "../lib/data";
+import { getHalls } from "../lib/api";
 import type { Player, SkillLevel } from "../lib/types";
-
 import { Badge } from "@workspace/ui/components/badge";
 import {
   Carousel,
@@ -22,7 +20,8 @@ type HallDetailPageProps = {
 
 export default async function HallDetailPage({ params }: HallDetailPageProps) {
   const { id } = await params;
-  const hall = getHallById(id);
+  const halls = await getHalls();
+  const hall = halls.find((h) => h.id === id);
 
   if (!hall) {
     notFound();
@@ -47,9 +46,6 @@ export default async function HallDetailPage({ params }: HallDetailPageProps) {
     { initial: "P", label: "Professional" },
   ];
 
-  const playersByGender = (gender: Player["gender"]) =>
-    hall.players.filter((player) => player.gender === gender);
-
   const hallSchedules = schedules.filter(
     (schedule) => schedule.hallId === hall.id,
   );
@@ -58,7 +54,7 @@ export default async function HallDetailPage({ params }: HallDetailPageProps) {
     <div className="min-h-screen bg-white flex flex-col">
       <div className="px-4 pt-6 pb-4 space-y-4">
         <div className="space-y-1">
-          <h1 className="text-2xl font-semibold">{hall.name}</h1>
+          <h1 className="text-2xl font-semibold">{hall.label}</h1>
           <p className="text-sm text-gray-500">{hall.address}</p>
         </div>
       </div>
@@ -67,7 +63,19 @@ export default async function HallDetailPage({ params }: HallDetailPageProps) {
         <p className="text-xs uppercase tracking-wide text-gray-400 pb-1">
           Layout
         </p>
-        <HallBlueprint hall={hall} renderCard={false} />
+        <HallBlueprint
+          hall={{
+            id: hall.id,
+            name: hall.label,
+            address: hall.address || "",
+            description: hall.description || "",
+            priceRange: hall.priceRange || "",
+            amenities: hall.amenities,
+            rows: hall.layout.rows,
+            players: [],
+          }}
+          renderCard={false}
+        />
       </div>
 
       <div className="px-4 pt-6 pb-8 space-y-6">
@@ -75,7 +83,9 @@ export default async function HallDetailPage({ params }: HallDetailPageProps) {
           <p className="text-xs uppercase tracking-wide text-gray-400 pb-1">
             Price
           </p>
-          <p className="text-sm font-medium text-gray-900">{hall.priceRange}</p>
+          <p className="text-sm font-medium text-gray-900">
+            {hall.priceRange}
+          </p>
         </div>
         <div>
           <p className="text-xs uppercase tracking-wide text-gray-400 pb-2">
@@ -114,64 +124,6 @@ export default async function HallDetailPage({ params }: HallDetailPageProps) {
             </CarouselContent>
           </Carousel>
         )}
-        <div>
-          <p className="text-xs uppercase tracking-wide text-gray-400 pb-2">
-            Players
-          </p>
-          <div className="overflow-x-auto scrollbar-hide -mx-4 px-4 pb-3">
-            <div className="flex gap-4 min-w-max text-xs text-gray-600">
-              {skillLegend.map((item) => (
-                <span
-                  key={item.initial}
-                  className="whitespace-nowrap text-gray-400"
-                >
-                  <span className="font-semibold text-gray-400">
-                    {item.initial}
-                  </span>{" "}
-                  {item.label}
-                </span>
-              ))}
-            </div>
-          </div>
-          <div className="grid grid-cols-2 gap-4 text-sm text-gray-900">
-            <div className="space-y-2">
-              <p className="text-xs uppercase tracking-wide text-gray-400">
-                Man
-              </p>
-              <div className="flex flex-col gap-1">
-                {playersByGender("man").map((player) => (
-                  <div
-                    key={`man-${player.name}`}
-                    className="flex items-center justify-between gap-4"
-                  >
-                    <span>{player.name}</span>
-                    <span className="text-xs font-semibold text-gray-500 text-center w-6 shrink-0">
-                      {getSkillInitial(player.skillLevel)}
-                    </span>
-                  </div>
-                ))}
-              </div>
-            </div>
-            <div className="space-y-2">
-              <p className="text-xs uppercase tracking-wide text-gray-400">
-                Woman
-              </p>
-              <div className="flex flex-col gap-1">
-                {playersByGender("woman").map((player) => (
-                  <div
-                    key={`woman-${player.name}`}
-                    className="flex items-center justify-between gap-4"
-                  >
-                    <span>{player.name}</span>
-                    <span className="text-xs font-semibold text-gray-500 text-center w-6 shrink-0">
-                      {getSkillInitial(player.skillLevel)}
-                    </span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>
       </div>
 
       <div className="mt-auto sticky bottom-0 left-0 right-0 w-full px-4 pb-4 max-w-md mx-auto">

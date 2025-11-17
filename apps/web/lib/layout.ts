@@ -4,7 +4,7 @@ import type {
 	RowLayout,
 	RowMeasurement,
 } from "@/app/hall/lib/types";
-import type { BlueprintDimensions } from "./types";
+import type { BlueprintDimensions } from "./types.js";
 
 export const DEFAULT_BLUEPRINT_DIMENSIONS: BlueprintDimensions = {
 	padding: 32,

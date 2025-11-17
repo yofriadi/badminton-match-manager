@@ -1,7 +1,7 @@
 import React from "react";
 import { renderToStaticMarkup } from "react-dom/server";
-import { createBlueprintLayout } from "./layout";
-import type { HallBlueprintParams } from "./types";
+import { createBlueprintLayout } from "./layout.js";
+import type { HallBlueprintParams } from "./types.js";
 
 const DEFAULT_FILL = "rgb(209,213,219)";
 
@@ -19,6 +19,7 @@ export function generateHallSvg({
 			spacing,
 		});
 
+	// @ts-ignore
 	const svg = (
 		<svg
 			xmlns="http://www.w3.org/2000/svg"
