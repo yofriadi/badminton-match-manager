@@ -68,7 +68,7 @@ export const MatchSchedule: React.FC = () => {
       if (!grouped[court.game]) {
         grouped[court.game] = [];
       }
-      grouped[court.game].push(court);
+      grouped[court.game]?.push(court);
       return grouped;
     }, {});
   }, [courts]);

@@ -192,7 +192,7 @@ function NameLabel({
 function splitIntoTwoLines(name: string): [string, string] {
   const tokens = tokenizeName(name || "");
   if (tokens.length <= 1) return [name || "", ""]; // single token stays on one line
-  if (tokens.length === 2) return [tokens[0], tokens[1]];
+  if (tokens.length === 2) return [tokens[0] || "", tokens[1] || ""];
 
   const sylls = tokens.map(countSyllables);
   const total = sylls.reduce((a, b) => a + b, 0);

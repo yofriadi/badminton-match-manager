@@ -19,16 +19,52 @@ export const CourtPlaying: React.FC = () => {
   const [courts] = useState<Court[]>([
     {
       game: 1,
+      type: "Mix Doubles",
       number: 1,
       players: ["Yofriadi Yahya", "Suhailah Oktaviana", "Dinda", "Andri"],
       isOccupied: true,
-      time: '20:02'
+      time: "20:02",
     },
-    { game: 1, number: 2, players: ["Jordan", "Casey"], isOccupied: true, time: '20:22' },
-    { game: 2, number: 1, players: [], isOccupied: false, time: '20:44' },
-    { game: 2, number: 2, players: ["Taylor", "Morgan"], isOccupied: true, time: '21:04' },
-    { game: 3, number: 1, players: [], isOccupied: false, time: '21:24' },
-    { game: 3, number: 2, players: ["Riley", "Drew"], isOccupied: true, time: '21:44' },
+    {
+      game: 1,
+      type: "Men Doubles",
+      number: 2,
+      players: ["Jordan", "Casey"],
+      isOccupied: true,
+      time: "20:22",
+    },
+    {
+      game: 2,
+      type: "Women Doubles",
+      number: 1,
+      players: [],
+      isOccupied: false,
+      time: "20:44",
+    },
+    {
+      game: 2,
+      type: "Men Doubles",
+      number: 2,
+      players: ["Taylor", "Morgan"],
+      isOccupied: true,
+      time: "21:04",
+    },
+    {
+      game: 3,
+      type: "Mix Doubles",
+      number: 1,
+      players: [],
+      isOccupied: false,
+      time: "21:24",
+    },
+    {
+      game: 3,
+      type: "Men Doubles",
+      number: 2,
+      players: ["Riley", "Drew"],
+      isOccupied: true,
+      time: "21:44",
+    },
   ]);
 
   const [selectedCourt, setSelectedCourt] = useState<string | null>(null);
@@ -38,7 +74,7 @@ export const CourtPlaying: React.FC = () => {
       if (!grouped[court.game]) {
         grouped[court.game] = [];
       }
-      grouped[court.game].push(court);
+      grouped[court.game]?.push(court);
       return grouped;
     }, {});
   }, [courts]);

@@ -1,7 +1,7 @@
 import { sql } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/node-postgres";
 import { Pool } from "pg";
-import * as schema from "./schema.js";
+import * as schema from "./schema";
 
 export function getDatabaseUrl(): string {
 	const { DATABASE_URL } = process.env;
@@ -36,5 +36,5 @@ export function createDatabase() {
 
 // Export schema and sql for use in other parts of the application
 export { schema, sql };
-export * from "./schema.js";
-export * from "./types.js";
+export * from "./schema";
+export * from "./types";

@@ -75,6 +75,10 @@ export const MobileNavigation: React.FC<InteractiveMenuProps> = ({
     setActiveIndex(index);
     const item = finalItems[index];
 
+    if (!item) {
+      return;
+    }
+
     // Navigate to the corresponding page
     const slug = item.label.trim().toLowerCase();
     if (!slug.length) {
