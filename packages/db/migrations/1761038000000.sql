@@ -93,7 +93,6 @@ CREATE TABLE IF NOT EXISTS schedules (
   price_per_person INTEGER NOT NULL CHECK (price_per_person >= 0),
   start_at TIMESTAMPTZ NOT NULL,
   end_at   TIMESTAMPTZ NOT NULL,
-  period tsrange GENERATED ALWAYS AS (tsrange(start_at, end_at, '[)')) STORED,
   player_level_min level NOT NULL,
   player_level_max level NOT NULL,
   tags TEXT[] NOT NULL DEFAULT '{}',
@@ -108,6 +107,7 @@ BEFORE UPDATE ON schedules FOR EACH ROW EXECUTE FUNCTION set_updated_at();
 
 CREATE INDEX IF NOT EXISTS idx_schedules_hall ON schedules(hall_id);
 CREATE INDEX IF NOT EXISTS idx_schedules_start_at ON schedules(start_at);
+CREATE INDEX IF NOT EXISTS idx_schedules_hall_time_range ON schedules(hall_id, start_at, end_at);
 CREATE INDEX IF NOT EXISTS idx_schedules_level_range ON schedules(player_level_min, player_level_max);
 CREATE INDEX IF NOT EXISTS idx_schedules_tags ON schedules USING GIN (tags);
 
@@ -131,7 +131,6 @@ CREATE TABLE IF NOT EXISTS court_sessions (
   court_id    UUID NOT NULL,
   start_at TIMESTAMPTZ NOT NULL,
   end_at   TIMESTAMPTZ NOT NULL,
-  period tsrange GENERATED ALWAYS AS (tsrange(start_at, end_at, '[)')) STORED,
   player_level_min level NOT NULL,
   player_level_max level NOT NULL,
   created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
@@ -145,7 +144,8 @@ CREATE TRIGGER court_sessions_set_updated_at
 BEFORE UPDATE ON court_sessions FOR EACH ROW EXECUTE FUNCTION set_updated_at();
 
 CREATE INDEX IF NOT EXISTS idx_court_sessions_schedule ON court_sessions(schedule_id);
-CREATE INDEX IF NOT EXISTS idx_court_sessions_court    ON court_sessions(court_id);
+CREATE INDEX IF NOT EXISTS idx_court_sessions_court ON court_sessions(court_id);
+CREATE INDEX IF NOT EXISTS idx_court_sessions_schedule_time_range ON court_sessions(schedule_id, start_at, end_at);
 
 -- Down Migration
 DROP TABLE IF EXISTS tenants;
