@@ -11,7 +11,7 @@ export async function HallList() {
           key={hall.id}
           hall={{
             id: hall.id,
-            name: hall.label,
+            name: hall.name,
             address: hall.address || "",
             description: hall.description || "",
             priceRange: hall.priceRange || "",
