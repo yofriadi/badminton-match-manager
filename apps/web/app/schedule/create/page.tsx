@@ -30,7 +30,7 @@ import { CreateScheduleForm } from "./create-schedule-form";
 export default async function CreateSchedulePage() {
   const halls = await getHalls();
   const hallOptions = halls.map((hall) => ({
-    label: hall.label,
+    label: hall.name,
     value: hall.id,
   }));
 

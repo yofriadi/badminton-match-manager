@@ -37,7 +37,7 @@ export async function seedHalls() {
 
 		return {
 			id: hall.id,
-			label: hall.name,
+			name: hall.name,
 			address: hall.address,
 			description: hall.description,
 			priceRange: hall.priceRange,

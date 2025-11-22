@@ -1,7 +1,7 @@
 export type RowOrientation = "vertical" | "horizontal";
 
 export interface Court {
-  label: string;
+  name: string;
   fill?: string;
   isAvailable?: boolean;
 }
