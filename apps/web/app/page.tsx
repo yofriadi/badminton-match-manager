@@ -1,12 +1,13 @@
 import { Button } from "@workspace/ui/components/button"
-import { prisma } from "@/lib/prisma"
+import { db, pageContent } from "@workspace/db"
+import { desc } from "drizzle-orm"
 
 export default async function Page() {
-  const content = await prisma.pageContent.findFirst({
-    orderBy: {
-      createdAt: "desc",
-    },
-  })
+  const [content] = await db
+    .select()
+    .from(pageContent)
+    .orderBy(desc(pageContent.createdAt))
+    .limit(1)
 
   if (!content) {
     return (

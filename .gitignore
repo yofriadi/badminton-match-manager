@@ -37,4 +37,6 @@ npm-debug.log*
 
 # Database
 *.db
-*.db-journal
+*.db-*
+*.sqlite
+*.sqlite-*

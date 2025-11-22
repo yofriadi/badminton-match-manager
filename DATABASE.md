@@ -1,59 +1,105 @@
 # Database Setup
 
-This project uses Prisma with SQLite for data persistence.
+This project uses Drizzle ORM with SQLite for data persistence.
 
 ## Overview
 
 All hardcoded data has been moved to database fetches. The application now uses:
-- **Prisma** as the ORM
-- **SQLite** as the database (via libsql adapter)
-- Database file located at `apps/web/prisma/dev.db`
+- **Drizzle ORM** as the ORM
+- **better-sqlite3** as the SQLite driver
+- Database file located at `db.sqlite` (project root)
+
+## Architecture
+
+The database is managed in a shared package:
+- **packages/db**: Contains schema, client, and Drizzle configuration
+- **apps/web**: Imports `@workspace/db` to access the database
 
 ## Schema
 
-The database schema is defined in `apps/web/prisma/schema.prisma`.
+The database schema is defined in `packages/db/src/schema.ts`.
 
-Current models:
-- **PageContent**: Stores page content including title, button text, and button size
+Current tables:
+- **page_content**: Stores page content including title, button text, and button size
 
 ## Commands
 
 Run these commands from the `apps/web` directory:
 
 ```bash
-# Generate Prisma client after schema changes
+# Generate Drizzle migration files
 pnpm db:generate
 
-# Create and run a new migration
-pnpm db:migrate
+# Push schema changes to database (no migration files)
+pnpm db:push
+
+# Open Drizzle Studio (database GUI)
+pnpm db:studio
 
 # Seed the database with initial data
 pnpm db:seed
 ```
 
+Or run directly in `packages/db`:
+
+```bash
+cd packages/db
+
+# Generate migrations
+pnpm db:generate
+
+# Push to database
+pnpm db:push
+
+# Open studio
+pnpm db:studio
+```
+
 ## Development Workflow
 
-1. **First time setup**: The database and Prisma client are automatically set up when you install dependencies (via postinstall script)
+1. **First time setup**: 
+   - Install dependencies: `pnpm install`
+   - Push schema: `pnpm db:push` (from apps/web or packages/db)
+   - Seed database: `pnpm db:seed` (from apps/web)
 
-2. **Seeding**: Run `pnpm db:seed` to populate the database with initial content
+2. **Seeding**: Run `pnpm db:seed` from `apps/web` to populate the database with initial content
 
 3. **Schema changes**:
-   - Edit `prisma/schema.prisma`
-   - Run `pnpm db:migrate` to create and apply a migration
-   - Prisma client is regenerated automatically
+   - Edit `packages/db/src/schema.ts`
+   - Run `pnpm db:push` to apply changes immediately
+   - Or run `pnpm db:generate` to create migration files, then apply them
 
-4. **Using Prisma in code**:
+4. **Using Drizzle in code**:
    ```typescript
-   import { prisma } from "@/lib/prisma"
+   import { db, pageContent } from "@workspace/db"
+   import { desc } from "drizzle-orm"
    
-   const content = await prisma.pageContent.findFirst()
+   const [content] = await db
+     .select()
+     .from(pageContent)
+     .orderBy(desc(pageContent.createdAt))
+     .limit(1)
    ```
 
 ## Database Location
 
-- Development: `apps/web/prisma/dev.db` (gitignored)
+- Development: `db.sqlite` at project root (gitignored)
 - The database file is excluded from version control
 
-## Prisma Client
+## Structure
 
-The Prisma client is generated to `node_modules/@prisma/client` and uses the libsql adapter for SQLite connections. The singleton instance is available from `apps/web/lib/prisma.ts`.
+```
+packages/db/
+├── src/
+│   ├── schema.ts       # Drizzle schema definitions
+│   ├── client.ts       # Database client instance
+│   └── index.ts        # Public exports
+├── drizzle/            # Generated migration files
+└── drizzle.config.ts   # Drizzle Kit configuration
+```
+
+## Notes
+
+- The database client is a singleton that creates a connection when imported
+- better-sqlite3 requires native compilation - it's automatically built during installation
+- The database uses WAL mode for better concurrent access

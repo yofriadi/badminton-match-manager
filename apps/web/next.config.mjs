@@ -1,12 +1,9 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   transpilePackages: ["@workspace/ui"],
-  typescript: {
-    ignoreBuildErrors: false,
-  },
   webpack: (config, { isServer }) => {
     if (isServer) {
-      config.externals.push("@libsql/client", "libsql")
+      config.externals.push("better-sqlite3")
     }
     return config
   },
