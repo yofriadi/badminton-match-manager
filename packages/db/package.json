@@ -2,13 +2,13 @@
 	"name": "@repo/database",
 	"version": "0.1.0",
 	"private": true,
-	"type": "module",
 	"main": "index.js",
 	"types": "./dist/index.d.ts",
 	"exports": {
 		".": {
 			"import": "./dist/index.js",
-			"types": "./dist/index.d.ts"
+			"types": "./dist/index.d.ts",
+            "require": "./dist/index.js"
 		}
 	},
 	"scripts": {

@@ -54,7 +54,7 @@ export default async function HallDetailPage({ params }: HallDetailPageProps) {
     <div className="min-h-screen bg-white flex flex-col">
       <div className="px-4 pt-6 pb-4 space-y-4">
         <div className="space-y-1">
-          <h1 className="text-2xl font-semibold">{hall.label}</h1>
+          <h1 className="text-2xl font-semibold">{hall.name}</h1>
           <p className="text-sm text-gray-500">{hall.address}</p>
         </div>
       </div>
@@ -66,7 +66,7 @@ export default async function HallDetailPage({ params }: HallDetailPageProps) {
         <HallBlueprint
           hall={{
             id: hall.id,
-            name: hall.label,
+            name: hall.name,
             address: hall.address || "",
             description: hall.description || "",
             priceRange: hall.priceRange || "",

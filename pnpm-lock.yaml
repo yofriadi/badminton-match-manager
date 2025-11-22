@@ -32,12 +32,18 @@ importers:
       '@hookform/resolvers':
         specifier: ^5.2.2
         version: 5.2.2(react-hook-form@7.66.0(react@19.2.0))
+      '@repo/database':
+        specifier: workspace:*
+        version: link:../../packages/db
       '@workspace/ui':
         specifier: workspace:*
         version: link:../../packages/ui
       date-fns:
         specifier: ^4.1.0
         version: 4.1.0
+      drizzle-orm:
+        specifier: ^0.44.7
+        version: 0.44.7(@types/pg@8.15.6)(pg@8.16.3)
       lucide-react:
         specifier: ^0.553.0
         version: 0.553.0(react@19.2.0)
@@ -47,6 +53,9 @@ importers:
       next-themes:
         specifier: ^0.4.6
         version: 0.4.6(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
+      pg:
+        specifier: ^8.16.3
+        version: 8.16.3
       react:
         specifier: ^19.2.0
         version: 19.2.0
@@ -66,6 +75,9 @@ importers:
       '@types/node':
         specifier: ^22.19.0
         version: 22.19.0
+      '@types/pg':
+        specifier: ^8.15.6
+        version: 8.15.6
       '@types/react':
         specifier: ^19.2.2
         version: 19.2.2

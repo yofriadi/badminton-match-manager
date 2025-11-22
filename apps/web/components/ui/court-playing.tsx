@@ -15,58 +15,11 @@ import {
 } from "@workspace/ui/components/carousel";
 import { CourtBlueprint, type Court } from "./court-blueprint";
 
-export const CourtPlaying: React.FC = () => {
-  const [courts] = useState<Court[]>([
-    {
-      game: 1,
-      type: "Mix Doubles",
-      number: 1,
-      players: ["Yofriadi Yahya", "Suhailah Oktaviana", "Dinda", "Andri"],
-      isOccupied: true,
-      time: "20:02",
-    },
-    {
-      game: 1,
-      type: "Men Doubles",
-      number: 2,
-      players: ["Jordan", "Casey"],
-      isOccupied: true,
-      time: "20:22",
-    },
-    {
-      game: 2,
-      type: "Women Doubles",
-      number: 1,
-      players: [],
-      isOccupied: false,
-      time: "20:44",
-    },
-    {
-      game: 2,
-      type: "Men Doubles",
-      number: 2,
-      players: ["Taylor", "Morgan"],
-      isOccupied: true,
-      time: "21:04",
-    },
-    {
-      game: 3,
-      type: "Mix Doubles",
-      number: 1,
-      players: [],
-      isOccupied: false,
-      time: "21:24",
-    },
-    {
-      game: 3,
-      type: "Men Doubles",
-      number: 2,
-      players: ["Riley", "Drew"],
-      isOccupied: true,
-      time: "21:44",
-    },
-  ]);
+interface CourtPlayingProps {
+  courts: Court[];
+}
 
+export const CourtPlaying: React.FC<CourtPlayingProps> = ({ courts }) => {
   const [selectedCourt, setSelectedCourt] = useState<string | null>(null);
 
   const courtsByGame = useMemo(() => {
@@ -86,6 +39,14 @@ export const CourtPlaying: React.FC = () => {
         .sort((a, b) => a - b),
     [courtsByGame],
   );
+
+  if (courts.length === 0) {
+    return (
+      <div className="flex min-h-[50vh] items-center justify-center">
+        <p className="text-gray-500">No court sessions available.</p>
+      </div>
+    );
+  }
 
   return (
     <>

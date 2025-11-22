@@ -173,7 +173,7 @@ export const HallBlueprint: React.FC<HallBlueprintProps> = ({
                 fontSize="48"
                 fontWeight={600}
               >
-                {court.label}
+                {court.name}
               </text>
             </React.Fragment>
           );

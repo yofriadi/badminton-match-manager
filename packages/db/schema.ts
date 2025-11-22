@@ -84,6 +84,8 @@ export const halls = pgTable("halls", {
     .$type<string[]>()
     .notNull()
     .default([]),
+  priceRange: text("price_range"),
+  blueprintSvg: text("blueprint_svg"),
   layout: jsonb("layout")
     .$type<{
       padding: number;
@@ -210,6 +212,9 @@ export const courtSessions = pgTable("court_sessions", {
   currentPlayers: integer("current_players").notNull().default(0),
   status: text("status").notNull().default("open"),
   notes: text("notes"),
+  players: jsonb("players").$type<string[]>().notNull().default([]),
+  type: text("type"), // e.g. "Mix Doubles"
+  gameNumber: integer("game_number"), // e.g. 1, 2, 3
   createdAt: timestamp("created_at", { withTimezone: true })
     .notNull()
     .defaultNow(),
