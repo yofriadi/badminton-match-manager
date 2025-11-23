@@ -1,12 +1,11 @@
-import { Button } from "@workspace/ui/components/button"
+"use client";
 
-export default function Page() {
+import { CourtPlaying } from "@/components/ui/court-playing";
+
+export default function Home() {
   return (
-    <div className="flex items-center justify-center min-h-svh">
-      <div className="flex flex-col items-center justify-center gap-4">
-        <h1 className="text-2xl font-bold">Hello World</h1>
-        <Button size="sm">Button</Button>
-      </div>
+    <div className="min-h-screen bg-white">
+      <CourtPlaying />
     </div>
-  )
+  );
 }
