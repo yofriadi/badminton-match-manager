@@ -86,7 +86,7 @@ export const Plays: React.FC<PlaysProps> = ({ schedule }) => {
         </div>
       </CardContent>
       <CardFooter className="mb-3 flex w-full justify-center gap-8">
-        <Button asChild className="hover:bg-gray-800 rounded-full w-[60%] my-2">
+        <Button asChild className="hover:bg-gray-800 rounded-full w-[80%]">
           <Link href={`/schedule/${schedule.id}`}>Detail</Link>
         </Button>
       </CardFooter>

@@ -1,10 +1,18 @@
 import { notFound } from "next/navigation";
+
 import { MobileNavigation } from "@/components/ui/mobile-navigation";
 import { HallBlueprint } from "@/app/hall/[id]/components/hall-blueprint";
-import { getHalls } from "@/app/hall/lib/api";
+import { getHallById } from "@/app/hall/lib/data";
+import type { Player } from "@/app/hall/lib/types";
+
 import { Badge } from "@workspace/ui/components/badge";
+import { getScheduleById, schedules } from "../../schedule/lib/data";
 import { MatchSchedule } from "./components/match-schedule";
-import { createDatabase } from "@packages/db";
+import {
+  SkillLegend,
+  getSkillInitial,
+  getSkillColor,
+} from "@/components/ui/skill-legend";
 
 type HallDetailPageProps = {
   params: Promise<{
@@ -14,42 +22,28 @@ type HallDetailPageProps = {
 
 export default async function HallDetailPage({ params }: HallDetailPageProps) {
   const { id } = await params;
-  const db = createDatabase();
-  const schedules = await db.query.schedules.findMany();
-  const currentSchedule = schedules.find((s) => s.id === id);
-
+  const currentSchedule = getScheduleById(id);
   if (!currentSchedule) {
     notFound();
   }
 
-  const halls = await getHalls();
-  const hall = halls.find((h) => h.id === currentSchedule.hallId);
+  const hall = getHallById(currentSchedule.hallId);
 
   if (!hall) {
     notFound();
   }
 
-  const formatDate = (date: Date) =>
-    new Intl.DateTimeFormat("en-US", {
-      weekday: "short",
-      month: "short",
-      day: "numeric",
-      year: "numeric",
-    }).format(date);
+  const playersByGender = (gender: Player["gender"]) =>
+    hall.players.filter((player) => player.gender === gender);
 
-  const formatTimeRange = (start: Date, end: Date) => {
-    const opts: Intl.DateTimeFormatOptions = { hour: "2-digit", minute: "2-digit" };
-    return `${start.toLocaleTimeString("en-US", opts)} - ${end.toLocaleTimeString(
-      "en-US",
-      opts,
-    )}`;
-  };
-
-  const formatPrice = (value: number) =>
-    `Rp ${new Intl.NumberFormat("id-ID").format(value)}`;
-
-  const start = new Date(currentSchedule.startAt);
-  const end = new Date(currentSchedule.endAt);
+  const hallSchedules = [
+    currentSchedule,
+    ...schedules.filter(
+      (schedule) =>
+        schedule.hallId === currentSchedule.hallId &&
+        schedule.id !== currentSchedule.id,
+    ),
+  ];
 
   return (
     <div className="min-h-screen bg-white flex flex-col">
@@ -64,19 +58,7 @@ export default async function HallDetailPage({ params }: HallDetailPageProps) {
         <p className="text-xs uppercase tracking-wide text-gray-400 pb-1">
           Layout
         </p>
-        <HallBlueprint
-          hall={{
-            id: hall.id,
-            name: hall.name,
-            address: hall.address || "",
-            description: hall.description || "",
-            priceRange: hall.priceRange || "",
-            amenities: hall.amenities,
-            rows: hall.layout.rows,
-            players: [],
-          }}
-          renderCard={false}
-        />
+        <HallBlueprint hall={hall} renderCard={false} />
       </div>
 
       <div className="px-4 pt-6 pb-8 space-y-6">
@@ -84,22 +66,22 @@ export default async function HallDetailPage({ params }: HallDetailPageProps) {
           <p className="text-xs uppercase tracking-wide text-gray-400 pb-1">
             Date
           </p>
-          <p className="text-sm font-medium text-gray-900">{formatDate(start)}</p>
+          <p className="text-sm font-medium text-gray-900">
+            {currentSchedule.date}
+          </p>
         </div>
         <div>
           <p className="text-xs uppercase tracking-wide text-gray-400 pb-1">
             Time
           </p>
-          <p className="text-sm font-medium text-gray-900">
-            {formatTimeRange(start, end)}
-          </p>
+          <p className="text-sm font-medium text-gray-900">20:00 - 22:00</p>
         </div>
         <div>
           <p className="text-xs uppercase tracking-wide text-gray-400 pb-1">
             Price
           </p>
           <p className="text-sm font-medium text-gray-900">
-            {formatPrice(currentSchedule.pricePerPerson)}{" "}
+            {currentSchedule.price}{" "}
             <span className="text-xs text-gray-400">/ person</span>
           </p>
         </div>
@@ -120,6 +102,56 @@ export default async function HallDetailPage({ params }: HallDetailPageProps) {
               ))}
             </div>
           </div>
+        </div>
+        <div>
+          <p className="text-xs uppercase tracking-wide text-gray-400 pb-2">
+            Players
+          </p>
+          <div className="grid grid-cols-2 gap-4 text-sm text-gray-900">
+            <div className="space-y-2">
+              <p className="text-xs uppercase tracking-wide text-gray-400">
+                Man
+              </p>
+              <div className="flex flex-col gap-1">
+                {playersByGender("man").map((player) => (
+                  <div
+                    key={`man-${player.name}`}
+                    className="flex items-center justify-between gap-4"
+                  >
+                    <span>{player.name}</span>
+                    <span
+                      className="text-xs font-semibold text-center w-6 shrink-0"
+                      style={{ color: getSkillColor(player.skillLevel) }}
+                    >
+                      {getSkillInitial(player.skillLevel)}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </div>
+            <div className="space-y-2">
+              <p className="text-xs uppercase tracking-wide text-gray-400">
+                Woman
+              </p>
+              <div className="flex flex-col gap-1">
+                {playersByGender("woman").map((player) => (
+                  <div
+                    key={`woman-${player.name}`}
+                    className="flex items-center justify-between gap-4"
+                  >
+                    <span>{player.name}</span>
+                    <span
+                      className="text-xs font-semibold text-center w-6 shrink-0"
+                      style={{ color: getSkillColor(player.skillLevel) }}
+                    >
+                      {getSkillInitial(player.skillLevel)}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+          <SkillLegend />
         </div>
       </div>
       <p className="text-xs uppercase tracking-wide text-gray-400 pb-2 ml-4">

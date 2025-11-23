@@ -5,7 +5,7 @@ import { Plays } from "./components/plays";
 import { CtaButton } from "./components/cta-button";
 import { schedules } from "./lib/data";
 
-export default function Schedule() {
+export default function Hall() {
   return (
     <div className="min-h-screen bg-white flex flex-col space-y-4 py-4">
       {schedules.map((schedule, i) => (
