@@ -9,10 +9,16 @@
     "start": "next start",
     "lint": "next lint",
     "lint:fix": "next lint --fix",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "db:generate": "pnpm --filter @workspace/db db:generate",
+    "db:push": "pnpm --filter @workspace/db db:push",
+    "db:studio": "pnpm --filter @workspace/db db:studio",
+    "db:seed": "tsx scripts/seed.ts"
   },
   "dependencies": {
+    "@workspace/db": "workspace:*",
     "@workspace/ui": "workspace:*",
+    "drizzle-orm": "^0.38.3",
     "lucide-react": "^0.475.0",
     "next": "^15.4.5",
     "next-themes": "^0.4.6",
@@ -25,6 +31,7 @@
     "@types/react-dom": "^19.1.7",
     "@workspace/eslint-config": "workspace:^",
     "@workspace/typescript-config": "workspace:*",
+    "tsx": "^4.20.6",
     "typescript": "^5.9.2"
   }
 }
