@@ -1,6 +1,9 @@
 import { getHalls } from "../lib/api";
 import { HallCard } from "../components/hall-card";
 
+// Disable static generation since this page fetches data from database
+export const dynamic = "force-dynamic";
+
 export default async function CreateDetailPage() {
   const halls = await getHalls();
 

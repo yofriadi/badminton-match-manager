@@ -1,29 +1,22 @@
 "use client";
 
-import type {
-  CSSProperties,
-  HTMLAttributes,
-  KeyboardEvent,
-  ReactNode,
-} from "react";
+import type { ButtonHTMLAttributes, CSSProperties, ReactNode } from "react";
 
-interface GradientButtonProps extends HTMLAttributes<HTMLDivElement> {
+interface AnimatedCtaButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   children?: ReactNode;
   width?: string;
   height?: string;
-  onClick?: () => void;
-  disabled?: boolean;
 }
 
-const GradientButton = ({
+const AnimatedCtaButton = ({
   children,
   width = "600px",
   height = "100px",
   className = "",
-  onClick,
   disabled = false,
+  type = "button",
   ...props
-}: GradientButtonProps) => {
+}: AnimatedCtaButtonProps) => {
   const commonGradientStyles = `
     relative rounded-[50px] cursor-pointer overflow-hidden
     after:content-[""] after:block after:absolute after:bg-[var(--color-primary)]
@@ -33,19 +26,10 @@ const GradientButton = ({
     ${disabled ? "opacity-50 cursor-not-allowed" : ""}
   `;
 
-  const handleKeyDown = (e: KeyboardEvent<HTMLDivElement>) => {
-    if (disabled) return;
-    if (e.key === "Enter" || e.key === " ") {
-      e.preventDefault();
-      onClick?.();
-    }
-  };
-
   return (
     <div className="text-center">
-      <div
-        role="button"
-        tabIndex={disabled ? -1 : 0}
+      <button
+        type={type}
         className={`
           ${commonGradientStyles}
           rotatingGradient
@@ -58,17 +42,16 @@ const GradientButton = ({
             height: height,
           } as CSSProperties
         }
-        onClick={disabled ? undefined : onClick}
-        onKeyDown={handleKeyDown}
+        disabled={disabled}
         aria-disabled={disabled}
         {...props}
       >
         <span className="relative z-10 text-[var(--color-primary-foreground)] flex items-center justify-center label">
           {children}
         </span>
-      </div>
+      </button>
     </div>
   );
 };
 
-export default GradientButton;
+export default AnimatedCtaButton;

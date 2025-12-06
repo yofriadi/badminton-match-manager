@@ -1,0 +1,35 @@
+-- Seed tenant_players with demo roster derived from apps/web/app/hall/lib/data.ts:38-69
+-- Tenant: 019ab595-11eb-7d68-8f78-bf29ba6cad5f
+INSERT INTO tenant_players (tenant_id, name, gender, skill_level)
+VALUES
+  ('019ab595-11eb-7d68-8f78-bf29ba6cad5f', 'Andri', 'man', 'intermediate'),
+  ('019ab595-11eb-7d68-8f78-bf29ba6cad5f', 'Fahri', 'woman', 'beginner'),
+  ('019ab595-11eb-7d68-8f78-bf29ba6cad5f', 'Dinda', 'woman', 'novice'),
+  ('019ab595-11eb-7d68-8f78-bf29ba6cad5f', 'Ryo', 'man', 'pro'),
+  ('019ab595-11eb-7d68-8f78-bf29ba6cad5f', 'Bagus', 'man', 'advanced'),
+  ('019ab595-11eb-7d68-8f78-bf29ba6cad5f', 'Ricardo', 'man', 'intermediate'),
+  ('019ab595-11eb-7d68-8f78-bf29ba6cad5f', 'Rifqi', 'woman', 'beginner'),
+  ('019ab595-11eb-7d68-8f78-bf29ba6cad5f', 'Mar Galo 1', 'man', 'pro'),
+  ('019ab595-11eb-7d68-8f78-bf29ba6cad5f', 'Pak Ardi', 'man', 'advanced'),
+  ('019ab595-11eb-7d68-8f78-bf29ba6cad5f', 'Dzaki', 'woman', 'novice'),
+  ('019ab595-11eb-7d68-8f78-bf29ba6cad5f', 'Pak Bob', 'man', 'intermediate'),
+  ('019ab595-11eb-7d68-8f78-bf29ba6cad5f', 'Radit', 'woman', 'beginner'),
+  ('019ab595-11eb-7d68-8f78-bf29ba6cad5f', 'Pak Ery', 'man', 'pro'),
+  ('019ab595-11eb-7d68-8f78-bf29ba6cad5f', 'Nikho', 'man', 'advanced'),
+  ('019ab595-11eb-7d68-8f78-bf29ba6cad5f', 'Akmal FS', 'woman', 'intermediate'),
+  ('019ab595-11eb-7d68-8f78-bf29ba6cad5f', 'Putra', 'man', 'novice'),
+  ('019ab595-11eb-7d68-8f78-bf29ba6cad5f', 'Caithlyn', 'woman', 'beginner'),
+  ('019ab595-11eb-7d68-8f78-bf29ba6cad5f', 'Mattew', 'man', 'pro'),
+  ('019ab595-11eb-7d68-8f78-bf29ba6cad5f', 'Fai', 'woman', 'intermediate'),
+  ('019ab595-11eb-7d68-8f78-bf29ba6cad5f', 'Herman', 'man', 'advanced'),
+  ('019ab595-11eb-7d68-8f78-bf29ba6cad5f', 'Ahmad', 'woman', 'novice'),
+  ('019ab595-11eb-7d68-8f78-bf29ba6cad5f', 'Ridho', 'man', 'pro'),
+  ('019ab595-11eb-7d68-8f78-bf29ba6cad5f', 'Carlo', 'man', 'beginner'),
+  ('019ab595-11eb-7d68-8f78-bf29ba6cad5f', 'Ken', 'woman', 'intermediate'),
+  ('019ab595-11eb-7d68-8f78-bf29ba6cad5f', 'Alvin Chandra', 'man', 'advanced'),
+  ('019ab595-11eb-7d68-8f78-bf29ba6cad5f', 'Reza F', 'woman', 'novice'),
+  ('019ab595-11eb-7d68-8f78-bf29ba6cad5f', 'Bang Ef', 'man', 'pro'),
+  ('019ab595-11eb-7d68-8f78-bf29ba6cad5f', 'Ardy', 'man', 'beginner'),
+  ('019ab595-11eb-7d68-8f78-bf29ba6cad5f', 'Yofri', 'woman', 'intermediate'),
+  ('019ab595-11eb-7d68-8f78-bf29ba6cad5f', 'Kiky', 'woman', 'pro')
+ON CONFLICT (tenant_id, name) DO NOTHING;

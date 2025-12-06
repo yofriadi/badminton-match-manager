@@ -23,6 +23,7 @@ export const HallBlueprint: React.FC<HallBlueprintProps> = ({
   detailHref,
   detailLabel = "detail",
   renderCard = true,
+  bookedCourts = [],
 }) => {
   const { name, rows } = hall;
 
@@ -48,10 +49,11 @@ export const HallBlueprint: React.FC<HallBlueprintProps> = ({
     >
       {laidOutRows.flatMap((row) =>
         row.courts.map((court) => {
-          const fill = "transparent";
-          const stroke = DEFAULT_FILL;
+          const isBooked = bookedCourts?.includes(court.label);
+          const fill = isBooked ? DEFAULT_FILL : "transparent";
+          const stroke = isBooked ? "white" : DEFAULT_FILL;
           const strokeWidth = 2;
-          const textColor = DEFAULT_FILL;
+          const textColor = isBooked ? "white" : DEFAULT_FILL;
 
           return (
             <React.Fragment key={`${row.number}-${court.index}`}>

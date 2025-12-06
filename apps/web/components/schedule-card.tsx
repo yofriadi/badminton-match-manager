@@ -6,16 +6,26 @@ import {
   Card,
   CardContent,
   CardDescription,
+  CardFooter,
   CardHeader,
   CardTitle,
-  CardFooter,
 } from "@workspace/ui/components/card";
-import { Button } from "@workspace/ui/components/button";
 import { Badge } from "@workspace/ui/components/badge";
-import { PlaysProps } from "../lib/types";
+import { Button } from "@workspace/ui/components/button";
+import { PlaysProps } from "@/app/schedule/lib/types";
 
-export const Plays: React.FC<PlaysProps> = ({ schedule }) => {
-  const { hall, price, date, sessions, tags } = schedule;
+type ScheduleCardProps = PlaysProps & {
+  showDetailButton?: boolean;
+  detailHref?: string;
+};
+
+export const ScheduleCard: React.FC<ScheduleCardProps> = ({
+  schedule,
+  showDetailButton = true,
+  detailHref,
+}) => {
+  const { hall, price, date, sessions, tags, id } = schedule;
+
   return (
     <Card className="w-full max-w-[calc(100vw-2rem)] overflow-hidden mx-4 px-6 space-y-4">
       <CardHeader className="pt-4">
@@ -28,16 +38,17 @@ export const Plays: React.FC<PlaysProps> = ({ schedule }) => {
           <span className="text-xs text-gray-500">per person</span>
         </CardDescription>
       </CardHeader>
+
       <CardContent className="space-y-6">
         {sessions.map((session, i) => (
-          <div key={i} className="space-y-1">
+          <div key={i}>
             <div className="flex items-center gap-1">
               <span className="text-base font-bold">{session.timeStart}</span>
               <div className="w-8 h-px bg-gray-300"></div>
               <span className="text-base font-bold">{session.timeEnd}</span>
             </div>
 
-            <p className={"text-sm font-medium"}>{session.playerLevel}</p>
+            <p className="text-sm font-medium">{session.playerLevel}</p>
 
             <div className="flex items-center gap-2 mb-2">
               {(Array.isArray(session.court)
@@ -71,6 +82,7 @@ export const Plays: React.FC<PlaysProps> = ({ schedule }) => {
             </div>
           </div>
         ))}
+
         <div className="overflow-x-auto scrollbar-hide -mx-6 px-6">
           <div className="flex gap-2 min-w-max">
             {tags.map((tag, tagIndex) => (
@@ -85,39 +97,14 @@ export const Plays: React.FC<PlaysProps> = ({ schedule }) => {
           </div>
         </div>
       </CardContent>
-      <CardFooter className="mb-3 flex w-full justify-center gap-8">
-        <Button asChild className="hover:bg-gray-800 rounded-full w-[80%]">
-          <Link href={`/schedule/${schedule.id}`}>Detail</Link>
-        </Button>
-      </CardFooter>
-      {/*<CardFooter className="mb-4 flex w-full justify-center gap-8">
-        <AlertDialog>
-          <AlertDialogTrigger asChild>
-            <Button variant="ghost" className="rounded-full w-32 uppercase">
-              cancel
-            </Button>
-          </AlertDialogTrigger>
-          <AlertDialogContent>
-            <AlertDialogHeader>
-              <AlertDialogTitle>Confirm Cancellation</AlertDialogTitle>
-              <AlertDialogDescription>
-                Are you sure you want to cancel this schedule? This action
-                cannot be undone.
-              </AlertDialogDescription>
-            </AlertDialogHeader>
-            <AlertDialogFooter>
-              <AlertDialogAction
-                onClick={() => console.log("Booking cancelled")}
-              >
-                Continue to cancel
-              </AlertDialogAction>
-            </AlertDialogFooter>
-          </AlertDialogContent>
-        </AlertDialog>
-        <Button className="hover:bg-gray-800 rounded-full w-32 uppercase">
-          edit
-        </Button>
-      </CardFooter>*/}
+
+      {showDetailButton && (
+        <CardFooter className="mb-3 flex w-full justify-center gap-8">
+          <Button asChild className="hover:bg-gray-800 rounded-full w-[60%]">
+            <Link href={detailHref ?? `/schedule/${id}`}>Detail</Link>
+          </Button>
+        </CardFooter>
+      )}
     </Card>
   );
 };

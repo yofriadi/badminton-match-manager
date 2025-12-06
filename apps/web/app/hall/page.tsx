@@ -1,8 +1,12 @@
 import { MobileNavigation } from "@/components/ui/mobile-navigation";
-import GradientButton from "@/components/ui/animated-cta-button";
+import AnimatedCtaButton from "@/components/ui/animated-cta-button";
 import { getHalls } from "./lib/api";
 import { HallCard } from "./components/hall-card";
 import Link from "next/link";
+import { ScrollToBottom } from "@/components/ui/scroll-to-bottom";
+
+// Disable static generation since this page fetches data from database
+export const dynamic = "force-dynamic";
 
 export default async function Hall() {
   const halls = await getHalls();
@@ -20,21 +24,22 @@ export default async function Hall() {
             hall={hall}
             actionButton={{
               href: `/hall/${hall.id}`,
-              label: "View details",
+              label: "View detail",
             }}
           />
         ))}
       </div>
       <div className="flex w-full justify-center items-center my-16">
         <Link href="/hall/create">
-          <GradientButton width="300px" height="60px" disabled={false}>
+          <AnimatedCtaButton width="300px" height="60px" disabled={false}>
             Add Hall
-          </GradientButton>
+          </AnimatedCtaButton>
         </Link>
       </div>
-      <div className="mt-auto sticky bottom-0 left-0 right-0 w-full px-4 pb-4 max-w-md mx-auto">
+      <div className="mt-auto sticky bottom-0 left-0 right-0 w-full px-4 pb-4 max-w-md mx-auto z-20">
         <MobileNavigation />
       </div>
+      <ScrollToBottom />
     </div>
   );
 }

@@ -24,6 +24,7 @@ interface HallCardProps {
 }
 
 export function HallCard({ hall, actionButton }: HallCardProps) {
+  let courtCounter = 0;
   const blueprintHall = {
     id: hall.id,
     name: hall.name,
@@ -31,7 +32,19 @@ export function HallCard({ hall, actionButton }: HallCardProps) {
     description: hall.description || "",
     priceRange: hall.priceRange || "",
     amenities: hall.amenities,
-    rows: hall.layout.rows,
+    rows: hall.layout.rows.map((row) => ({
+      number: row.number,
+      orientation: row.orientation,
+      courts: row.courts.map((court) => {
+        courtCounter++;
+        return {
+          // Prefer explicit label; fall back to name for backward compatibility
+          label: court.name || String(courtCounter),
+          fill: court.fill,
+          isAvailable: court.isAvailable,
+        };
+      }),
+    })),
     players: [],
   };
 

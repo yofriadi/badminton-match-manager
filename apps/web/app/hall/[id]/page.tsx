@@ -1,22 +1,134 @@
 import { notFound } from "next/navigation";
+import {
+  createDatabase,
+  schedules as schedulesTable,
+  scheduleCourts,
+  courts,
+  eq,
+  inArray,
+  and,
+} from "@packages/db";
 import { MobileNavigation } from "@/components/ui/mobile-navigation";
+import { PlayersSection } from "@/components/players-section";
 import { HallBlueprint } from "./components/hall-blueprint";
 import { getHalls } from "../lib/api";
-import type { Player, SkillLevel } from "../lib/types";
+import { getHallPlayers } from "../lib/players";
+import { ScheduleData } from "@/app/schedule/lib/types";
+import { ScheduleCard } from "@/components/schedule-card";
+
+// Disable static generation since this page fetches data from database
+export const dynamic = "force-dynamic";
 import { Badge } from "@workspace/ui/components/badge";
 import {
   Carousel,
   CarouselContent,
   CarouselItem,
 } from "@workspace/ui/components/carousel";
-import { Schedule } from "./components/schedule";
-import { schedules } from "../../schedule/lib/data";
 
 type HallDetailPageProps = {
   params: Promise<{
     id: string;
   }>;
 };
+
+const formatIDR = (value: number) =>
+  new Intl.NumberFormat("id-ID", {
+    style: "currency",
+    currency: "IDR",
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0,
+  }).format(value);
+
+async function loadHallSchedules(
+  hallId: string,
+  hallName: string,
+): Promise<ScheduleData[]> {
+  const db = createDatabase();
+  const tenant = await db.query.tenants.findFirst();
+  if (!tenant) return [];
+
+  const scheduleRows = await db
+    .select({
+      id: schedulesTable.id,
+      hallId: schedulesTable.hallId,
+      price: schedulesTable.pricePerPerson,
+      scheduleDate: schedulesTable.scheduleDate,
+      levelMin: schedulesTable.playerLevelMin,
+      levelMax: schedulesTable.playerLevelMax,
+    })
+    .from(schedulesTable)
+    .where(
+      and(eq(schedulesTable.tenantId, tenant.id), eq(schedulesTable.hallId, hallId)),
+    );
+
+  if (scheduleRows.length === 0) return [];
+
+  const scheduleIds = scheduleRows.map((row) => row.id);
+
+  const courtRows = await db
+    .select({
+      scheduleId: scheduleCourts.scheduleId,
+      courtNumber: courts.number,
+      startAt: scheduleCourts.startAt,
+      endAt: scheduleCourts.endAt,
+    })
+    .from(scheduleCourts)
+    .innerJoin(courts, eq(scheduleCourts.courtId, courts.id))
+    .where(inArray(scheduleCourts.scheduleId, scheduleIds));
+
+  const courtsBySchedule: Record<string, typeof courtRows> = {};
+  for (const row of courtRows) {
+    if (!courtsBySchedule[row.scheduleId]) {
+      courtsBySchedule[row.scheduleId] = [];
+    }
+    courtsBySchedule[row.scheduleId]!.push(row);
+  }
+
+  return scheduleRows.map((row) => {
+    const sessions = (courtsBySchedule[row.id] ?? []).map((session) => {
+      const start = new Date(session.startAt as unknown as string);
+      const end = new Date(session.endAt as unknown as string);
+      return {
+        timeStart: start.toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit" }),
+        timeEnd: end.toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit" }),
+        court: [String(session.courtNumber)],
+        playerLevel: `${row.levelMin} - ${row.levelMax}`,
+      };
+    });
+
+    const mergedSessions = Object.values(
+      sessions.reduce<Record<string, (typeof sessions)[number]>>((acc, session) => {
+        const key = `${session.timeStart}-${session.timeEnd}`;
+        const existing = acc[key];
+
+        if (existing) {
+          existing.court.push(...session.court);
+          existing.court.sort((a, b) => Number(a) - Number(b));
+        } else {
+          acc[key] = { ...session };
+        }
+
+        return acc;
+      }, {})
+    );
+
+    const scheduleDate = new Date(row.scheduleDate as unknown as string);
+
+    return {
+      id: row.id,
+      hallId: row.hallId,
+      hall: hallName,
+      price: formatIDR(row.price),
+      date: scheduleDate.toLocaleDateString("id-ID", {
+        weekday: "long",
+        day: "numeric",
+        month: "short",
+      }),
+      tags: [],
+      sessions: mergedSessions,
+    };
+  });
+}
 
 export default async function HallDetailPage({ params }: HallDetailPageProps) {
   const { id } = await params;
@@ -27,33 +139,15 @@ export default async function HallDetailPage({ params }: HallDetailPageProps) {
     notFound();
   }
 
-  const getSkillInitial = (level: SkillLevel) => {
-    const mapping: Record<SkillLevel, string> = {
-      beginner: "B",
-      novice: "N",
-      intermediate: "I",
-      advanced: "A",
-      pro: "P",
-    };
-    return mapping[level];
-  };
+  const hallPlayers = await getHallPlayers(hall.id);
+  const hallSchedules = await loadHallSchedules(hall.id, hall.name);
 
-  const skillLegend: { initial: string; label: string }[] = [
-    { initial: "B", label: "Beginner" },
-    { initial: "N", label: "Novice" },
-    { initial: "I", label: "Intermediate" },
-    { initial: "A", label: "Advanced" },
-    { initial: "P", label: "Professional" },
-  ];
-
-  const hallSchedules = schedules.filter(
-    (schedule) => schedule.hallId === hall.id,
-  );
+  let courtCounter = 0;
 
   return (
     <div className="min-h-screen bg-white flex flex-col">
       <div className="px-4 pt-6 pb-4 space-y-4">
-      <div className="space-y-1">
+        <div className="space-y-1">
           <h1 className="text-2xl font-semibold">{hall.name}</h1>
           <p className="text-sm text-gray-500">{hall.address}</p>
         </div>
@@ -71,7 +165,18 @@ export default async function HallDetailPage({ params }: HallDetailPageProps) {
             description: hall.description || "",
             priceRange: hall.priceRange || "",
             amenities: hall.amenities,
-            rows: hall.layout.rows,
+            rows: hall.layout.rows.map((row) => ({
+              number: row.number,
+              orientation: row.orientation,
+              courts: row.courts.map((court) => {
+                courtCounter++;
+                return {
+                  label: court.name || String(courtCounter),
+                  fill: court.fill,
+                  isAvailable: court.isAvailable,
+                };
+              }),
+            })),
             players: [],
           }}
           renderCard={false}
@@ -105,6 +210,7 @@ export default async function HallDetailPage({ params }: HallDetailPageProps) {
             </div>
           </div>
         </div>
+        <PlayersSection players={hallPlayers} />
         <p className="text-xs uppercase tracking-wide text-gray-400">
           Upcoming Schedules
         </p>
@@ -115,10 +221,11 @@ export default async function HallDetailPage({ params }: HallDetailPageProps) {
           >
             <CarouselContent className="touch-pan-x">
               {hallSchedules.map((schedule, index) => (
-                <CarouselItem
-                  key={`${schedule.hallId}-${schedule.date}-${index}`}
-                >
-                  <Schedule schedule={schedule} />
+                <CarouselItem key={`${schedule.hallId}-${schedule.date}-${index}`}>
+                  <ScheduleCard
+                    schedule={schedule}
+                    detailHref={`/schedule/${schedule.id}`}
+                  />
                 </CarouselItem>
               ))}
             </CarouselContent>

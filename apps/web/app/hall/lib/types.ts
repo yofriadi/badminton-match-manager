@@ -19,7 +19,7 @@ export type SkillLevel =
   | "advanced"
   | "pro";
 
-export type PlayerGender = "man" | "woman";
+export type PlayerGender = "male" | "female";
 
 export interface Player {
   name: string;
@@ -52,6 +52,7 @@ export interface HallBlueprintProps {
   detailHref?: string;
   detailLabel?: string;
   renderCard?: boolean;
+  bookedCourts?: string[];
 }
 
 export interface RowMeasurement {
