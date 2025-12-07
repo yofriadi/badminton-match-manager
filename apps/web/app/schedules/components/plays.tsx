@@ -1,0 +1,6 @@
+import { ScheduleCard } from "@/components/schedule-card";
+import { PlaysProps } from "@/app/schedules/lib/types";
+
+export const Plays: React.FC<PlaysProps> = ({ schedule }) => (
+  <ScheduleCard schedule={schedule} />
+);

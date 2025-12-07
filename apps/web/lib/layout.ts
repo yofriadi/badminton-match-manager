@@ -3,7 +3,7 @@ import type {
 	Row,
 	RowLayout,
 	RowMeasurement,
-} from "@/app/hall/lib/types";
+} from "@/app/halls/lib/types";
 import type { BlueprintDimensions } from "./types.js";
 
 export const DEFAULT_BLUEPRINT_DIMENSIONS: BlueprintDimensions = {

@@ -1,4 +1,4 @@
-import type { Row } from "@/app/hall/lib/types";
+import type { Row } from "@/app/halls/lib/types";
 
 export interface BlueprintDimensions {
 	padding: number;

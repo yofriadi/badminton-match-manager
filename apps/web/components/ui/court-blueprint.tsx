@@ -13,7 +13,7 @@ export interface Court {
 export const CourtBlueprint = ({ court }: { court: Court }) => {
   const [P1 = "—", P2 = "—", P3 = "—", P4 = "—"] = court.players;
   return (
-    <div className="relative aspect-[133/200] overflow-hidden rounded-lg">
+    <div className="relative aspect-[133/200] overflow-hidden">
       <svg
         viewBox="0 0 266 400"
         className="h-full w-full"

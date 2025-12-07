@@ -1,4 +1,4 @@
-import { sql } from "drizzle-orm";
+import { sql, eq, inArray, and, asc, desc } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/node-postgres";
 import { Pool } from "pg";
 import * as schema from "./schema";
@@ -36,5 +36,7 @@ export function createDatabase() {
 
 // Export schema and sql for use in other parts of the application
 export { schema, sql };
+export { eq, inArray, and, asc, desc };
+export { schema as dbSchema };
 export * from "./schema";
 export * from "./types";

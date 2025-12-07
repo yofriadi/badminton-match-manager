@@ -1,4 +1,4 @@
-import type { SkillLevel } from "@/app/hall/lib/types";
+import type { SkillLevel } from "@/app/halls/lib/types";
 
 const skillLegend: { initial: string; label: string }[] = [
   { initial: "B", label: "Beginner" },

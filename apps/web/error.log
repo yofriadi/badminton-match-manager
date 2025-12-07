@@ -1,0 +1,35 @@
+
+> web@0.0.1 typecheck
+> tsc --noEmit
+
+app/hall/[id]/page.tsx(5,3): error TS2305: Module '"@packages/db"' has no exported member 'scheduleCourts'.
+app/hall/[id]/page.tsx(8,3): error TS2305: Module '"@packages/db"' has no exported member 'inArray'.
+app/hall/[id]/page.tsx(9,3): error TS2305: Module '"@packages/db"' has no exported member 'and'.
+app/hall/[id]/page.tsx(55,36): error TS2339: Property 'scheduleDate' does not exist on type 'PgTableWithColumns<{ name: "schedules"; schema: undefined; columns: { id: PgColumn<{ name: "id"; tableName: "schedules"; dataType: "string"; columnType: "PgUUID"; data: string; driverParam: string; notNull: true; hasDefault: true; ... 6 more ...; generated: undefined; }, {}, {}>; ... 9 more ...; updatedAt: PgColumn<...'.
+app/hall/[id]/page.tsx(82,5): error TS2532: Object is possibly 'undefined'.
+app/hall/[id]/page.tsx(168,30): error TS2339: Property 'label' does not exist on type '{ name: string; fill?: string | undefined; isAvailable?: boolean | undefined; }'.
+app/hall/components/hall-card.tsx(39,22): error TS2339: Property 'label' does not exist on type '{ name: string; fill?: string | undefined; isAvailable?: boolean | undefined; }'.
+app/schedule/create/page.tsx(39,10): error TS18048: 'hours' is possibly 'undefined'.
+app/schedule/create/page.tsx(39,23): error TS18048: 'minutes' is possibly 'undefined'.
+app/schedule/create/page.tsx(62,26): error TS2353: Object literal may only specify known properties, and 'required_error' does not exist in type '{ error?: string | $ZodErrorMap<$ZodIssueInvalidType<unknown>> | undefined; message?: string | undefined; }'.
+app/schedule/create/page.tsx(118,21): error TS2345: Argument of type 'number | undefined' is not assignable to parameter of type 'number'.
+  Type 'undefined' is not assignable to type 'number'.
+app/schedule/lib/actions.ts(3,52): error TS2305: Module '"@packages/db"' has no exported member 'scheduleCourts'.
+app/schedule/lib/actions.ts(29,6): error TS2769: No overload matches this call.
+  Overload 1 of 2, '(value: { hallId: string | SQL<unknown> | Placeholder<string, any>; tenantId: string | SQL<unknown> | Placeholder<string, any>; pricePerPerson: number | SQL<...> | Placeholder<...>; ... 7 more ...; tags?: SQL<...> | ... 2 more ... | undefined; }): PgInsertBase<...>', gave the following error.
+    Object literal may only specify known properties, and 'scheduleDate' does not exist in type '{ hallId: string | SQL<unknown> | Placeholder<string, any>; tenantId: string | SQL<unknown> | Placeholder<string, any>; pricePerPerson: number | SQL<unknown> | Placeholder<...>; ... 7 more ...; tags?: SQL<...> | ... 2 more ... | undefined; }'.
+  Overload 2 of 2, '(values: { hallId: string | SQL<unknown> | Placeholder<string, any>; tenantId: string | SQL<unknown> | Placeholder<string, any>; pricePerPerson: number | SQL<...> | Placeholder<...>; ... 7 more ...; tags?: SQL<...> | ... 2 more ... | undefined; }[]): PgInsertBase<...>', gave the following error.
+    Object literal may only specify known properties, and 'tenantId' does not exist in type '{ hallId: string | SQL<unknown> | Placeholder<string, any>; tenantId: string | SQL<unknown> | Placeholder<string, any>; pricePerPerson: number | SQL<unknown> | Placeholder<...>; ... 7 more ...; tags?: SQL<...> | ... 2 more ... | undefined; }[]'.
+app/schedule/lib/actions.ts(42,19): error TS18048: 'schedule' is possibly 'undefined'.
+app/schedule/page.tsx(1,44): error TS2305: Module '"@packages/db"' has no exported member 'scheduleCourts'.
+app/schedule/page.tsx(2,14): error TS2305: Module '"@packages/db"' has no exported member 'inArray'.
+app/schedule/page.tsx(2,23): error TS2305: Module '"@packages/db"' has no exported member 'asc'.
+app/schedule/page.tsx(29,31): error TS2339: Property 'scheduleDate' does not exist on type 'PgTableWithColumns<{ name: "schedules"; schema: undefined; columns: { id: PgColumn<{ name: "id"; tableName: "schedules"; dataType: "string"; columnType: "PgUUID"; data: string; driverParam: string; notNull: true; hasDefault: true; ... 6 more ...; generated: undefined; }, {}, {}>; ... 9 more ...; updatedAt: PgColumn<...'.
+app/schedule/page.tsx(36,28): error TS2339: Property 'scheduleDate' does not exist on type 'PgTableWithColumns<{ name: "schedules"; schema: undefined; columns: { id: PgColumn<{ name: "id"; tableName: "schedules"; dataType: "string"; columnType: "PgUUID"; data: string; driverParam: string; notNull: true; hasDefault: true; ... 6 more ...; generated: undefined; }, {}, {}>; ... 9 more ...; updatedAt: PgColumn<...'.
+npm error Lifecycle script `typecheck` failed with error:
+npm error code 2
+npm error path /Users/ycm/Developer/oss/badminton-match-management/apps/web
+npm error workspace web@0.0.1
+npm error location /Users/ycm/Developer/oss/badminton-match-management/apps/web
+npm error command failed
+npm error command sh -c tsc --noEmit

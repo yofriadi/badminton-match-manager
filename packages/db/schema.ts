@@ -1,4 +1,5 @@
 import {
+	date,
 	decimal,
 	index,
 	integer,
@@ -114,6 +115,66 @@ export const halls = pgTable("halls", {
 export type Hall = typeof halls.$inferSelect;
 export type NewHall = typeof halls.$inferInsert;
 
+export const hallTenants = pgTable(
+  "hall_tenants",
+  {
+    hallId: uuid("hall_id")
+      .notNull()
+      .references(() => halls.id, { onDelete: "cascade" }),
+    tenantId: uuid("tenant_id")
+      .notNull()
+      .references(() => tenants.id, { onDelete: "cascade" }),
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .notNull()
+      .defaultNow(),
+    updatedAt: timestamp("updated_at", { withTimezone: true }),
+  },
+  (table) => [primaryKey(table.hallId, table.tenantId)],
+);
+
+export type HallTenant = typeof hallTenants.$inferSelect;
+export type NewHallTenant = typeof hallTenants.$inferInsert;
+
+// Temporary: Use existing courts table until migration is run
+export const courts = pgTable(
+  "courts",
+  {
+    id: uuid("id").default(sql`uuidv7()`).primaryKey(),
+    hallId: uuid("hall_id")
+      .notNull()
+      .references(() => halls.id, { onDelete: "cascade" }),
+    number: integer("number").notNull(),
+    isEnabled: integer("is_enabled").notNull().default(1), // 1 = true, 0 = false
+  },
+  (table) => [
+    uniqueIndex("courts_hall_number").on(table.hallId, table.number),
+    uniqueIndex("courts_hall_id").on(table.hallId, table.id),
+  ],
+);
+
+export type Court = typeof courts.$inferSelect;
+export type NewCourt = typeof courts.$inferInsert;
+
+// Future: This will replace the courts table after migration
+export const courtHalls = pgTable(
+  "court_halls",
+  {
+    id: uuid("id").default(sql`uuidv7()`).primaryKey(),
+    hallId: uuid("hall_id")
+      .notNull()
+      .references(() => halls.id, { onDelete: "cascade" }),
+    number: integer("number").notNull(),
+    isEnabled: integer("is_enabled").notNull().default(1),
+  },
+  (table) => [
+    uniqueIndex("court_halls_hall_number").on(table.hallId, table.number),
+    uniqueIndex("court_halls_hall_id").on(table.hallId, table.id),
+  ],
+);
+
+export type CourtHall = typeof courtHalls.$inferSelect;
+export type NewCourtHall = typeof courtHalls.$inferInsert;
+
 export const tenantPlayers = pgTable(
   "tenant_players",
   {
@@ -173,8 +234,7 @@ export const schedules = pgTable("schedules", {
 		.notNull()
 		.references(() => halls.id, { onDelete: "cascade" }),
 	pricePerPerson: integer("price_per_person").notNull(),
-	startAt: timestamp("start_at", { withTimezone: true }).notNull(),
-	endAt: timestamp("end_at", { withTimezone: true }).notNull(),
+	scheduleDate: date("schedule_date").notNull(),
 	playerLevelMin: text("player_level_min").notNull(),
 	playerLevelMax: text("player_level_max").notNull(),
 	tags: text("tags")
@@ -189,6 +249,27 @@ export const schedules = pgTable("schedules", {
 
 export type Schedule = typeof schedules.$inferSelect;
 export type NewSchedule = typeof schedules.$inferInsert;
+
+export const scheduleCourts = pgTable(
+	"schedule_courts",
+	{
+		scheduleId: uuid("schedule_id")
+			.notNull()
+			.references(() => schedules.id, { onDelete: "cascade" }),
+		hallId: uuid("hall_id")
+			.notNull()
+			.references(() => halls.id, { onDelete: "cascade" }),
+		courtId: uuid("court_id")
+			.notNull()
+			.references(() => courts.id, { onDelete: "restrict" }),
+		startAt: timestamp("start_at", { withTimezone: true }).notNull(),
+		endAt: timestamp("end_at", { withTimezone: true }).notNull(),
+	},
+	(table) => [primaryKey(table.scheduleId, table.courtId, table.startAt)],
+);
+
+export type ScheduleCourt = typeof scheduleCourts.$inferSelect;
+export type NewScheduleCourt = typeof scheduleCourts.$inferInsert;
 
 export const courtSessions = pgTable("court_sessions", {
 	id: uuid("id").default(sql`uuidv7()`).primaryKey(),
@@ -209,3 +290,23 @@ export const courtSessions = pgTable("court_sessions", {
 
 export type CourtSession = typeof courtSessions.$inferSelect;
 export type NewCourtSession = typeof courtSessions.$inferInsert;
+
+export const schedulePlayers = pgTable(
+	"schedule_players",
+	{
+		scheduleId: uuid("schedule_id")
+			.notNull()
+			.references(() => schedules.id, { onDelete: "cascade" }),
+		tenantPlayerId: uuid("tenant_player_id")
+			.notNull()
+			.references(() => tenantPlayers.id, { onDelete: "cascade" }),
+		createdAt: timestamp("created_at", { withTimezone: true })
+			.notNull()
+			.defaultNow(),
+		updatedAt: timestamp("updated_at", { withTimezone: true }),
+	},
+	(table) => [primaryKey(table.scheduleId, table.tenantPlayerId)],
+);
+
+export type SchedulePlayer = typeof schedulePlayers.$inferSelect;
+export type NewSchedulePlayer = typeof schedulePlayers.$inferInsert;

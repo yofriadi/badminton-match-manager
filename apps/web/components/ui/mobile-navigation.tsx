@@ -18,7 +18,7 @@ export interface InteractiveMenuProps {
 
 const defaultItems: InteractiveMenuItem[] = [
   { label: 'schedule', icon: Home },
-  { label: 'hall', icon: Briefcase },
+  { label: 'halls', icon: Briefcase },
   { label: 'history', icon: Calendar },
   { label: 'setting', icon: Settings },
 ];
@@ -54,7 +54,7 @@ export const MobileNavigation: React.FC<InteractiveMenuProps> = ({
       const targetPath = `/${slug}`;
 
       if (slug === 'schedule') {
-        return pathname === '/schedule' || pathname === '/';
+        return pathname === '/schedules' || pathname === '/';
       }
 
       return pathname === targetPath || pathname.startsWith(`${targetPath}/`);
@@ -86,7 +86,7 @@ export const MobileNavigation: React.FC<InteractiveMenuProps> = ({
     }
 
     if (slug === 'schedule') {
-      router.push('/schedule');
+      router.push('/schedules');
       return;
     }
 

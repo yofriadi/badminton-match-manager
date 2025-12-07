@@ -10,7 +10,7 @@ END; $$ LANGUAGE plpgsql;
 
 -- Enums (include 'unrated' as default baseline)
 CREATE TYPE level  AS ENUM ('unrated','beginner','novice','intermediate','advanced','pro');
-CREATE TYPE gender AS ENUM ('man','woman');
+CREATE TYPE gender AS ENUM ('male','female');
 
 
 -- Tenants
@@ -43,6 +43,15 @@ CREATE TABLE IF NOT EXISTS halls (
 CREATE TRIGGER halls_set_updated
 BEFORE UPDATE ON halls FOR EACH ROW EXECUTE FUNCTION set_updated_at();
 
+CREATE TABLE IF NOT EXISTS hall_tenants (
+  hall_id UUID NOT NULL REFERENCES halls(id) ON DELETE CASCADE,
+  tenant_id UUID NOT NULL REFERENCES tenants(id) ON DELETE CASCADE,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  updated_at TIMESTAMPTZ,
+  PRIMARY KEY (hall_id, tenant_id)
+);
+CREATE TRIGGER hall_tenants_set_updated_at
+BEFORE UPDATE ON hall_tenants FOR EACH ROW EXECUTE FUNCTION set_updated_at();
 
 -- Courts
 CREATE TABLE IF NOT EXISTS courts (
@@ -94,23 +103,20 @@ CREATE TABLE IF NOT EXISTS schedules (
   tenant_id UUID NOT NULL REFERENCES tenants(id) ON DELETE CASCADE,
   hall_id UUID NOT NULL REFERENCES halls(id) ON DELETE CASCADE,
   price_per_person INTEGER NOT NULL CHECK (price_per_person >= 0),
-  start_at TIMESTAMPTZ NOT NULL,
-  end_at   TIMESTAMPTZ NOT NULL,
+  schedule_date DATE NOT NULL,
   player_level_min level NOT NULL,
   player_level_max level NOT NULL,
   tags TEXT[] NOT NULL DEFAULT '{}',
   created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   updated_at TIMESTAMPTZ,
   CHECK (player_level_min <= player_level_max),
-  CHECK (start_at < end_at),
   UNIQUE (id, hall_id)
 );
 CREATE TRIGGER schedules_set_updated_at
 BEFORE UPDATE ON schedules FOR EACH ROW EXECUTE FUNCTION set_updated_at();
 
 CREATE INDEX IF NOT EXISTS idx_schedules_hall ON schedules(hall_id);
-CREATE INDEX IF NOT EXISTS idx_schedules_start_at ON schedules(start_at);
-CREATE INDEX IF NOT EXISTS idx_schedules_hall_time_range ON schedules(hall_id, start_at, end_at);
+CREATE INDEX IF NOT EXISTS idx_schedules_schedule_date ON schedules(schedule_date);
 CREATE INDEX IF NOT EXISTS idx_schedules_level_range ON schedules(player_level_min, player_level_max);
 CREATE INDEX IF NOT EXISTS idx_schedules_tags ON schedules USING GIN (tags);
 
@@ -120,9 +126,12 @@ CREATE TABLE IF NOT EXISTS schedule_courts (
   schedule_id UUID NOT NULL,
   hall_id     UUID NOT NULL,
   court_id    UUID NOT NULL,
-  PRIMARY KEY (schedule_id, court_id),
+  start_at TIMESTAMPTZ NOT NULL,
+  end_at   TIMESTAMPTZ NOT NULL,
+  PRIMARY KEY (schedule_id, court_id, start_at),
   FOREIGN KEY (schedule_id, hall_id) REFERENCES schedules(id, hall_id) ON DELETE CASCADE,
-  FOREIGN KEY (hall_id, court_id)    REFERENCES courts(hall_id, id)    ON DELETE RESTRICT
+  FOREIGN KEY (hall_id, court_id)    REFERENCES courts(hall_id, id)    ON DELETE RESTRICT,
+  CHECK (start_at < end_at)
 );
 
 
@@ -149,6 +158,22 @@ BEFORE UPDATE ON court_sessions FOR EACH ROW EXECUTE FUNCTION set_updated_at();
 CREATE INDEX IF NOT EXISTS idx_court_sessions_schedule ON court_sessions(schedule_id);
 CREATE INDEX IF NOT EXISTS idx_court_sessions_court ON court_sessions(court_id);
 CREATE INDEX IF NOT EXISTS idx_court_sessions_schedule_time_range ON court_sessions(schedule_id, start_at, end_at);
+
+-- Schedule Players (links schedules to registered players)
+CREATE TABLE IF NOT EXISTS schedule_players (
+  schedule_id UUID NOT NULL REFERENCES schedules(id) ON DELETE CASCADE,
+  tenant_player_id UUID NOT NULL REFERENCES tenant_players(id) ON DELETE CASCADE,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  updated_at TIMESTAMPTZ,
+  PRIMARY KEY (schedule_id, tenant_player_id)
+);
+
+CREATE TRIGGER schedule_players_set_updated_at
+BEFORE UPDATE ON schedule_players FOR EACH ROW EXECUTE FUNCTION set_updated_at();
+
+CREATE INDEX IF NOT EXISTS idx_schedule_players_schedule ON schedule_players(schedule_id);
+CREATE INDEX IF NOT EXISTS idx_schedule_players_player ON schedule_players(tenant_player_id);
+
 
 -- Down Migration
 DROP TABLE IF EXISTS tenants;
