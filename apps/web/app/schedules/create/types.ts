@@ -21,6 +21,7 @@ export interface HallSelectorProps {
 }
 
 export interface PlayerSelectorProps {
+  hallId?: string;
   values: string[];
   onValuesChange: (values: string[]) => void;
   disabled?: boolean;

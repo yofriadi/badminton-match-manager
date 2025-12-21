@@ -23,7 +23,9 @@ export function HallSelector({ value, onChange, onError }: HallSelectorProps) {
         console.error("Failed to load halls:", error);
         const errorMessage = "Failed to load halls";
         onError?.(errorMessage);
-        toast.error(errorMessage);
+        toast.error(errorMessage, {
+          description: "Could not fetch available halls. Please refresh the page.",
+        });
       } finally {
         setIsLoadingHalls(false);
       }

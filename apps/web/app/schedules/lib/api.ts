@@ -1,4 +1,4 @@
-import { createDatabase, eq, courtSessions, schedules, halls, courts, schedulePlayers, tenantPlayers } from "@packages/db";
+import { createDatabase, eq, courtSessions, schedules, halls, courtHalls, schedulePlayers, tenantPlayers } from "@packages/db";
 import { format } from "date-fns";
 import { ScheduleData, PlaySession } from "./types";
 import { formatIDR } from "@/lib/utils";
@@ -30,10 +30,10 @@ export async function getScheduleById(id: string): Promise<ScheduleData | undefi
       endAt: courtSessions.endAt,
       playerLevelMin: courtSessions.playerLevelMin,
       playerLevelMax: courtSessions.playerLevelMax,
-      courtNumber: courts.number,
+      courtNumber: courtHalls.number,
     })
     .from(courtSessions)
-    .innerJoin(courts, eq(courtSessions.courtId, courts.id))
+    .innerJoin(courtHalls, eq(courtSessions.courtId, courtHalls.id))
     .where(eq(courtSessions.scheduleId, id));
 
   // Transform sessions
@@ -75,6 +75,6 @@ export async function getSchedulePlayers(scheduleId: string) {
   return players.map(player => ({
     ...player,
     gender: player.gender as "male" | "female",
-    skillLevel: player.skillLevel as "beginner" | "novice" | "intermediate" | "advanced" | "pro"
+    skillLevel: player.skillLevel as "unrated" | "beginner" | "novice" | "intermediate" | "advanced" | "pro"
   }));
 }

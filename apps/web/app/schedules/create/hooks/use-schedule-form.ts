@@ -95,7 +95,9 @@ export function useScheduleForm(): UseScheduleFormResult {
       router.push(`/schedules/${schedule.id}`);
     } catch (error) {
       console.error("Form submission error", error);
-      toast.error("Failed to create the schedule. Please try again.");
+      toast.error("Failed to create the schedule", {
+        description: "Please check the form for errors and try again.",
+      });
     } finally {
       setIsCreating(false);
     }

@@ -1,14 +1,24 @@
-import { getHalls } from "@/lib/halls";
+import { getAvailableHallsForCurrentTenant, addHallToTenantAction } from "../lib/actions";
 import { HallCard } from "../components/hall-card";
 
 // Disable static generation since this page fetches data from database
 export const dynamic = "force-dynamic";
 
 export default async function CreateDetailPage() {
-  const halls = await getHalls();
+  const halls = await getAvailableHallsForCurrentTenant();
+
+  async function handleAddHall(formData: FormData) {
+    "use server";
+    const hallId = formData.get("hallId") as string;
+    await addHallToTenantAction(hallId);
+  }
 
   if (!halls || halls.length === 0) {
-    return <div>No halls found</div>;
+    return (
+      <div className="p-4 text-center space-y-4">
+        <p className="text-gray-500">No new halls available to add.</p>
+      </div>
+    );
   }
 
   return (
@@ -17,7 +27,10 @@ export default async function CreateDetailPage() {
         <HallCard
           key={hall.id}
           hall={hall}
-          actionButton={{ href: `/`, label: "Add this Hall" }}
+          actionButton={{
+            action: handleAddHall,
+            label: "Add this Hall",
+          }}
         />
       ))}
     </div>

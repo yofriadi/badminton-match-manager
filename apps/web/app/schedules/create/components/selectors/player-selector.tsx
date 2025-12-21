@@ -22,6 +22,7 @@ interface Player {
 }
 
 export function PlayerSelector({
+  hallId,
   values,
   onValuesChange,
   disabled,
@@ -35,7 +36,8 @@ export function PlayerSelector({
   useEffect(() => {
     const loadPlayers = async () => {
       try {
-        const players = await getRegisteredPlayersForCurrentTenant();
+        setIsLoadingPlayers(true);
+        const players = await getRegisteredPlayersForCurrentTenant(hallId);
         const options = players.map((player: Player) => ({
           label: `${player.name} (${player.skillLevel})`,
           value: player.id,
@@ -46,14 +48,16 @@ export function PlayerSelector({
         console.error("Failed to load players:", error);
         const errorMessage = "Failed to load registered players";
         onError?.(errorMessage);
-        toast.error(errorMessage);
+        toast.error(errorMessage, {
+          description: "Could not fetch players for the selected hall.",
+        });
       } finally {
         setIsLoadingPlayers(false);
       }
     };
 
     loadPlayers();
-  }, []);
+  }, [hallId]);
 
   const getPlayerNames = (playerIds: string[]) => {
     return playerIds.map((id) => {

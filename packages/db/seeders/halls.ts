@@ -3,7 +3,6 @@ import { Pool } from "pg";
 import { drizzle } from "drizzle-orm/node-postgres";
 import { getDatabaseUrl, schema } from "../index.js";
 import { halls as hallsTable, type NewHall } from "../schema.js";
-import { generateHallSvg } from "../../../apps/web/lib/svg.js";
 import { DEFAULT_BLUEPRINT_DIMENSIONS } from "../../../apps/web/lib/layout.js";
 import { hallSeedData } from "../fixtures/halls.js";
 
@@ -27,23 +26,14 @@ export async function seedHalls() {
 			rows: hall.rows,
 		};
 
-		const blueprintSvg = generateHallSvg({
-			hallId: hall.id,
-			padding: layout.padding,
-			courtSize: layout.courtSize,
-			spacing: layout.spacing,
-			rows: layout.rows,
-		});
-
 		return {
 			id: hall.id,
-			label: hall.name,
+			name: hall.name,
 			address: hall.address,
 			description: hall.description,
 			priceRange: hall.priceRange,
 			amenities: hall.amenities,
 			layout,
-			blueprintSvg,
 		};
 	});
 

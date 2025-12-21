@@ -20,7 +20,7 @@ const defaultItems: InteractiveMenuItem[] = [
   { label: 'schedule', icon: Home },
   { label: 'halls', icon: Briefcase },
   { label: 'history', icon: Calendar },
-  { label: 'setting', icon: Settings },
+  { label: 'settings', icon: Settings },
 ];
 
 export const MobileNavigation: React.FC<InteractiveMenuProps> = ({

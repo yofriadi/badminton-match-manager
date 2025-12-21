@@ -21,6 +21,7 @@ export function PlayersFormField({ control, hallId, onError }: PlayersFormFieldP
           <FormLabel>Select Registered Players</FormLabel>
           <FormControl>
             <PlayerSelector
+              hallId={hallId}
               values={field.value ?? []}
               onValuesChange={field.onChange}
               disabled={!hallId}

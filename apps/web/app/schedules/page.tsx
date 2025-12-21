@@ -3,20 +3,21 @@ import {
   schedules,
   halls,
   scheduleCourts,
-  courts,
+  courtHalls,
 } from "@packages/db";
 import { eq, inArray, asc } from "@packages/db";
+import { getCurrentTenant } from "@/lib/session-utils";
 
 export const dynamic = "force-dynamic";
 
 import { ScheduleData } from "./lib/types";
 import { processScheduleRows } from "./lib/schedule-processor";
 import { ScheduleList } from "./components/schedule-list";
-import { SchedulePageLayout } from "./components/schedule-page-layout";
+import { AppPageLayout } from "@/components/app-page-layout";
 
 async function loadSchedules(): Promise<ScheduleData[]> {
   const db = createDatabase();
-  const tenant = await db.query.tenants.findFirst();
+  const tenant = await getCurrentTenant();
   if (!tenant) return [];
 
   const schedulesRows = await db
@@ -41,12 +42,12 @@ async function loadSchedules(): Promise<ScheduleData[]> {
   const courtRows = await db
     .select({
       scheduleId: scheduleCourts.scheduleId,
-      courtNumber: courts.number,
+      courtNumber: courtHalls.number,
       startAt: scheduleCourts.startAt,
       endAt: scheduleCourts.endAt,
     })
     .from(scheduleCourts)
-    .innerJoin(courts, eq(scheduleCourts.courtId, courts.id))
+    .innerJoin(courtHalls, eq(scheduleCourts.courtId, courtHalls.id))
     .where(inArray(scheduleCourts.scheduleId, scheduleIds));
 
   return processScheduleRows(schedulesRows, courtRows);
@@ -56,8 +57,8 @@ export default async function SchedulesPage() {
   const scheduleData = await loadSchedules();
 
   return (
-    <SchedulePageLayout>
+    <AppPageLayout buttonLink="/schedules/create" buttonText="Create Schedule">
       <ScheduleList schedules={scheduleData} />
-    </SchedulePageLayout>
+    </AppPageLayout>
   );
 }

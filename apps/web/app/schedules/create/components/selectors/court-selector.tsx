@@ -55,7 +55,9 @@ export function CourtSelector({
         console.error("Failed to load courts:", error);
         const errorMessage = "Failed to load courts";
         onError?.(errorMessage);
-        toast.error(errorMessage);
+        toast.error(errorMessage, {
+          description: "Could not fetch courts for the selected hall.",
+        });
       } finally {
         setIsLoadingCourts(false);
       }
