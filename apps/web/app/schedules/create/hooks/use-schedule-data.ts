@@ -35,7 +35,9 @@ export function useScheduleData(hallId?: string): UseScheduleDataResult {
     } catch (error) {
       console.error("Failed to load halls:", error);
       setHallsError("Failed to load halls");
-      toast.error("Failed to load halls");
+      toast.error("Failed to load halls", {
+        description: "Could not fetch available halls. Please refresh the page.",
+      });
     } finally {
       setIsLoadingHalls(false);
     }
@@ -46,7 +48,7 @@ export function useScheduleData(hallId?: string): UseScheduleDataResult {
     try {
       setIsLoadingPlayers(true);
       setPlayersError(null);
-      const players = await getRegisteredPlayersForCurrentTenant();
+      const players = await getRegisteredPlayersForCurrentTenant(hallId);
       const options = players.map((player) => ({
         label: `${player.name} (${player.skillLevel})`,
         value: player.id,
@@ -56,7 +58,9 @@ export function useScheduleData(hallId?: string): UseScheduleDataResult {
     } catch (error) {
       console.error("Failed to load players:", error);
       setPlayersError("Failed to load registered players");
-      toast.error("Failed to load registered players");
+      toast.error("Failed to load registered players", {
+        description: "Could not fetch players for the selected hall.",
+      });
     } finally {
       setIsLoadingPlayers(false);
     }
@@ -83,7 +87,9 @@ export function useScheduleData(hallId?: string): UseScheduleDataResult {
     } catch (error) {
       console.error("Failed to load courts:", error);
       setCourtsError("Failed to load courts");
-      toast.error("Failed to load courts");
+      toast.error("Failed to load courts", {
+        description: "Could not fetch courts for the selected hall.",
+      });
       setCourts([]);
     } finally {
       setIsLoadingCourts(false);
@@ -93,11 +99,11 @@ export function useScheduleData(hallId?: string): UseScheduleDataResult {
   // Initial data loading
   useEffect(() => {
     refetchHalls();
-    refetchPlayers();
   }, []);
 
-  // Load courts when hallId changes
+  // Load data when hallId changes
   useEffect(() => {
+    refetchPlayers();
     refetchCourts();
   }, [hallId]);
 

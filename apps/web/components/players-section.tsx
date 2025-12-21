@@ -1,12 +1,17 @@
-import type { Player } from "@/app/halls/lib/types";
+"use client";
 
+import { useState } from "react";
+import { Plus } from "lucide-react";
+import type { Player } from "@/app/halls/lib/types";
 import { SkillLegend, getSkillColor, getSkillInitial } from "./skill-legend";
 
 type PlayersSectionProps = {
   players?: Player[];
+  hallId?: string;
+  onAddPlayer?: () => void;
 };
 
-export function PlayersSection({ players }: PlayersSectionProps) {
+export function PlayersSection({ players, hallId, onAddPlayer }: PlayersSectionProps) {
   const safePlayers = players ?? [];
 
   const playersByGender = (gender: Player["gender"]) =>
@@ -14,9 +19,20 @@ export function PlayersSection({ players }: PlayersSectionProps) {
 
   return (
     <div className="mx-4">
-      <p className="text-xs uppercase tracking-wide text-gray-400 pb-2">
-        Players
-      </p>
+      <div className="flex items-center justify-between pb-2">
+        <p className="text-xs uppercase tracking-wide text-gray-400">
+          Players
+        </p>
+        {hallId && (
+          <button
+            onClick={onAddPlayer}
+            className="text-xs font-medium text-blue-600 hover:text-blue-800 flex items-center gap-1"
+          >
+            <Plus className="size-3" />
+            Add Player
+          </button>
+        )}
+      </div>
       <div className="grid grid-cols-2 gap-4 text-sm text-gray-900">
         <div className="space-y-2">
           <p className="text-xs uppercase tracking-wide text-gray-400">Male</p>

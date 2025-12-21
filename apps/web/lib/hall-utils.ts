@@ -6,10 +6,11 @@ import { formatRupiahRange } from "./utils";
  * This eliminates the need for manual court counting in multiple places
  */
 export function createHallBlueprint(
-  hall: (Partial<Hall> & { rows?: any[]; layout?: any }) | any,
+  hall: (Partial<Hall> & { rows?: any[]; layout?: any; courtNumbers?: number[] }) | any,
 ) {
   let courtCounter = 0;
   const rows = hall.rows || hall.layout?.rows || [];
+  const courtNumbers = hall.courtNumbers || [];
 
   return {
     id: hall.id,
@@ -17,21 +18,23 @@ export function createHallBlueprint(
     address: hall.address || "",
     description: hall.description || "",
     priceRange: hall.priceRange || "",
-    amenities: hall.amenities,
+    amenities: hall.amenities || [],
     rows: (rows as any[]).map((row) => ({
       number: row.number,
       orientation: row.orientation,
       courts: row.courts.map((court: any) => {
-        courtCounter++;
+        const index = courtCounter++;
         return {
-          // Prefer explicit label; fall back to name for backward compatibility
-          label: court.name || court.label || String(courtCounter),
+          // Prefer explicit label; fall back to name, then to courtNumbers[index], finally to index+1
+          label: court.label || court.name || (courtNumbers[index] !== undefined ? String(courtNumbers[index]) : String(index + 1)),
           fill: court.fill,
           isAvailable: court.isAvailable,
         };
       }),
     })),
     players: hall.players || [],
+    courtCount: hall.courtCount || courtCounter,
+    courtNumbers: courtNumbers,
   };
 }
 

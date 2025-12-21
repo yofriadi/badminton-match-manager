@@ -1,6 +1,7 @@
-type SkillLevel = "beginner" | "novice" | "intermediate" | "advanced" | "pro";
+type SkillLevel = "unrated" | "beginner" | "novice" | "intermediate" | "advanced" | "pro";
 
 const skillLegend: { initial: string; label: string }[] = [
+  { initial: "U", label: "Unrated" },
   { initial: "B", label: "Beginner" },
   { initial: "N", label: "Novice" },
   { initial: "I", label: "Intermediate" },
@@ -10,6 +11,7 @@ const skillLegend: { initial: string; label: string }[] = [
 
 export const getSkillInitial = (level: SkillLevel) => {
   const mapping: Record<SkillLevel, string> = {
+    unrated: "U",
     beginner: "B",
     novice: "N",
     intermediate: "I",
@@ -21,6 +23,7 @@ export const getSkillInitial = (level: SkillLevel) => {
 
 export const getSkillColor = (level: SkillLevel) => {
   const colors: Record<SkillLevel, string> = {
+    unrated: "#9CA3AF", // gray-400
     beginner: "#E6C229",
     novice: "#1A8FE3",
     intermediate: "#6610F2",
@@ -36,6 +39,7 @@ export function SkillLegend() {
       <div className="flex gap-4 min-w-max text-xs text-gray-600">
         {skillLegend.map((item) => {
           const skillLevelMapping: Record<string, SkillLevel> = {
+            U: "unrated",
             B: "beginner",
             N: "novice",
             I: "intermediate",

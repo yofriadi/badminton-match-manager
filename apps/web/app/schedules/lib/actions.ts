@@ -1,6 +1,7 @@
 "use server";
 
 import { createDatabase, schedules, courtSessions, scheduleCourts, schedulePlayers, tenantPlayers, eq } from "@packages/db";
+import { requireTenant } from "@/lib/session-utils";
 
 type SlotPayload = {
   startAt: string; // ISO string
@@ -19,11 +20,7 @@ type CreateScheduleInput = {
 // Server action to persist a schedule and its court sessions.
 export async function createSchedule(input: CreateScheduleInput) {
   const db = createDatabase();
-
-  const tenant = await db.query.tenants.findFirst();
-  if (!tenant) {
-    throw new Error("No tenant found for schedule creation");
-  }
+  const tenant = await requireTenant();
 
   const [schedule] = await db
     .insert(schedules)
@@ -78,11 +75,7 @@ export async function createSchedule(input: CreateScheduleInput) {
 
 export async function getAvailablePlayers(scheduleId: string) {
   const db = createDatabase();
-
-  const tenant = await db.query.tenants.findFirst();
-  if (!tenant) {
-    throw new Error("No tenant found");
-  }
+  const tenant = await requireTenant();
 
   // Get all tenant players
   const allPlayers = await db.query.tenantPlayers.findMany({

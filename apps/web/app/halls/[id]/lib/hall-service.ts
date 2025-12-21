@@ -2,15 +2,16 @@ import {
   createDatabase,
   schedules as schedulesTable,
   scheduleCourts,
-  courts,
+  courtHalls,
   eq,
   inArray,
   and,
 } from "@packages/db";
+import { getCurrentTenant } from "../../../../lib/session-utils";
 import { getHallById } from "../../../../lib/halls";
 import { formatIDR, formatDateID, formatTimeID } from "../../../../lib/utils";
 import { mergeSessionsByTime } from "../../../../lib/schedule-utils";
-import { ScheduleData } from "../../schedules/lib/types";
+import { ScheduleData } from "../../../schedules/lib/types";
 
 /**
  * Get complete hall details including layout and players
@@ -28,7 +29,7 @@ export async function getHallSchedules(
   hallName: string,
 ): Promise<ScheduleData[]> {
   const db = createDatabase();
-  const tenant = await db.query.tenants.findFirst();
+  const tenant = await getCurrentTenant();
   if (!tenant) return [];
 
   const scheduleRows = await db
@@ -55,12 +56,12 @@ export async function getHallSchedules(
   const courtRows = await db
     .select({
       scheduleId: scheduleCourts.scheduleId,
-      courtNumber: courts.number,
+      courtNumber: courtHalls.number,
       startAt: scheduleCourts.startAt,
       endAt: scheduleCourts.endAt,
     })
     .from(scheduleCourts)
-    .innerJoin(courts, eq(scheduleCourts.courtId, courts.id))
+    .innerJoin(courtHalls, eq(scheduleCourts.courtId, courtHalls.id))
     .where(inArray(scheduleCourts.scheduleId, scheduleIds));
 
   return transformScheduleData(scheduleRows, courtRows, hallName);

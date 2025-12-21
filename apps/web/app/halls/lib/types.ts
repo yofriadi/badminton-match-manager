@@ -13,6 +13,7 @@ export interface Row {
 }
 
 export type SkillLevel =
+  | "unrated"
   | "beginner"
   | "novice"
   | "intermediate"
@@ -36,6 +37,8 @@ export interface Hall {
   amenities: string[];
   rows: Row[];
   players: Player[];
+  courtCount: number;
+  courtNumbers: number[];
 }
 
 export interface HallBlueprintProps {

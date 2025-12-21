@@ -16,6 +16,7 @@ CREATE TYPE gender AS ENUM ('male','female');
 -- Tenants
 CREATE TABLE IF NOT EXISTS tenants (
   id UUID DEFAULT uuidv7() PRIMARY KEY,
+  user_id UUID UNIQUE,
   name TEXT NOT NULL,
   description TEXT,
   contact_info JSONB NOT NULL DEFAULT '{}'::jsonb,
@@ -53,8 +54,8 @@ CREATE TABLE IF NOT EXISTS hall_tenants (
 CREATE TRIGGER hall_tenants_set_updated_at
 BEFORE UPDATE ON hall_tenants FOR EACH ROW EXECUTE FUNCTION set_updated_at();
 
--- Courts
-CREATE TABLE IF NOT EXISTS courts (
+-- Hall Courts
+CREATE TABLE IF NOT EXISTS court_halls (
   id UUID DEFAULT uuidv7() PRIMARY KEY,
   hall_id UUID NOT NULL REFERENCES halls(id) ON DELETE CASCADE,
   number INT NOT NULL,
@@ -62,7 +63,7 @@ CREATE TABLE IF NOT EXISTS courts (
   UNIQUE (hall_id, number),
   UNIQUE (hall_id, id)
 );
-CREATE INDEX IF NOT EXISTS idx_courts_hall ON courts(hall_id);
+CREATE INDEX IF NOT EXISTS idx_court_halls_hall ON court_halls(hall_id);
 
 
 -- Tenant-scoped players
@@ -130,7 +131,7 @@ CREATE TABLE IF NOT EXISTS schedule_courts (
   end_at   TIMESTAMPTZ NOT NULL,
   PRIMARY KEY (schedule_id, court_id, start_at),
   FOREIGN KEY (schedule_id, hall_id) REFERENCES schedules(id, hall_id) ON DELETE CASCADE,
-  FOREIGN KEY (hall_id, court_id)    REFERENCES courts(hall_id, id)    ON DELETE RESTRICT,
+  FOREIGN KEY (hall_id, court_id)    REFERENCES court_halls(hall_id, id)    ON DELETE RESTRICT,
   CHECK (start_at < end_at)
 );
 
@@ -150,7 +151,7 @@ CREATE TABLE IF NOT EXISTS court_sessions (
   CHECK (start_at < end_at),
   CHECK (player_level_min <= player_level_max),
   FOREIGN KEY (schedule_id, hall_id) REFERENCES schedules(id, hall_id) ON DELETE CASCADE,
-  FOREIGN KEY (hall_id, court_id)    REFERENCES courts(hall_id, id)    ON DELETE RESTRICT
+  FOREIGN KEY (hall_id, court_id)    REFERENCES court_halls(hall_id, id)    ON DELETE RESTRICT
 );
 CREATE TRIGGER court_sessions_set_updated_at
 BEFORE UPDATE ON court_sessions FOR EACH ROW EXECUTE FUNCTION set_updated_at();
@@ -176,4 +177,33 @@ CREATE INDEX IF NOT EXISTS idx_schedule_players_player ON schedule_players(tenan
 
 
 -- Down Migration
+DROP TRIGGER IF EXISTS schedule_players_set_updated_at ON schedule_players;
+DROP INDEX IF EXISTS idx_schedule_players_schedule;
+DROP INDEX IF EXISTS idx_schedule_players_player;
+DROP TABLE IF EXISTS schedule_players;
+DROP TRIGGER IF EXISTS court_sessions_set_updated_at ON court_sessions;
+DROP INDEX IF EXISTS idx_court_sessions_schedule;
+DROP INDEX IF EXISTS idx_court_sessions_court;
+DROP INDEX IF EXISTS idx_court_sessions_schedule_time_range;
+DROP TABLE IF EXISTS court_sessions;
+DROP TABLE IF EXISTS schedule_courts;
+DROP TRIGGER IF EXISTS schedules_set_updated_at ON schedules;
+DROP INDEX IF EXISTS idx_schedules_hall;
+DROP INDEX IF EXISTS idx_schedules_schedule_date;
+DROP INDEX IF EXISTS idx_schedules_level_range;
+DROP INDEX IF EXISTS idx_schedules_tags;
+DROP TABLE IF EXISTS schedules;
+DROP INDEX IF EXISTS idx_hall_reg_players_hall;
+DROP TRIGGER IF EXISTS hall_tenant_registered_players_set_updated_at ON hall_tenant_registered_players;
+DROP TABLE IF EXISTS hall_tenant_registered_players;
+DROP TRIGGER IF EXISTS tenant_players_set_updated_at ON tenant_players;
+DROP TABLE IF EXISTS tenant_players;
+DROP INDEX IF EXISTS idx_court_halls_hall;
+DROP TABLE IF EXISTS court_halls;
+DROP TRIGGER IF EXISTS hall_tenants_set_updated_at ON hall_tenants;
+DROP TABLE IF EXISTS hall_tenants;
+DROP TRIGGER IF EXISTS halls_set_updated ON halls;
+DROP TABLE IF EXISTS halls;
+DROP TRIGGER IF EXISTS tenants_set_updated ON tenants;
 DROP TABLE IF EXISTS tenants;
+DROP FUNCTION IF EXISTS set_updated_at();

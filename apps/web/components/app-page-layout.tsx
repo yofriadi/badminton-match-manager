@@ -5,29 +5,33 @@ import AnimatedCtaButton, {
   AnimatedCtaContent,
 } from "@workspace/ui/components/animated-cta-button";
 
-interface SchedulePageLayoutProps {
+interface AppPageLayoutProps {
   children: React.ReactNode;
-  showCreateButton?: boolean;
+  showCtaButton?: boolean;
+  buttonLink?: string;
+  buttonText?: string;
 }
 
-export function SchedulePageLayout({
+export function AppPageLayout({
   children,
-  showCreateButton = true,
-}: SchedulePageLayoutProps) {
+  showCtaButton = true,
+  buttonLink = "",
+  buttonText = "",
+}: AppPageLayoutProps) {
   return (
     <div className="min-h-screen bg-white flex flex-col">
       <div className="flex-1 m-4">{children}</div>
 
-      {showCreateButton && (
-        <div className="flex w-full justify-center items-center my-16">
+      {showCtaButton && (
+        <div className="flex w-full justify-center items-center mt-4 mb-8">
           <AnimatedCtaButton
             asChild
             width="300px"
             height="60px"
             disabled={false}
           >
-            <Link href="/schedules/create">
-              <AnimatedCtaContent>Create Schedule</AnimatedCtaContent>
+            <Link href={buttonLink}>
+              <AnimatedCtaContent>{buttonText}</AnimatedCtaContent>
             </Link>
           </AnimatedCtaButton>
         </div>
@@ -41,4 +45,3 @@ export function SchedulePageLayout({
     </div>
   );
 }
-
