@@ -1,0 +1,11 @@
+{
+  "functions": {
+    "apps/web/**/*.ts": {
+      "runtime": "bun"
+    },
+    "apps/web/**/*.tsx": {
+      "runtime": "bun"
+    }
+  },
+  "crons": []
+}

@@ -1,7 +1,14 @@
 import { sql, eq, inArray, and, asc, desc, notInArray, isNull } from "drizzle-orm";
-import { drizzle } from "drizzle-orm/node-postgres";
+import { drizzle as drizzlePg } from "drizzle-orm/node-postgres";
+import { drizzle as drizzleNeon } from "drizzle-orm/neon-serverless";
 import { Pool } from "pg";
+import { Pool as NeonPool, neonConfig } from "@neondatabase/serverless";
 import * as schema from "./schema";
+
+// Fix for Neon serverless in certain environments
+if (typeof window === "undefined") {
+	neonConfig.fetchConnectionCache = true;
+}
 
 export function getDatabaseUrl(): string {
 	const { DATABASE_URL } = process.env;
@@ -17,6 +24,12 @@ export function getDatabaseUrl(): string {
 
 export function createDatabaseWithPool(databaseUrl?: string) {
 	const connectionString = databaseUrl || getDatabaseUrl();
+	const isNeon = connectionString.includes("neon.tech");
+
+	if (isNeon) {
+		const pool = new NeonPool({ connectionString });
+		return drizzleNeon(pool, { schema, logger: true });
+	}
 
 	const pool = new Pool({
 		connectionString,
@@ -26,7 +39,7 @@ export function createDatabaseWithPool(databaseUrl?: string) {
 				: false,
 	});
 
-	return drizzle(pool, { schema, logger: true });
+	return drizzlePg(pool, { schema, logger: true });
 }
 
 // Create a default database instance using the connection string
