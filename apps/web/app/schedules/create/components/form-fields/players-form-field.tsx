@@ -11,7 +11,11 @@ import {
 import { PlayerSelector } from "../selectors/player-selector";
 import type { PlayersFormFieldProps } from "../../types";
 
-export function PlayersFormField({ control, hallId, onError }: PlayersFormFieldProps) {
+export function PlayersFormField({
+  control,
+  hallId,
+  onError,
+}: PlayersFormFieldProps) {
   return (
     <FormField
       control={control}

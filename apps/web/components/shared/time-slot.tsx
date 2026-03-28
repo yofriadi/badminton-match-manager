@@ -1,4 +1,9 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@workspace/ui/components/card";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@workspace/ui/components/card";
 import { Badge } from "@workspace/ui/components/badge";
 import { Clock, MapPin } from "lucide-react";
 import { cn } from "@workspace/ui/lib/utils";
@@ -26,7 +31,9 @@ export function TimeSlot({
     return (
       <div className={cn("flex items-center gap-2 text-sm", className)}>
         <Clock className="h-4 w-4 text-muted-foreground" />
-        <span>{startTime} - {endTime}</span>
+        <span>
+          {startTime} - {endTime}
+        </span>
         {courtArray.length > 0 && (
           <>
             <MapPin className="h-4 w-4 text-muted-foreground" />

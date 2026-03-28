@@ -15,8 +15,13 @@ export async function getHalls() {
       layout: halls.layout,
       createdAt: halls.createdAt,
       updatedAt: halls.updatedAt,
-      courtCount: sql<number>`(SELECT count(*) FROM court_halls WHERE hall_id = ${halls.id})`.mapWith(Number),
-      courtNumbers: sql<number[]>`(SELECT ARRAY_AGG(number ORDER BY number) FROM court_halls WHERE hall_id = ${halls.id})`,
+      courtCount:
+        sql<number>`(SELECT count(*) FROM court_halls WHERE hall_id = ${halls.id})`.mapWith(
+          Number,
+        ),
+      courtNumbers: sql<
+        number[]
+      >`(SELECT ARRAY_AGG(number ORDER BY number) FROM court_halls WHERE hall_id = ${halls.id})`,
     })
     .from(halls)
     .orderBy(asc(halls.createdAt));
@@ -36,13 +41,13 @@ export async function getHallById(id: string) {
 
   // Fetch count and numbers of courts in court_halls for this hall
   const courtData = await db
-    .select({ 
+    .select({
       count: sql<number>`count(*)`.mapWith(Number),
-      numbers: sql<number[]>`ARRAY_AGG(number ORDER BY number)`
+      numbers: sql<number[]>`ARRAY_AGG(number ORDER BY number)`,
     })
     .from(schema.courtHalls)
     .where(eq(schema.courtHalls.hallId, id));
-  
+
   const courtCount = courtData[0]?.count || 0;
   const courtNumbers = courtData[0]?.numbers || [];
 
@@ -61,4 +66,3 @@ export async function getHallById(id: string) {
     courtNumbers,
   };
 }
-

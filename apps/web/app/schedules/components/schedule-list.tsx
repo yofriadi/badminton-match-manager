@@ -10,7 +10,9 @@ export function ScheduleList({ schedules }: ScheduleListProps) {
     return (
       <div className="flex flex-col items-center justify-center py-16 text-gray-500">
         <p className="text-lg font-medium">No schedules found</p>
-        <p className="text-sm mt-2">Create your first schedule to get started</p>
+        <p className="text-sm mt-2">
+          Create your first schedule to get started
+        </p>
       </div>
     );
   }

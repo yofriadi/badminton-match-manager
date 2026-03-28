@@ -1,6 +1,6 @@
 "use client";
 
-import { Button } from "@workspace/ui/components/button"
+import { Button } from "@workspace/ui/components/button";
 import {
   Card,
   CardContent,
@@ -8,17 +8,17 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@workspace/ui/components/card"
-import { Input } from "@workspace/ui/components/input"
-import { Label } from "@workspace/ui/components/label"
-import Link from "next/link"
-import { authClient } from "@/lib/auth-client"
-import { useState } from "react"
-import { toast } from "sonner"
-import { useRouter } from "next/navigation"
-import { useForm } from "react-hook-form"
-import { zodResolver } from "@hookform/resolvers/zod"
-import { z } from "zod"
+} from "@workspace/ui/components/card";
+import { Input } from "@workspace/ui/components/input";
+import { Label } from "@workspace/ui/components/label";
+import Link from "next/link";
+import { authClient } from "@/lib/auth-client";
+import { useState } from "react";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
 import {
   Dialog,
   DialogContent,
@@ -26,7 +26,7 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from "@workspace/ui/components/dialog"
+} from "@workspace/ui/components/dialog";
 
 const loginSchema = z.object({
   email: z.string().email("Invalid email address"),
@@ -36,9 +36,9 @@ const loginSchema = z.object({
 type LoginFormValues = z.infer<typeof loginSchema>;
 
 export default function LoginPage() {
-  const [loading, setLoading] = useState(false)
-  const [showPendingModal, setShowPendingModal] = useState(false)
-  const router = useRouter()
+  const [loading, setLoading] = useState(false);
+  const [showPendingModal, setShowPendingModal] = useState(false);
+  const router = useRouter();
 
   const {
     register,
@@ -50,10 +50,10 @@ export default function LoginPage() {
       email: "",
       password: "",
     },
-  })
+  });
 
   const onSubmit = async (data: LoginFormValues) => {
-    setLoading(true)
+    setLoading(true);
     await authClient.signIn.email(
       {
         email: data.email,
@@ -61,22 +61,24 @@ export default function LoginPage() {
       },
       {
         onSuccess: async (res) => {
-          const user = res?.data?.user as { emailVerified?: boolean } | undefined
+          const user = res?.data?.user as
+            | { emailVerified?: boolean }
+            | undefined;
           if (user && !user.emailVerified) {
-            await authClient.signOut()
-            setShowPendingModal(true)
-            setLoading(false)
-            return
+            await authClient.signOut();
+            setShowPendingModal(true);
+            setLoading(false);
+            return;
           }
-          router.push("/schedules")
+          router.push("/schedules");
         },
         onError: (ctx) => {
-          toast.error(ctx.error.message)
-          setLoading(false)
+          toast.error(ctx.error.message);
+          setLoading(false);
         },
       },
-    )
-  }
+    );
+  };
 
   return (
     <div className="flex min-h-screen w-full items-center justify-center p-4">
@@ -111,13 +113,11 @@ export default function LoginPage() {
                   Forgot your password?
                 </Link>
               </div>
-              <Input
-                id="password"
-                type="password"
-                {...register("password")}
-              />
+              <Input id="password" type="password" {...register("password")} />
               {errors.password && (
-                <p className="text-xs text-red-500">{errors.password.message}</p>
+                <p className="text-xs text-red-500">
+                  {errors.password.message}
+                </p>
               )}
             </div>
             <div className="grid gap-2">
@@ -134,7 +134,8 @@ export default function LoginPage() {
           <DialogHeader>
             <DialogTitle>Awaiting Approval</DialogTitle>
             <DialogDescription>
-              Your account is pending admin approval. You’ll be able to log in once it’s approved.
+              Your account is pending admin approval. You’ll be able to log in
+              once it’s approved.
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>
@@ -143,5 +144,5 @@ export default function LoginPage() {
         </DialogContent>
       </Dialog>
     </div>
-  )
+  );
 }

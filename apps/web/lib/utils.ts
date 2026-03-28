@@ -16,7 +16,6 @@ export const formatIDR = (value: number | string): string => {
   return IDR_FORMATTER.format(num);
 };
 
-
 /**
  * Format time in Indonesian locale (HH:mm)
  */
@@ -58,4 +57,3 @@ export function formatRupiahRange(range?: string | null) {
 
   return `${formatValue(parts[0]!)} - ${formatValue(parts[1]!)}`.trim();
 }
-

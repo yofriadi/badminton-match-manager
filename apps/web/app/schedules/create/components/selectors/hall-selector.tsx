@@ -7,7 +7,9 @@ import { toast } from "sonner";
 import type { HallSelectorProps } from "../../types";
 
 export function HallSelector({ value, onChange, onError }: HallSelectorProps) {
-  const [hallOptions, setHallOptions] = useState<Array<{ label: string; value: string }>>([]);
+  const [hallOptions, setHallOptions] = useState<
+    Array<{ label: string; value: string }>
+  >([]);
   const [isLoadingHalls, setIsLoadingHalls] = useState(true);
 
   useEffect(() => {
@@ -24,7 +26,8 @@ export function HallSelector({ value, onChange, onError }: HallSelectorProps) {
         const errorMessage = "Failed to load halls";
         onError?.(errorMessage);
         toast.error(errorMessage, {
-          description: "Could not fetch available halls. Please refresh the page.",
+          description:
+            "Could not fetch available halls. Please refresh the page.",
         });
       } finally {
         setIsLoadingHalls(false);

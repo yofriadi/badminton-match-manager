@@ -2,7 +2,6 @@ import { ScheduleData, PlaySession } from "./types";
 import { formatIDR, formatDateID, formatTimeID } from "@/lib/utils";
 import { mergeSessionsByTime } from "@/lib/schedule-utils";
 
-
 // Types for database row data
 interface ScheduleRow {
   id: string;
@@ -27,7 +26,7 @@ interface CourtRow {
 export function transformCourtRowsToSessions(
   courtRows: CourtRow[],
   levelMin: string | number,
-  levelMax: string | number
+  levelMax: string | number,
 ): PlaySession[] {
   return courtRows.map((row) => {
     return {
@@ -44,7 +43,7 @@ export function transformCourtRowsToSessions(
  */
 export function formatScheduleForDisplay(
   row: ScheduleRow,
-  sessions: PlaySession[]
+  sessions: PlaySession[],
 ): ScheduleData {
   return {
     id: row.id,
@@ -62,7 +61,7 @@ export function formatScheduleForDisplay(
  */
 export function processScheduleRows(
   schedulesRows: ScheduleRow[],
-  courtRows: CourtRow[]
+  courtRows: CourtRow[],
 ): ScheduleData[] {
   if (schedulesRows.length === 0) return [];
 
@@ -81,7 +80,7 @@ export function processScheduleRows(
     const sessions = transformCourtRowsToSessions(
       scheduleCourtRows,
       row.levelMin,
-      row.levelMax
+      row.levelMax,
     );
 
     return formatScheduleForDisplay(row, sessions);

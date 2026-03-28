@@ -23,9 +23,7 @@ export function ScheduleCarousel({ schedules }: ScheduleCarouselProps) {
       <Carousel>
         <CarouselContent>
           {schedules.map((schedule, index) => (
-            <CarouselItem
-              key={`${schedule.hallId}-${schedule.date}-${index}`}
-            >
+            <CarouselItem key={`${schedule.hallId}-${schedule.date}-${index}`}>
               <ScheduleCard
                 schedule={schedule}
                 detailHref={`/schedules/${schedule.id}`}

@@ -4,7 +4,8 @@ import type { NextRequest } from "next/server";
 export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
   const isAdminPath = pathname.startsWith("/admin");
-  const isAuthPage = pathname.startsWith("/login") || pathname.startsWith("/signup");
+  const isAuthPage =
+    pathname.startsWith("/login") || pathname.startsWith("/signup");
 
   try {
     const res = await fetch(`${request.nextUrl.origin}/api/auth/get-session`, {
@@ -47,7 +48,5 @@ export async function proxy(request: NextRequest) {
 }
 
 export const config = {
-  matcher: [
-    "/((?!api|_next/static|_next/image|favicon.ico).*)",
-  ],
+  matcher: ["/((?!api|_next/static|_next/image|favicon.ico).*)"],
 };

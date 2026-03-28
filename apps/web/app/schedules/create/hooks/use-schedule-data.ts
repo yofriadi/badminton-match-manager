@@ -2,8 +2,17 @@
 
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
-import { getHallsForCurrentTenant, getRegisteredPlayersForCurrentTenant, getCourtsForHall } from "@/app/halls/lib/actions";
-import type { HallOption, PlayerOption, CourtOption, UseScheduleDataResult } from "../types";
+import {
+  getHallsForCurrentTenant,
+  getRegisteredPlayersForCurrentTenant,
+  getCourtsForHall,
+} from "@/app/halls/lib/actions";
+import type {
+  HallOption,
+  PlayerOption,
+  CourtOption,
+  UseScheduleDataResult,
+} from "../types";
 
 export function useScheduleData(hallId?: string): UseScheduleDataResult {
   // Halls state
@@ -36,7 +45,8 @@ export function useScheduleData(hallId?: string): UseScheduleDataResult {
       console.error("Failed to load halls:", error);
       setHallsError("Failed to load halls");
       toast.error("Failed to load halls", {
-        description: "Could not fetch available halls. Please refresh the page.",
+        description:
+          "Could not fetch available halls. Please refresh the page.",
       });
     } finally {
       setIsLoadingHalls(false);

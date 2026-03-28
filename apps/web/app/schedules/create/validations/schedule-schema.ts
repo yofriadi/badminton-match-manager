@@ -13,7 +13,9 @@ export const slotSchema = z
   .object({
     startTime: timeSchema,
     endTime: timeSchema,
-    courts: z.array(z.string()).min(1, { message: "Select at least one court." }),
+    courts: z
+      .array(z.string())
+      .min(1, { message: "Select at least one court." }),
   })
   .refine((slot) => slot.startTime < slot.endTime, {
     message: "End time must be after start time.",

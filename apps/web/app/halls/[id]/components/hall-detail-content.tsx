@@ -44,10 +44,7 @@ export function HallDetailContent({ hall, schedules }: HallDetailContentProps) {
           <p className="text-xs uppercase tracking-wide text-gray-400 pb-1">
             Layout
           </p>
-          <CourtLayout
-            hall={hallBlueprint as Hall}
-            renderCard={false}
-          />
+          <CourtLayout hall={hallBlueprint as Hall} renderCard={false} />
         </div>
       )}
 
@@ -75,4 +72,3 @@ export function HallDetailContent({ hall, schedules }: HallDetailContentProps) {
     </div>
   );
 }
-

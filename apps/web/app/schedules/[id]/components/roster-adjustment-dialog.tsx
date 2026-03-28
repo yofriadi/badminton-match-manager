@@ -55,9 +55,7 @@ export const RosterAdjustmentDialog: React.FC<RosterAdjustmentDialogProps> = ({
         </DialogHeader>
         <ScrollArea className="h-[300px] pr-4">
           {players.length === 0 ? (
-            <p className="text-center text-gray-500 py-8">
-              No players found.
-            </p>
+            <p className="text-center text-gray-500 py-8">No players found.</p>
           ) : (
             <div className="space-y-2">
               {players.map((player) => {
@@ -65,35 +63,29 @@ export const RosterAdjustmentDialog: React.FC<RosterAdjustmentDialogProps> = ({
                 const isDisabled =
                   !isSelected && selectedPlayerIds.size >= maxPlayers;
                 return (
-                  <div
+                  <button
                     key={player.id}
-                    className={`flex items-center justify-between p-3 rounded-lg border cursor-pointer transition-colors ${
+                    type="button"
+                    disabled={isDisabled}
+                    className={`w-full flex items-center justify-between p-3 rounded-lg border cursor-pointer transition-colors text-left ${
                       isSelected
                         ? "border-black bg-gray-50"
                         : isDisabled
                           ? "border-gray-100 bg-gray-50 opacity-50 cursor-not-allowed"
                           : "border-gray-200 hover:border-gray-300"
                     }`}
-                    onClick={() =>
-                      !isDisabled && onTogglePlayer(player.id)
-                    }
+                    onClick={() => !isDisabled && onTogglePlayer(player.id)}
                   >
                     <div className="flex items-center gap-2">
-                      <span className="font-medium text-sm">
-                        {player.name}
-                      </span>
+                      <span className="font-medium text-sm">{player.name}</span>
                       <div className="flex gap-2 text-xs text-gray-500">
-                        <span className="capitalize">
-                          {player.gender}
-                        </span>
+                        <span className="capitalize">{player.gender}</span>
                         <span>•</span>
-                        <span className="capitalize">
-                          {player.skillLevel}
-                        </span>
+                        <span className="capitalize">{player.skillLevel}</span>
                       </div>
                     </div>
                     {isSelected && <Check className="h-4 w-4" />}
-                  </div>
+                  </button>
                 );
               })}
             </div>

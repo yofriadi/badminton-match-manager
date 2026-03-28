@@ -1,8 +1,8 @@
 import {
-	createDatabase,
-	eq,
-	hallTenantRegisteredPlayers,
-	tenantPlayers,
+  createDatabase,
+  eq,
+  hallTenantRegisteredPlayers,
+  tenantPlayers,
 } from "@packages/db";
 
 import type { Player } from "./types";

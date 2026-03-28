@@ -9,7 +9,13 @@ interface FormActionsProps {
   isSubmitting?: boolean;
   disableSubmit?: boolean;
   showCancel?: boolean;
-  submitVariant?: "default" | "destructive" | "outline" | "secondary" | "ghost" | "link";
+  submitVariant?:
+    | "default"
+    | "destructive"
+    | "outline"
+    | "secondary"
+    | "ghost"
+    | "link";
 }
 
 export function FormActions({
@@ -59,12 +65,7 @@ export function FormDialogClose({
 }: FormDialogCloseProps) {
   return (
     <div className="flex justify-end">
-      <Button
-        type="button"
-        variant="ghost"
-        size="sm"
-        onClick={onClose}
-      >
+      <Button type="button" variant="ghost" size="sm" onClick={onClose}>
         <X className="h-4 w-4 mr-2" />
         {closeLabel}
       </Button>

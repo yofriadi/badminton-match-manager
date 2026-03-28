@@ -7,52 +7,51 @@ import { DEFAULT_BLUEPRINT_DIMENSIONS } from "../../../apps/web/lib/layout.js";
 import { hallSeedData } from "../fixtures/halls.js";
 
 export async function seedHalls() {
-	const pool = new Pool({
-		connectionString: getDatabaseUrl(),
-		ssl:
-			process.env.NODE_ENV === "production"
-				? { rejectUnauthorized: false }
-				: false,
-	});
+  const pool = new Pool({
+    connectionString: getDatabaseUrl(),
+    ssl:
+      process.env.NODE_ENV === "production"
+        ? { rejectUnauthorized: false }
+        : false,
+  });
 
-	const db = drizzle(pool, { schema });
+  const db = drizzle(pool, { schema });
 
-	const hallRecords: NewHall[] = hallSeedData.map((hall) => {
-		const { padding, courtSize, spacing } = DEFAULT_BLUEPRINT_DIMENSIONS;
-		const layout = {
-			padding,
-			courtSize: { ...courtSize },
-			spacing: { ...spacing },
-			rows: hall.rows,
-		};
+  const hallRecords: NewHall[] = hallSeedData.map((hall) => {
+    const { padding, courtSize, spacing } = DEFAULT_BLUEPRINT_DIMENSIONS;
+    const layout = {
+      padding,
+      courtSize: { ...courtSize },
+      spacing: { ...spacing },
+      rows: hall.rows,
+    };
 
-		return {
-			id: hall.id,
-			name: hall.name,
-			address: hall.address,
-			description: hall.description,
-			priceRange: hall.priceRange,
-			amenities: hall.amenities,
-			layout,
-		};
-	});
+    return {
+      id: hall.id,
+      name: hall.name,
+      address: hall.address,
+      description: hall.description,
+      priceRange: hall.priceRange,
+      amenities: hall.amenities,
+      layout,
+    };
+  });
 
-	await db.insert(hallsTable).values(hallRecords).onConflictDoNothing();
+  await db.insert(hallsTable).values(hallRecords).onConflictDoNothing();
 
-	await pool.end();
+  await pool.end();
 }
 
 const isDirectRun =
-	process.argv[1] &&
-	pathToFileURL(process.argv[1]).href === import.meta.url;
+  process.argv[1] && pathToFileURL(process.argv[1]).href === import.meta.url;
 
 if (isDirectRun) {
-	seedHalls()
-		.then(() => {
-			console.log("Hall seed completed");
-		})
-		.catch((error) => {
-			console.error("Failed to seed halls", error);
-			process.exitCode = 1;
-		});
+  seedHalls()
+    .then(() => {
+      console.log("Hall seed completed");
+    })
+    .catch((error) => {
+      console.error("Failed to seed halls", error);
+      process.exitCode = 1;
+    });
 }

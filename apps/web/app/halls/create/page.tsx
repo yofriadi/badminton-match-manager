@@ -1,4 +1,7 @@
-import { getAvailableHallsForCurrentTenant, addHallToTenantAction } from "../lib/actions";
+import {
+  getAvailableHallsForCurrentTenant,
+  addHallToTenantAction,
+} from "../lib/actions";
 import { HallCard } from "../components/hall-card";
 
 // Disable static generation since this page fetches data from database

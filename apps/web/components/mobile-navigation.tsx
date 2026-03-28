@@ -1,8 +1,8 @@
-'use client';
+"use client";
 
-import React, { useMemo } from 'react';
-import { Home, Briefcase, Calendar, Settings } from 'lucide-react';
-import { usePathname, useRouter } from 'next/navigation';
+import React, { useMemo } from "react";
+import { Home, Briefcase, Calendar, Settings } from "lucide-react";
+import { usePathname, useRouter } from "next/navigation";
 
 type IconComponentType = React.ElementType<{ className?: string }>;
 
@@ -17,20 +17,19 @@ export interface InteractiveMenuProps {
 }
 
 const defaultItems: InteractiveMenuItem[] = [
-  { label: 'schedule', icon: Home },
-  { label: 'halls', icon: Briefcase },
-  { label: 'history', icon: Calendar },
-  { label: 'settings', icon: Settings },
+  { label: "schedule", icon: Home },
+  { label: "halls", icon: Briefcase },
+  { label: "history", icon: Calendar },
+  { label: "settings", icon: Settings },
 ];
 
-export const MobileNavigation: React.FC<InteractiveMenuProps> = ({
-  items
-}) => {
+export const MobileNavigation: React.FC<InteractiveMenuProps> = ({ items }) => {
   const router = useRouter();
   const pathname = usePathname();
 
   const finalItems = useMemo(() => {
-    const isValid = items && Array.isArray(items) && items.length >= 2 && items.length <= 5;
+    const isValid =
+      items && Array.isArray(items) && items.length >= 2 && items.length <= 5;
     if (!isValid) {
       return defaultItems;
     }
@@ -50,8 +49,8 @@ export const MobileNavigation: React.FC<InteractiveMenuProps> = ({
 
       const targetPath = `/${slug}`;
 
-      if (slug === 'schedule') {
-        return pathname === '/schedules' || pathname === '/';
+      if (slug === "schedule") {
+        return pathname === "/schedules" || pathname === "/";
       }
 
       return pathname === targetPath || pathname.startsWith(`${targetPath}/`);
@@ -73,8 +72,8 @@ export const MobileNavigation: React.FC<InteractiveMenuProps> = ({
       return;
     }
 
-    if (slug === 'schedule') {
-      router.push('/schedules');
+    if (slug === "schedule") {
+      router.push("/schedules");
       return;
     }
 
@@ -82,7 +81,7 @@ export const MobileNavigation: React.FC<InteractiveMenuProps> = ({
   };
 
   return (
-    <nav 
+    <nav
       className="bg-white rounded-full shadow-sm px-4 py-2 relative"
       role="navigation"
     >
@@ -97,19 +96,18 @@ export const MobileNavigation: React.FC<InteractiveMenuProps> = ({
               onClick={() => handleItemClick(index)}
               className="relative flex items-center justify-center gap-2 px-3 py-2 rounded-xl transition-all duration-300 ease-out"
               style={{
-                color: isActive ? '#000' : '#9ca3af'
+                color: isActive ? "#000" : "#9ca3af",
               }}
             >
               {/* Icon */}
-              <IconComponent 
-                className="w-7 h-7" 
-                strokeWidth={2}
-              />
+              <IconComponent className="w-7 h-7" strokeWidth={2} />
 
               {/* Text - only shown when active */}
               <span
                 className={`text-base font-semibold whitespace-nowrap transition-all duration-300 ease-out ${
-                  isActive ? 'max-w-24 opacity-100' : 'max-w-0 opacity-0 overflow-hidden'
+                  isActive
+                    ? "max-w-24 opacity-100"
+                    : "max-w-0 opacity-0 overflow-hidden"
                 }`}
               >
                 {item.label.charAt(0).toUpperCase() + item.label.slice(1)}

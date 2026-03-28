@@ -1,35 +1,60 @@
-import { Geist, Geist_Mono, Outfit } from "next/font/google"
+import { Geist, Geist_Mono, Outfit } from "next/font/google";
 
-import "@workspace/ui/globals.css"
-import { Providers } from "@/components/providers"
+import "@workspace/ui/globals.css";
+import { Providers } from "@/components/providers";
 
 const outfit = Outfit({
   subsets: ["latin"],
   variable: "--font-sans",
-})
+});
 
 const fontSans = Geist({
   subsets: ["latin"],
   variable: "--font-geist-sans",
-})
+});
 
 const fontMono = Geist_Mono({
   subsets: ["latin"],
   variable: "--font-geist-mono",
-})
+});
 
 export default function RootLayout({
   children,
 }: Readonly<{
-  children: React.ReactNode
+  children: React.ReactNode;
 }>) {
   return (
     <html lang="en" suppressHydrationWarning className={outfit.variable}>
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              window.addEventListener('error', function(e) {
+                if (e.message && e.message.includes('Permission denied to access property "correspondingUseElement"')) {
+                  e.preventDefault();
+                  e.stopImmediatePropagation();
+                }
+              }, true);
+              const originalError = console.error;
+              console.error = function(...args) {
+                if (
+                  args[0] &&
+                  (typeof args[0] === 'string' || args[0] instanceof Error) &&
+                  args[0].toString().includes('Permission denied to access property "correspondingUseElement"')
+                ) {
+                  return;
+                }
+                originalError.apply(console, args);
+              };
+            `,
+          }}
+        />
+      </head>
       <body
         className={`${fontSans.variable} ${fontMono.variable} font-sans antialiased`}
       >
         <Providers>{children}</Providers>
       </body>
     </html>
-  )
+  );
 }

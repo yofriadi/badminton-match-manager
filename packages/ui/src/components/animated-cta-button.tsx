@@ -4,8 +4,7 @@ import * as React from "react";
 import { Slot } from "@radix-ui/react-slot";
 import { cn } from "@workspace/ui/lib/utils";
 
-interface AnimatedCtaButtonProps
-  extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+interface AnimatedCtaButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   children?: React.ReactNode;
   width?: string;
   height?: string;
@@ -23,7 +22,7 @@ const AnimatedCtaContent = ({
     <span
       className={cn(
         "relative z-10 text-[var(--color-primary-foreground)] flex items-center justify-center label",
-        className
+        className,
       )}
     >
       {children}
@@ -51,7 +50,7 @@ const AnimatedCtaButton = ({
     "flex items-center justify-center",
     disabled && "opacity-50 cursor-not-allowed",
     "rotatingGradient",
-    className
+    className,
   );
 
   return (

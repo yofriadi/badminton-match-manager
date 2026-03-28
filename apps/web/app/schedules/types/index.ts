@@ -2,11 +2,7 @@
 export type { PlaySession, ScheduleData, PlaysProps } from "../lib/types";
 
 // Re-export match generator types
-export type {
-  Player,
-  MatchType,
-  GeneratedMatch,
-} from "../lib/match-generator";
+export type { Player, MatchType, GeneratedMatch } from "../lib/match-generator";
 
 export { SKILL_LEVELS } from "../lib/match-generator";
 
@@ -48,7 +44,7 @@ export interface ScheduleListResponse {
   limit: number;
 }
 
-export interface ScheduleDetail extends Omit<ScheduleData, 'hall'> {
+export interface ScheduleDetail extends Omit<ScheduleData, "hall"> {
   hall: {
     id: string;
     name: string;
@@ -84,11 +80,7 @@ export interface ScheduleFilters {
 /**
  * Schedule sorting options
  */
-export type ScheduleSortBy =
-  | "date"
-  | "price"
-  | "hallName"
-  | "createdAt";
+export type ScheduleSortBy = "date" | "price" | "hallName" | "createdAt";
 
 export interface ScheduleSortConfig {
   field: ScheduleSortBy;

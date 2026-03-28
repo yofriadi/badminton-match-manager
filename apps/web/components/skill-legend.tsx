@@ -1,4 +1,10 @@
-type SkillLevel = "unrated" | "beginner" | "novice" | "intermediate" | "advanced" | "pro";
+type SkillLevel =
+  | "unrated"
+  | "beginner"
+  | "novice"
+  | "intermediate"
+  | "advanced"
+  | "pro";
 
 const skillLegend: { initial: string; label: string }[] = [
   { initial: "U", label: "Unrated" },

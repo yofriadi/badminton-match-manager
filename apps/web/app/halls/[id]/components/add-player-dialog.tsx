@@ -30,7 +30,10 @@ import {
 } from "@workspace/ui/components/multi-select";
 import { Badge } from "@workspace/ui/components/badge";
 import { toast } from "sonner";
-import { getTenantPlayersAction, registerPlayerToHallAction } from "../../lib/actions";
+import {
+  getTenantPlayersAction,
+  registerPlayerToHallAction,
+} from "../../lib/actions";
 import type { SkillLevel, PlayerGender } from "../../lib/types";
 
 interface AddPlayerDialogProps {
@@ -59,7 +62,8 @@ export function AddPlayerDialog({
   // Form state for new player
   const [newName, setNewName] = useState("");
   const [newGender, setNewGender] = useState<PlayerGender>("male");
-  const [newSkillLevel, setNewSkillLevel] = useState<SkillLevel>("intermediate");
+  const [newSkillLevel, setNewSkillLevel] =
+    useState<SkillLevel>("intermediate");
 
   // Form state for existing players
   const [selectedPlayerIds, setSelectedPlayerIds] = useState<string[]>([]);
@@ -91,12 +95,12 @@ export function AddPlayerDialog({
           toast.error("Please select at least one player");
           return;
         }
-        
+
         // Add all selected players
         await Promise.all(
-          selectedPlayerIds.map(playerId => 
-            registerPlayerToHallAction(hallId, { playerId })
-          )
+          selectedPlayerIds.map((playerId) =>
+            registerPlayerToHallAction(hallId, { playerId }),
+          ),
         );
       } else {
         if (!newName.trim()) {
@@ -109,7 +113,11 @@ export function AddPlayerDialog({
           skillLevel: newSkillLevel,
         });
       }
-      toast.success(mode === "existing" ? `${selectedPlayerIds.length} player(s) added` : "Player created and added");
+      toast.success(
+        mode === "existing"
+          ? `${selectedPlayerIds.length} player(s) added`
+          : "Player created and added",
+      );
       onOpenChange(false);
       resetForm();
     } catch (error) {
@@ -178,7 +186,9 @@ export function AddPlayerDialog({
                           className="hover:text-destructive"
                           onClick={(e) => {
                             e.stopPropagation();
-                            setSelectedPlayerIds(selectedPlayerIds.filter((pid) => pid !== id));
+                            setSelectedPlayerIds(
+                              selectedPlayerIds.filter((pid) => pid !== id),
+                            );
                           }}
                         >
                           <X className="h-3 w-3" />
@@ -186,7 +196,9 @@ export function AddPlayerDialog({
                       </Badge>
                     );
                   })}
-                  <MultiSelectorInput placeholder={isLoading ? "Loading..." : "Choose players..."} />
+                  <MultiSelectorInput
+                    placeholder={isLoading ? "Loading..." : "Choose players..."}
+                  />
                 </MultiSelectorTrigger>
                 <MultiSelectorContent>
                   <MultiSelectorList>
@@ -267,7 +279,10 @@ export function AddPlayerDialog({
           </Button>
           <Button
             className="rounded-full"
-            disabled={isSubmitting || (mode === "existing" && selectedPlayerIds.length === 0)}
+            disabled={
+              isSubmitting ||
+              (mode === "existing" && selectedPlayerIds.length === 0)
+            }
             onClick={handleSubmit}
           >
             {isSubmitting ? "Adding..." : "Add Player"}

@@ -1,18 +1,18 @@
 import {
-	boolean,
-	date,
-	decimal,
-	index,
-	integer,
-	jsonb,
-	pgTable,
-	primaryKey,
-	serial,
-	text,
-	timestamp,
-	uuid,
-	uniqueIndex,
-	varchar,
+  boolean,
+  date,
+  decimal,
+  index,
+  integer,
+  jsonb,
+  pgTable,
+  primaryKey,
+  serial,
+  text,
+  timestamp,
+  uuid,
+  uniqueIndex,
+  varchar,
 } from "drizzle-orm/pg-core";
 import { sql } from "drizzle-orm";
 
@@ -59,7 +59,9 @@ export type OrderVerification = typeof orderVerifications.$inferSelect;
 export type NewOrderVerification = typeof orderVerifications.$inferInsert;
 
 export const tenants = pgTable("tenants", {
-  id: uuid("id").default(sql`uuidv7()`).primaryKey(),
+  id: uuid("id")
+    .default(sql`uuidv7()`)
+    .primaryKey(),
   name: text("name").notNull(),
   description: text("description"),
   contactInfo: jsonb("contact_info")
@@ -81,17 +83,14 @@ export type Tenant = typeof tenants.$inferSelect;
 export type NewTenant = typeof tenants.$inferInsert;
 
 export const halls = pgTable("halls", {
-  id: uuid("id").default(sql`uuidv7()`).primaryKey(),
+  id: uuid("id")
+    .default(sql`uuidv7()`)
+    .primaryKey(),
   name: text("name").notNull(),
   address: text("address"),
   description: text("description"),
-  priceRange: text("price_range")
-    .notNull()
-    .default("0-0"),
-  amenities: jsonb("amenities")
-    .$type<string[]>()
-    .notNull()
-    .default([]),
+  priceRange: text("price_range").notNull().default("0-0"),
+  amenities: jsonb("amenities").$type<string[]>().notNull().default([]),
   layout: jsonb("layout")
     .$type<{
       padding: number;
@@ -140,11 +139,12 @@ export const hallTenants = pgTable(
 export type HallTenant = typeof hallTenants.$inferSelect;
 export type NewHallTenant = typeof hallTenants.$inferInsert;
 
-
 export const courtHalls = pgTable(
   "court_halls",
   {
-    id: uuid("id").default(sql`uuidv7()`).primaryKey(),
+    id: uuid("id")
+      .default(sql`uuidv7()`)
+      .primaryKey(),
     hallId: uuid("hall_id")
       .notNull()
       .references(() => halls.id, { onDelete: "cascade" }),
@@ -163,7 +163,9 @@ export type NewCourtHall = typeof courtHalls.$inferInsert;
 export const tenantPlayers = pgTable(
   "tenant_players",
   {
-    id: uuid("id").default(sql`uuidv7()`).primaryKey(),
+    id: uuid("id")
+      .default(sql`uuidv7()`)
+      .primaryKey(),
     tenantId: uuid("tenant_id")
       .notNull()
       .references(() => tenants.id, { onDelete: "cascade" }),
@@ -207,90 +209,95 @@ export const hallTenantRegisteredPlayers = pgTable(
   (table) => [primaryKey(table.hallId, table.tenantPlayerId)],
 );
 
-export type HallTenantRegisteredPlayer = typeof hallTenantRegisteredPlayers.$inferSelect;
-export type NewHallTenantRegisteredPlayer = typeof hallTenantRegisteredPlayers.$inferInsert;
+export type HallTenantRegisteredPlayer =
+  typeof hallTenantRegisteredPlayers.$inferSelect;
+export type NewHallTenantRegisteredPlayer =
+  typeof hallTenantRegisteredPlayers.$inferInsert;
 
 export const schedules = pgTable("schedules", {
-	id: uuid("id").default(sql`uuidv7()`).primaryKey(),
-	tenantId: uuid("tenant_id")
-		.notNull()
-		.references(() => tenants.id, { onDelete: "cascade" }),
-	hallId: uuid("hall_id")
-		.notNull()
-		.references(() => halls.id, { onDelete: "cascade" }),
-	pricePerPerson: integer("price_per_person").notNull(),
-	scheduleDate: date("schedule_date").notNull().default(sql`CURRENT_DATE`),
-	playerLevelMin: text("player_level_min").notNull(),
-	playerLevelMax: text("player_level_max").notNull(),
-	tags: text("tags")
-		.array()
-		.notNull()
-		.default([]),
-	createdAt: timestamp("created_at", { withTimezone: true })
-		.notNull()
-		.defaultNow(),
-	updatedAt: timestamp("updated_at", { withTimezone: true }),
+  id: uuid("id")
+    .default(sql`uuidv7()`)
+    .primaryKey(),
+  tenantId: uuid("tenant_id")
+    .notNull()
+    .references(() => tenants.id, { onDelete: "cascade" }),
+  hallId: uuid("hall_id")
+    .notNull()
+    .references(() => halls.id, { onDelete: "cascade" }),
+  pricePerPerson: integer("price_per_person").notNull(),
+  scheduleDate: date("schedule_date")
+    .notNull()
+    .default(sql`CURRENT_DATE`),
+  playerLevelMin: text("player_level_min").notNull(),
+  playerLevelMax: text("player_level_max").notNull(),
+  tags: text("tags").array().notNull().default([]),
+  createdAt: timestamp("created_at", { withTimezone: true })
+    .notNull()
+    .defaultNow(),
+  updatedAt: timestamp("updated_at", { withTimezone: true }),
 });
 
 export type Schedule = typeof schedules.$inferSelect;
 export type NewSchedule = typeof schedules.$inferInsert;
 
 export const scheduleCourts = pgTable(
-	"schedule_courts",
-	{
-		scheduleId: uuid("schedule_id")
-			.notNull()
-			.references(() => schedules.id, { onDelete: "cascade" }),
-		hallId: uuid("hall_id")
-			.notNull()
-			.references(() => halls.id, { onDelete: "cascade" }),
-		courtId: uuid("court_id")
-			.notNull()
-			.references(() => courtHalls.id, { onDelete: "restrict" }),
-		startAt: timestamp("start_at", { withTimezone: true }).notNull(),
-		endAt: timestamp("end_at", { withTimezone: true }).notNull(),
-	},
-	(table) => [primaryKey(table.scheduleId, table.courtId, table.startAt)],
+  "schedule_courts",
+  {
+    scheduleId: uuid("schedule_id")
+      .notNull()
+      .references(() => schedules.id, { onDelete: "cascade" }),
+    hallId: uuid("hall_id")
+      .notNull()
+      .references(() => halls.id, { onDelete: "cascade" }),
+    courtId: uuid("court_id")
+      .notNull()
+      .references(() => courtHalls.id, { onDelete: "restrict" }),
+    startAt: timestamp("start_at", { withTimezone: true }).notNull(),
+    endAt: timestamp("end_at", { withTimezone: true }).notNull(),
+  },
+  (table) => [primaryKey(table.scheduleId, table.courtId, table.startAt)],
 );
 
 export type ScheduleCourt = typeof scheduleCourts.$inferSelect;
 export type NewScheduleCourt = typeof scheduleCourts.$inferInsert;
 
 export const courtSessions = pgTable("court_sessions", {
-	id: uuid("id").default(sql`uuidv7()`).primaryKey(),
-	scheduleId: uuid("schedule_id")
-		.notNull()
-		.references(() => schedules.id, { onDelete: "cascade" }),
-	hallId: uuid("hall_id").notNull(),
-	courtId: uuid("court_id").notNull(),
-	startAt: timestamp("start_at", { withTimezone: true }).notNull(),
-	endAt: timestamp("end_at", { withTimezone: true }).notNull(),
-	playerLevelMin: text("player_level_min").notNull(),
-	playerLevelMax: text("player_level_max").notNull(),
-	createdAt: timestamp("created_at", { withTimezone: true })
-		.notNull()
-		.defaultNow(),
-	updatedAt: timestamp("updated_at", { withTimezone: true }),
+  id: uuid("id")
+    .default(sql`uuidv7()`)
+    .primaryKey(),
+  scheduleId: uuid("schedule_id")
+    .notNull()
+    .references(() => schedules.id, { onDelete: "cascade" }),
+  hallId: uuid("hall_id").notNull(),
+  courtId: uuid("court_id").notNull(),
+  startAt: timestamp("start_at", { withTimezone: true }).notNull(),
+  endAt: timestamp("end_at", { withTimezone: true }).notNull(),
+  playerLevelMin: text("player_level_min").notNull(),
+  playerLevelMax: text("player_level_max").notNull(),
+  createdAt: timestamp("created_at", { withTimezone: true })
+    .notNull()
+    .defaultNow(),
+  updatedAt: timestamp("updated_at", { withTimezone: true }),
 });
 
 export type CourtSession = typeof courtSessions.$inferSelect;
 export type NewCourtSession = typeof courtSessions.$inferInsert;
 
 export const schedulePlayers = pgTable(
-	"schedule_players",
-	{
-		scheduleId: uuid("schedule_id")
-			.notNull()
-			.references(() => schedules.id, { onDelete: "cascade" }),
-		tenantPlayerId: uuid("tenant_player_id")
-			.notNull()
-			.references(() => tenantPlayers.id, { onDelete: "cascade" }),
-		createdAt: timestamp("created_at", { withTimezone: true })
-			.notNull()
-			.defaultNow(),
-		updatedAt: timestamp("updated_at", { withTimezone: true }),
-	},
-	(table) => [primaryKey(table.scheduleId, table.tenantPlayerId)],
+  "schedule_players",
+  {
+    scheduleId: uuid("schedule_id")
+      .notNull()
+      .references(() => schedules.id, { onDelete: "cascade" }),
+    tenantPlayerId: uuid("tenant_player_id")
+      .notNull()
+      .references(() => tenantPlayers.id, { onDelete: "cascade" }),
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .notNull()
+      .defaultNow(),
+    updatedAt: timestamp("updated_at", { withTimezone: true }),
+  },
+  (table) => [primaryKey(table.scheduleId, table.tenantPlayerId)],
 );
 
 export type SchedulePlayer = typeof schedulePlayers.$inferSelect;
@@ -298,59 +305,101 @@ export type NewSchedulePlayer = typeof schedulePlayers.$inferInsert;
 
 // Auth tables (plural) for BetterAuth
 export const users = pgTable("users", {
-	id: uuid("id").default(sql`uuidv7()`).primaryKey(),
-	email: text("email").notNull().unique(),
-	name: text("name").notNull(),
-	emailVerified: boolean("email_verified").notNull().default(false),
-	role: text("role").notNull().default("user"),
-	password: text("password"),
-	createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
-	updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+  id: uuid("id")
+    .default(sql`uuidv7()`)
+    .primaryKey(),
+  email: text("email").notNull().unique(),
+  name: text("name").notNull(),
+  emailVerified: boolean("email_verified").notNull().default(false),
+  role: text("role").notNull().default("user"),
+  password: text("password"),
+  createdAt: timestamp("created_at", { withTimezone: true })
+    .notNull()
+    .defaultNow(),
+  updatedAt: timestamp("updated_at", { withTimezone: true })
+    .notNull()
+    .defaultNow(),
 });
 
 export const sessions = pgTable("sessions", {
-	id: uuid("id").default(sql`uuidv7()`).primaryKey(),
-	expiresAt: timestamp("expires_at", { withTimezone: true }).notNull(),
-	token: text("token").notNull().unique(),
-	createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
-	updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
-	ipAddress: text("ip_address"),
-	userAgent: text("user_agent"),
-	userId: uuid("user_id")
-		.notNull()
-		.references(() => users.id, { onDelete: "cascade" }),
+  id: uuid("id")
+    .default(sql`uuidv7()`)
+    .primaryKey(),
+  expiresAt: timestamp("expires_at", { withTimezone: true }).notNull(),
+  token: text("token").notNull().unique(),
+  createdAt: timestamp("created_at", { withTimezone: true })
+    .notNull()
+    .defaultNow(),
+  updatedAt: timestamp("updated_at", { withTimezone: true })
+    .notNull()
+    .defaultNow(),
+  ipAddress: text("ip_address"),
+  userAgent: text("user_agent"),
+  userId: uuid("user_id")
+    .notNull()
+    .references(() => users.id, { onDelete: "cascade" }),
 });
 
-export const accounts = pgTable("accounts", {
-	id: uuid("id").default(sql`uuidv7()`).primaryKey(),
-	accountId: text("account_id").notNull(),
-	providerId: text("provider_id").notNull(),
-	userId: uuid("user_id")
-		.notNull()
-		.references(() => users.id, { onDelete: "cascade" }),
-	accessToken: text("access_token"),
-	refreshToken: text("refresh_token"),
-	idToken: text("id_token"),
-	accessTokenExpiresAt: timestamp("access_token_expires_at", { withTimezone: true }),
-	refreshTokenExpiresAt: timestamp("refresh_token_expires_at", { withTimezone: true }),
-	scope: text("scope"),
-	password: text("password"),
-	createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
-	updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
-}, (table) => [
-	uniqueIndex("accounts_provider_account_unique").on(table.providerId, table.accountId),
-]);
+export const accounts = pgTable(
+  "accounts",
+  {
+    id: uuid("id")
+      .default(sql`uuidv7()`)
+      .primaryKey(),
+    accountId: text("account_id").notNull(),
+    providerId: text("provider_id").notNull(),
+    userId: uuid("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    accessToken: text("access_token"),
+    refreshToken: text("refresh_token"),
+    idToken: text("id_token"),
+    accessTokenExpiresAt: timestamp("access_token_expires_at", {
+      withTimezone: true,
+    }),
+    refreshTokenExpiresAt: timestamp("refresh_token_expires_at", {
+      withTimezone: true,
+    }),
+    scope: text("scope"),
+    password: text("password"),
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .notNull()
+      .defaultNow(),
+    updatedAt: timestamp("updated_at", { withTimezone: true })
+      .notNull()
+      .defaultNow(),
+  },
+  (table) => [
+    uniqueIndex("accounts_provider_account_unique").on(
+      table.providerId,
+      table.accountId,
+    ),
+  ],
+);
 
-export const verifications = pgTable("verifications", {
-	id: uuid("id").default(sql`uuidv7()`).primaryKey(),
-	identifier: text("identifier").notNull(),
-	value: text("value").notNull(),
-	expiresAt: timestamp("expires_at", { withTimezone: true }).notNull(),
-	createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
-	updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
-}, (table) => [
-	uniqueIndex("verifications_identifier_value_unique").on(table.identifier, table.value),
-]);
+export const verifications = pgTable(
+  "verifications",
+  {
+    id: uuid("id")
+      .default(sql`uuidv7()`)
+      .primaryKey(),
+    identifier: text("identifier").notNull(),
+    value: text("value").notNull(),
+    expiresAt: timestamp("expires_at", { withTimezone: true }).notNull(),
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .notNull()
+      .defaultNow(),
+    updatedAt: timestamp("updated_at", { withTimezone: true })
+      .notNull()
+      .defaultNow(),
+  },
+  (table) => [
+    uniqueIndex("verifications_identifier_value_unique").on(
+      table.identifier,
+      table.value,
+    ),
+  ],
+);
 
 export type User = typeof users.$inferSelect;
 export type NewUser = typeof users.$inferInsert;

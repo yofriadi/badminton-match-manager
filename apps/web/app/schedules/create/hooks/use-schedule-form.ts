@@ -30,7 +30,9 @@ const defaultValues = {
 export function useScheduleForm(): UseScheduleFormResult {
   const router = useRouter();
   const [showConfirmDialog, setShowConfirmDialog] = useState(false);
-  const [pendingFormData, setPendingFormData] = useState<FormValues | null>(null);
+  const [pendingFormData, setPendingFormData] = useState<FormValues | null>(
+    null,
+  );
   const [isCreating, setIsCreating] = useState(false);
 
   const form = useForm<FormValues>({
@@ -74,8 +76,14 @@ export function useScheduleForm(): UseScheduleFormResult {
         price: pendingFormData.price,
         registeredPlayers: pendingFormData.registeredPlayers,
         slots: pendingFormData.slots.map((slot) => ({
-          startAt: combineDateTime(pendingFormData.scheduleDate, slot.startTime).toISOString(),
-          endAt: combineDateTime(pendingFormData.scheduleDate, slot.endTime).toISOString(),
+          startAt: combineDateTime(
+            pendingFormData.scheduleDate,
+            slot.startTime,
+          ).toISOString(),
+          endAt: combineDateTime(
+            pendingFormData.scheduleDate,
+            slot.endTime,
+          ).toISOString(),
           courts: slot.courts,
         })),
       });

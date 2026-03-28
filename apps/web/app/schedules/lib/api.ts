@@ -1,10 +1,21 @@
-import { createDatabase, eq, courtSessions, schedules, halls, courtHalls, schedulePlayers, tenantPlayers } from "@packages/db";
+import {
+  createDatabase,
+  eq,
+  courtSessions,
+  schedules,
+  halls,
+  courtHalls,
+  schedulePlayers,
+  tenantPlayers,
+} from "@packages/db";
 import { format } from "date-fns";
 import { ScheduleData, PlaySession } from "./types";
 import { formatIDR } from "@/lib/utils";
 import { mergeSessionsByTime } from "@/lib/schedule-utils";
 
-export async function getScheduleById(id: string): Promise<ScheduleData | undefined> {
+export async function getScheduleById(
+  id: string,
+): Promise<ScheduleData | undefined> {
   const db = createDatabase();
 
   const result = await db
@@ -37,7 +48,7 @@ export async function getScheduleById(id: string): Promise<ScheduleData | undefi
     .where(eq(courtSessions.scheduleId, id));
 
   // Transform sessions
-  const rawSessions: PlaySession[] = sessionsData.map(session => ({
+  const rawSessions: PlaySession[] = sessionsData.map((session) => ({
     timeStart: format(session.startAt, "HH:mm"),
     timeEnd: format(session.endAt, "HH:mm"),
     court: [session.courtNumber.toString()],
@@ -57,10 +68,9 @@ export async function getScheduleById(id: string): Promise<ScheduleData | undefi
   };
 }
 
-
 export async function getSchedulePlayers(scheduleId: string) {
   const db = createDatabase();
-  
+
   const players = await db
     .select({
       id: tenantPlayers.id,
@@ -69,12 +79,21 @@ export async function getSchedulePlayers(scheduleId: string) {
       skillLevel: tenantPlayers.skillLevel,
     })
     .from(schedulePlayers)
-    .innerJoin(tenantPlayers, eq(schedulePlayers.tenantPlayerId, tenantPlayers.id))
+    .innerJoin(
+      tenantPlayers,
+      eq(schedulePlayers.tenantPlayerId, tenantPlayers.id),
+    )
     .where(eq(schedulePlayers.scheduleId, scheduleId));
 
-  return players.map(player => ({
+  return players.map((player) => ({
     ...player,
     gender: player.gender as "male" | "female",
-    skillLevel: player.skillLevel as "unrated" | "beginner" | "novice" | "intermediate" | "advanced" | "pro"
+    skillLevel: player.skillLevel as
+      | "unrated"
+      | "beginner"
+      | "novice"
+      | "intermediate"
+      | "advanced"
+      | "pro",
   }));
 }

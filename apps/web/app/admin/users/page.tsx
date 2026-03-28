@@ -49,7 +49,9 @@ export default function AdminUsersPage() {
 
   const confirmUser = async (id: string) => {
     setConfirming(id);
-    const res = await fetch(`/api/admin/users/${id}/confirm`, { method: "POST" });
+    const res = await fetch(`/api/admin/users/${id}/confirm`, {
+      method: "POST",
+    });
     if (!res.ok) {
       toast.error("Failed to confirm user");
       setConfirming(null);
@@ -87,7 +89,10 @@ export default function AdminUsersPage() {
               </div>
             ) : (
               users.map((u) => (
-                <div key={u.id} className="grid grid-cols-12 items-center px-6 py-3 text-sm">
+                <div
+                  key={u.id}
+                  className="grid grid-cols-12 items-center px-6 py-3 text-sm"
+                >
                   <span className="col-span-9 break-all">{u.email}</span>
                   <span className="col-span-3 flex justify-end">
                     <Button
@@ -96,7 +101,11 @@ export default function AdminUsersPage() {
                       disabled={u.emailVerified || confirming === u.id}
                       onClick={() => confirmUser(u.id)}
                     >
-                      {confirming === u.id ? "Saving…" : u.emailVerified ? "Approved" : "Approve"}
+                      {confirming === u.id
+                        ? "Saving…"
+                        : u.emailVerified
+                          ? "Approved"
+                          : "Approve"}
                     </Button>
                   </span>
                 </div>

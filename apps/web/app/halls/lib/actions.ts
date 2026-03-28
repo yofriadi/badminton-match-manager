@@ -1,6 +1,19 @@
 "use server";
 
-import { createDatabase, halls, hallTenants, eq, tenantPlayers, hallTenantRegisteredPlayers, courtHalls, isNull, and, sql, schema, notInArray } from "@packages/db";
+import {
+  createDatabase,
+  halls,
+  hallTenants,
+  eq,
+  tenantPlayers,
+  hallTenantRegisteredPlayers,
+  courtHalls,
+  isNull,
+  and,
+  sql,
+  schema,
+  notInArray,
+} from "@packages/db";
 import { requireTenant } from "@/lib/session-utils";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
@@ -20,8 +33,13 @@ export async function getHallsForCurrentTenant() {
       layout: halls.layout,
       createdAt: halls.createdAt,
       updatedAt: halls.updatedAt,
-      courtCount: sql<number>`(SELECT count(*) FROM court_halls WHERE hall_id = ${halls.id})`.mapWith(Number),
-      courtNumbers: sql<number[]>`(SELECT ARRAY_AGG(number ORDER BY number) FROM court_halls WHERE hall_id = ${halls.id})`,
+      courtCount:
+        sql<number>`(SELECT count(*) FROM court_halls WHERE hall_id = ${halls.id})`.mapWith(
+          Number,
+        ),
+      courtNumbers: sql<
+        number[]
+      >`(SELECT ARRAY_AGG(number ORDER BY number) FROM court_halls WHERE hall_id = ${halls.id})`,
     })
     .from(halls)
     .innerJoin(hallTenants, eq(halls.id, hallTenants.hallId))
@@ -45,16 +63,21 @@ export async function getAvailableHallsForCurrentTenant() {
       layout: halls.layout,
       createdAt: halls.createdAt,
       updatedAt: halls.updatedAt,
-      courtCount: sql<number>`(SELECT count(*) FROM court_halls WHERE hall_id = ${halls.id})`.mapWith(Number),
-      courtNumbers: sql<number[]>`(SELECT ARRAY_AGG(number ORDER BY number) FROM court_halls WHERE hall_id = ${halls.id})`,
+      courtCount:
+        sql<number>`(SELECT count(*) FROM court_halls WHERE hall_id = ${halls.id})`.mapWith(
+          Number,
+        ),
+      courtNumbers: sql<
+        number[]
+      >`(SELECT ARRAY_AGG(number ORDER BY number) FROM court_halls WHERE hall_id = ${halls.id})`,
     })
     .from(halls)
     .leftJoin(
       hallTenants,
       and(
         eq(halls.id, hallTenants.hallId),
-        eq(hallTenants.tenantId, currentTenant.id)
-      )
+        eq(hallTenants.tenantId, currentTenant.id),
+      ),
     )
     .where(isNull(hallTenants.hallId));
 
@@ -87,12 +110,15 @@ export async function getRegisteredPlayersForCurrentTenant(hallId?: string) {
       skillLevel: tenantPlayers.skillLevel,
     })
     .from(tenantPlayers)
-    .innerJoin(hallTenantRegisteredPlayers, eq(tenantPlayers.id, hallTenantRegisteredPlayers.tenantPlayerId))
+    .innerJoin(
+      hallTenantRegisteredPlayers,
+      eq(tenantPlayers.id, hallTenantRegisteredPlayers.tenantPlayerId),
+    )
     .where(
       and(
         eq(hallTenantRegisteredPlayers.tenantId, currentTenant.id),
-        hallId ? eq(hallTenantRegisteredPlayers.hallId, hallId) : undefined
-      )
+        hallId ? eq(hallTenantRegisteredPlayers.hallId, hallId) : undefined,
+      ),
     );
 
   const registeredPlayers = await query;
@@ -135,7 +161,7 @@ export async function getTenantPlayersAction(excludeHallId?: string) {
 
     whereClause = and(
       whereClause,
-      notInArray(tenantPlayers.id, registeredPlayersSubquery)
+      notInArray(tenantPlayers.id, registeredPlayersSubquery),
     )!;
   }
 
@@ -160,7 +186,7 @@ export async function registerPlayerToHallAction(
     name?: string;
     gender?: string;
     skillLevel?: string;
-  }
+  },
 ) {
   const db = createDatabase();
   const currentTenant = await requireTenant();
@@ -182,7 +208,7 @@ export async function registerPlayerToHallAction(
         skillLevel: data.skillLevel,
       })
       .returning({ id: tenantPlayers.id });
-    
+
     if (!newPlayer) throw new Error("Failed to create player");
     playerId = newPlayer.id;
   }

@@ -193,9 +193,7 @@ export const ScheduleDateTimePicker = React.forwardRef<
                   captionLayout="dropdown"
                   onSelect={handleDateSelect}
                   disabled={
-                    disabled
-                      ? () => true
-                      : [{ before: minSelectableDate }]
+                    disabled ? () => true : [{ before: minSelectableDate }]
                   }
                 />
               </PopoverContent>

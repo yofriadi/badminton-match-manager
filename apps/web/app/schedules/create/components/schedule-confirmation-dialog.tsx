@@ -31,7 +31,10 @@ export function ScheduleConfirmationDialog({
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter className="flex-row justify-center gap-2 sm:gap-4">
-          <AlertDialogCancel disabled={isSubmitting} className="flex-1 sm:flex-none sm:w-40">
+          <AlertDialogCancel
+            disabled={isSubmitting}
+            className="flex-1 sm:flex-none sm:w-40"
+          >
             Cancel
           </AlertDialogCancel>
           <AlertDialogAction

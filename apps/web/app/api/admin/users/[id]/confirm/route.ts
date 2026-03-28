@@ -1,7 +1,10 @@
 import { NextResponse } from "next/server";
 import { createDatabase, users, eq } from "@packages/db";
 
-export async function POST(_req: Request, context: { params: Promise<{ id: string }> }) {
+export async function POST(
+  _req: Request,
+  context: { params: Promise<{ id: string }> },
+) {
   const db = createDatabase();
   const { id } = await context.params;
 

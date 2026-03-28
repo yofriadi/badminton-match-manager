@@ -4,7 +4,10 @@ import React, { useMemo, useState } from "react";
 import { toast } from "sonner";
 import { Plus } from "lucide-react";
 import { Button } from "@workspace/ui/components/button";
-import { generateMatches } from "../../lib/match-generator";
+import {
+  generateMatches,
+  type MatchmakingOptions,
+} from "../../lib/match-generator";
 
 // Import types from match-generator utility
 import type { Player, GeneratedMatch } from "../../lib/match-generator";
@@ -12,6 +15,7 @@ import type { Player, GeneratedMatch } from "../../lib/match-generator";
 // Import sub-components
 import { EmptyMatchState } from "./empty-match-state";
 import { RosterAdjustmentDialog } from "./roster-adjustment-dialog";
+import { MatchmakingSettingsDialog } from "./matchmaking-settings-dialog";
 import { MatchRound } from "./match-round";
 
 type MatchScheduleProps = {
@@ -45,6 +49,13 @@ export const MatchSchedule: React.FC<MatchScheduleProps> = ({
   const [selectedPlayerIds, setSelectedPlayerIds] = useState<Set<string>>(
     new Set(),
   );
+  const [matchmakingOptions, setMatchmakingOptions] =
+    useState<MatchmakingOptions>({
+      strategy: "balanced",
+      avoidRepeatPartners: true,
+      avoidRepeatOpponents: true,
+      prioritizeFairPlay: true,
+    });
 
   // Calculate how many players needed to fill next multiple of 4 for Round 1
   const maxPlayers = numberOfCourts * 4;
@@ -108,6 +119,7 @@ export const MatchSchedule: React.FC<MatchScheduleProps> = ({
       startTime,
       sessionDuration,
       frozenMatches,
+      matchmakingOptions,
     );
   }, [
     players,
@@ -116,8 +128,8 @@ export const MatchSchedule: React.FC<MatchScheduleProps> = ({
     courtNumbers,
     numberOfSessions,
     startTime,
-    sessionDuration,
     frozenMatches,
+    matchmakingOptions,
   ]);
 
   const courtsByGame = useMemo(() => {
@@ -161,17 +173,24 @@ export const MatchSchedule: React.FC<MatchScheduleProps> = ({
         const courtsForGame = courtsByGame[gameNumber] ?? [];
         const sessionTime = courtsForGame[0]?.time;
 
-        const rosterDialog = gameNumber === 1 ? (
-          <RosterAdjustmentDialog
-            isOpen={isAddPlayerOpen}
-            onOpenChange={handleOpenAddPlayer}
-            players={players}
-            selectedPlayerIds={selectedPlayerIds}
-            maxPlayers={maxPlayers}
-            onTogglePlayer={togglePlayerSelection}
-            onUpdateRound={handleUpdateRound1}
-          />
-        ) : null;
+        const headerActions =
+          gameNumber === 1 ? (
+            <div className="flex items-center gap-2">
+              <MatchmakingSettingsDialog
+                options={matchmakingOptions}
+                onUpdateOptions={setMatchmakingOptions}
+              />
+              <RosterAdjustmentDialog
+                isOpen={isAddPlayerOpen}
+                onOpenChange={handleOpenAddPlayer}
+                players={players}
+                selectedPlayerIds={selectedPlayerIds}
+                maxPlayers={maxPlayers}
+                onTogglePlayer={togglePlayerSelection}
+                onUpdateRound={handleUpdateRound1}
+              />
+            </div>
+          ) : null;
 
         return (
           <MatchRound
@@ -179,7 +198,7 @@ export const MatchSchedule: React.FC<MatchScheduleProps> = ({
             gameNumber={gameNumber}
             sessionTime={sessionTime}
             matches={courtsForGame}
-            headerAction={rosterDialog}
+            headerAction={headerActions}
           />
         );
       })}

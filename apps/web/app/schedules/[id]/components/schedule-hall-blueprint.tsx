@@ -15,12 +15,7 @@ export function ScheduleHallBlueprint({
       <p className="text-xs uppercase tracking-wide text-gray-400 pb-1">
         Court
       </p>
-      <CourtLayout
-        hall={hall}
-        renderCard={false}
-        bookedCourts={bookedCourts}
-      />
+      <CourtLayout hall={hall} renderCard={false} bookedCourts={bookedCourts} />
     </div>
   );
 }
-

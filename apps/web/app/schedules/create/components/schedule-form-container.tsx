@@ -14,7 +14,10 @@ import { useScheduleForm } from "../hooks/use-schedule-form";
 import { useScheduleData } from "../hooks/use-schedule-data";
 import type { ScheduleFormContainerProps } from "../types";
 
-export function ScheduleFormContainer({ onSuccess, onCancel }: ScheduleFormContainerProps) {
+export function ScheduleFormContainer({
+  onSuccess,
+  onCancel,
+}: ScheduleFormContainerProps) {
   const {
     form,
     fields,
@@ -54,10 +57,7 @@ export function ScheduleFormContainer({ onSuccess, onCancel }: ScheduleFormConta
             formatCurrency={formatIDR}
           />
 
-          <PlayersFormField
-            control={form.control}
-            hallId={hallId}
-          />
+          <PlayersFormField control={form.control} hallId={hallId} />
 
           <SlotManager
             fieldArray={{ fields, append, remove }}

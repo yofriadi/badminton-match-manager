@@ -38,7 +38,7 @@ interface ProfileFormProps {
 
 export function ProfileForm({ tenant }: ProfileFormProps) {
   const router = useRouter();
-  
+
   const form = useForm<ProfileFormValues>({
     resolver: zodResolver(profileSchema),
     defaultValues: {
@@ -91,10 +91,10 @@ export function ProfileForm({ tenant }: ProfileFormProps) {
             <FormItem>
               <FormLabel>Description</FormLabel>
               <FormControl>
-                <Textarea 
-                  placeholder="Tell us about your club..." 
+                <Textarea
+                  placeholder="Tell us about your club..."
                   className="resize-none h-32"
-                  {...field} 
+                  {...field}
                   value={field.value ?? ""}
                 />
               </FormControl>

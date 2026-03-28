@@ -15,7 +15,11 @@ async function main() {
   const db = createDatabase();
 
   // If admin exists, ensure role/emailVerified
-  const existing = await db.select().from(users).where(eq(users.email, ADMIN_EMAIL)).limit(1);
+  const existing = await db
+    .select()
+    .from(users)
+    .where(eq(users.email, ADMIN_EMAIL))
+    .limit(1);
   if (existing.length > 0) {
     await db
       .update(users)
@@ -68,7 +72,11 @@ async function main() {
       .where(eq(users.id, userId));
     console.log("Admin seeded:", res.data.user.email);
   } else {
-    const fallback = await db.select().from(users).where(eq(users.email, ADMIN_EMAIL)).limit(1);
+    const fallback = await db
+      .select()
+      .from(users)
+      .where(eq(users.email, ADMIN_EMAIL))
+      .limit(1);
     if (fallback.length > 0) {
       await db
         .update(users)

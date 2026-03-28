@@ -11,7 +11,11 @@ type PlayersSectionProps = {
   onAddPlayer?: () => void;
 };
 
-export function PlayersSection({ players, hallId, onAddPlayer }: PlayersSectionProps) {
+export function PlayersSection({
+  players,
+  hallId,
+  onAddPlayer,
+}: PlayersSectionProps) {
   const safePlayers = players ?? [];
 
   const playersByGender = (gender: Player["gender"]) =>
@@ -20,9 +24,7 @@ export function PlayersSection({ players, hallId, onAddPlayer }: PlayersSectionP
   return (
     <div className="mx-4">
       <div className="flex items-center justify-between pb-2">
-        <p className="text-xs uppercase tracking-wide text-gray-400">
-          Players
-        </p>
+        <p className="text-xs uppercase tracking-wide text-gray-400">Players</p>
         {hallId && (
           <button
             onClick={onAddPlayer}

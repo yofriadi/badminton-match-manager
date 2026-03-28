@@ -1,6 +1,14 @@
 "use server";
 
-import { createDatabase, schedules, courtSessions, scheduleCourts, schedulePlayers, tenantPlayers, eq } from "@packages/db";
+import {
+  createDatabase,
+  schedules,
+  courtSessions,
+  scheduleCourts,
+  schedulePlayers,
+  tenantPlayers,
+  eq,
+} from "@packages/db";
 import { requireTenant } from "@/lib/session-utils";
 
 type SlotPayload = {
@@ -81,28 +89,37 @@ export async function getAvailablePlayers(scheduleId: string) {
   const allPlayers = await db.query.tenantPlayers.findMany({
     where: eq(tenantPlayers.tenantId, tenant.id),
   });
-  console.log(`[getAvailablePlayers] Tenant ID: ${tenant.id}, Found ${allPlayers.length} players`);
+  console.log(
+    `[getAvailablePlayers] Tenant ID: ${tenant.id}, Found ${allPlayers.length} players`,
+  );
 
   // Get players already in schedule
   const existingSchedulePlayers = await db.query.schedulePlayers.findMany({
     where: eq(schedulePlayers.scheduleId, scheduleId),
   });
-  console.log(`[getAvailablePlayers] Schedule ID: ${scheduleId}, Found ${existingSchedulePlayers.length} existing players`);
+  console.log(
+    `[getAvailablePlayers] Schedule ID: ${scheduleId}, Found ${existingSchedulePlayers.length} existing players`,
+  );
 
-  const existingPlayerIds = new Set(existingSchedulePlayers.map(p => p.tenantPlayerId));
+  const existingPlayerIds = new Set(
+    existingSchedulePlayers.map((p) => p.tenantPlayerId),
+  );
 
   // Filter out existing players
-  const available = allPlayers.filter(p => !existingPlayerIds.has(p.id));
+  const available = allPlayers.filter((p) => !existingPlayerIds.has(p.id));
   console.log(`[getAvailablePlayers] Available players: ${available.length}`);
   return available;
 }
 
-export async function addPlayersToSchedule(scheduleId: string, playerIds: string[]) {
+export async function addPlayersToSchedule(
+  scheduleId: string,
+  playerIds: string[],
+) {
   const db = createDatabase();
 
   if (playerIds.length === 0) return;
 
-  const values = playerIds.map(playerId => ({
+  const values = playerIds.map((playerId) => ({
     scheduleId,
     tenantPlayerId: playerId,
   }));

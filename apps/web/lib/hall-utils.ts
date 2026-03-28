@@ -6,7 +6,9 @@ import { formatRupiahRange } from "./utils";
  * This eliminates the need for manual court counting in multiple places
  */
 export function createHallBlueprint(
-  hall: (Partial<Hall> & { rows?: any[]; layout?: any; courtNumbers?: number[] }) | any,
+  hall:
+    | (Partial<Hall> & { rows?: any[]; layout?: any; courtNumbers?: number[] })
+    | any,
 ) {
   let courtCounter = 0;
   const rows = hall.rows || hall.layout?.rows || [];
@@ -26,7 +28,12 @@ export function createHallBlueprint(
         const index = courtCounter++;
         return {
           // Prefer explicit label; fall back to name, then to courtNumbers[index], finally to index+1
-          label: court.label || court.name || (courtNumbers[index] !== undefined ? String(courtNumbers[index]) : String(index + 1)),
+          label:
+            court.label ||
+            court.name ||
+            (courtNumbers[index] !== undefined
+              ? String(courtNumbers[index])
+              : String(index + 1)),
           fill: court.fill,
           isAvailable: court.isAvailable,
         };
@@ -53,5 +60,3 @@ export function formatHallAddress(address?: string): string {
   if (!address) return "Address not available";
   return address;
 }
-
-

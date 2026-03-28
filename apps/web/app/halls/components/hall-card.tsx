@@ -42,18 +42,25 @@ export function HallCard({ hall, actionButton }: HallCardProps) {
     address: hall.address || "",
     description: hall.description || "",
     priceRange: hall.priceRange || "",
-    amenities: typeof hall.amenities === "string" ? JSON.parse(hall.amenities as any) : hall.amenities,
+    amenities:
+      typeof hall.amenities === "string"
+        ? JSON.parse(hall.amenities as any)
+        : hall.amenities,
     courtNumbers: hall.courtNumbers || [],
-    rows: (typeof hall.layout === "string" ? JSON.parse(hall.layout as any) : hall.layout)?.rows.map((row: any) => ({
-      number: row.number,
-      orientation: row.orientation,
-      courts: row.courts.map((court: any) => ({
-        name: court.name,
-        label: court.label,
-        fill: court.fill,
-        isAvailable: court.isAvailable,
-      })),
-    })) || [],
+    rows:
+      (typeof hall.layout === "string"
+        ? JSON.parse(hall.layout as any)
+        : hall.layout
+      )?.rows.map((row: any) => ({
+        number: row.number,
+        orientation: row.orientation,
+        courts: row.courts.map((court: any) => ({
+          name: court.name,
+          label: court.label,
+          fill: court.fill,
+          isAvailable: court.isAvailable,
+        })),
+      })) || [],
     players: [],
   });
 
@@ -69,10 +76,7 @@ export function HallCard({ hall, actionButton }: HallCardProps) {
             <p className="pb-1 text-xs uppercase tracking-wide text-gray-400">
               Layout
             </p>
-            <CourtLayout
-              hall={blueprintHall as Hall}
-              renderCard={false}
-            />
+            <CourtLayout hall={blueprintHall as Hall} renderCard={false} />
           </div>
         )}
 
@@ -116,8 +120,8 @@ export function HallCard({ hall, actionButton }: HallCardProps) {
                     toast.success("Hall added successfully");
                   } catch (error: any) {
                     // Detection for Next.js redirect errors (which are thrown)
-                    const isRedirect = 
-                      error?.digest?.startsWith("NEXT_REDIRECT") || 
+                    const isRedirect =
+                      error?.digest?.startsWith("NEXT_REDIRECT") ||
                       error?.cause?.digest?.startsWith("NEXT_REDIRECT") ||
                       error?.message === "NEXT_REDIRECT";
 
@@ -128,7 +132,8 @@ export function HallCard({ hall, actionButton }: HallCardProps) {
                     }
 
                     toast.error("Failed to add hall", {
-                      description: "Please check your connection and try again.",
+                      description:
+                        "Please check your connection and try again.",
                     });
                   }
                 });
