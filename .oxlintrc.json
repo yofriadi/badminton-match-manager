@@ -1,0 +1,19 @@
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "plugins": ["react", "typescript", "unicorn", "import", "jsx-a11y"],
+  "env": {
+    "browser": true,
+    "es2022": true,
+    "node": true
+  },
+  "ignorePatterns": [
+    "**/dist/**",
+    "**/.turbo/**",
+    "**/coverage/**",
+    "**/.wrangler/**",
+    "**/routeTree.gen.ts",
+    "packages/eslint-config/**",
+    ".eslintrc.js",
+    "**/eslint.config.js"
+  ]
+}

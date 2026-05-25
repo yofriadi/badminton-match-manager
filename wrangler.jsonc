@@ -1,0 +1,18 @@
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "badminton-match-manager",
+  "compatibility_date": "2026-03-28",
+  "compatibility_flags": ["nodejs_compat"],
+  "main": "@tanstack/react-start/server-entry",
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "badminton",
+      "database_id": "0c1363ed-ac23-4369-be43-b8cf3cff489f",
+      "migrations_dir": "./db/d1/migrations"
+    }
+  ],
+  "observability": {
+    "enabled": true
+  }
+}

@@ -1,31 +1,37 @@
-# shadcn/ui monorepo template
+# Badminton Match Manager
 
-This template is for creating a monorepo with shadcn/ui.
+Single-project TanStack Start app for managing badminton halls, players, and match schedules.
 
-## Usage
+## Scripts
 
-```bash
-pnpm dlx shadcn@latest init
-```
+- `bun run dev` - Start the local dev server with Cloudflare runtime enabled
+- `bun run build` - Build the application
+- `bun run preview` - Preview the production build
+- `bun run deploy` - Build and deploy with Wrangler
+- `bun run lint` - Run oxlint
+- `bun run format` - Format the repository with oxfmt
+- `bun run typecheck` - Run TypeScript without emitting files
+- `bun run test` - Run the Vitest suite
+- `bun run cf-typegen` - Regenerate Cloudflare worker types
+- `bun run db:migrate` - Apply local D1 migrations
+- `bun run db:migrate:remote` - Apply remote D1 migrations
+- `bun run db:seed:admin` - Seed the local admin user
+- `bun run db:seed:halls` - Seed the local halls data
 
-## Adding components
+## Project layout
 
-To add components to your app, run the following command at the root of your `web` app:
+- `src/app/` feature code and route-facing page components
+- `src/components/` shared UI and application components
+- `src/lib/` shared utilities, auth, and server helpers
+- `src/hooks/` shared hooks
+- `src/types/` shared type definitions
+- `src/routes/`, `src/router.tsx`, and `src/server/` TanStack router and server entrypoints
+- `db/` Drizzle schema, migrations, and seed scripts
 
-```bash
-pnpm dlx shadcn@latest add button -c apps/web
-```
+## UI components
 
-This will place the ui components in the `packages/ui/src/components` directory.
-
-## Tailwind
-
-Your `tailwind.config.ts` and `globals.css` are already set up to use the components from the `ui` package.
-
-## Using components
-
-To use the components in your app, import them from the `ui` package.
+shadcn components live in `src/components/ui` and use local imports such as:
 
 ```tsx
-import { Button } from "@workspace/ui/components/button";
+import { Button } from "@/components/ui/button";
 ```
