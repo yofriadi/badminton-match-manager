@@ -22,7 +22,7 @@ export function PlayersSection({
 
   return (
     <div className="mx-4">
-      <div className="flex items-center justify-between pb-2">
+      <div className="flex items-center justify-between pb-4">
         <p className="text-xs uppercase tracking-wide text-gray-400">Players</p>
         {hallId && (
           <button
@@ -37,48 +37,48 @@ export function PlayersSection({
       {safePlayers.length > 0 && (
         <>
           <div className="grid grid-cols-2 gap-4 text-sm text-gray-900">
-        <div className="space-y-2">
-          <p className="text-xs uppercase tracking-wide text-gray-400">Male</p>
-          <div className="flex flex-col gap-1">
-            {playersByGender("male").map((player) => (
-              <div
-                key={`male-${player.name}`}
-                className="flex items-center justify-between gap-4"
-              >
-                <span>{player.name}</span>
-                <span
-                  className="text-xs font-semibold text-center w-6 shrink-0"
-                  style={{ color: getSkillColor(player.skillLevel) }}
-                >
-                  {getSkillInitial(player.skillLevel)}
-                </span>
+            <div className="space-y-2">
+              <div className="flex flex-col gap-1">
+                {playersByGender("male").map((player) => (
+                  <div
+                    key={`male-${player.name}`}
+                    className="flex items-center justify-between gap-4"
+                  >
+                    <span className="font-medium text-[#1E3A8A]">
+                      {player.name}
+                    </span>
+                    <span
+                      className="text-xs font-semibold text-center w-2 shrink-0"
+                      style={{ color: getSkillColor(player.skillLevel) }}
+                    >
+                      {getSkillInitial(player.skillLevel)}
+                    </span>
+                  </div>
+                ))}
               </div>
-            ))}
-          </div>
-        </div>
-        <div className="space-y-2">
-          <p className="text-xs uppercase tracking-wide text-gray-400">
-            Female
-          </p>
-          <div className="flex flex-col gap-1">
-            {playersByGender("female").map((player) => (
-              <div
-                key={`female-${player.name}`}
-                className="flex items-center justify-between gap-4"
-              >
-                <span>{player.name}</span>
-                <span
-                  className="text-xs font-semibold text-center w-6 shrink-0"
-                  style={{ color: getSkillColor(player.skillLevel) }}
-                >
-                  {getSkillInitial(player.skillLevel)}
-                </span>
+            </div>
+            <div className="space-y-2">
+              <div className="flex flex-col gap-1">
+                {playersByGender("female").map((player) => (
+                  <div
+                    key={`female-${player.name}`}
+                    className="flex items-center justify-between gap-4"
+                  >
+                    <span className="font-medium text-[#9D174D]">
+                      {player.name}
+                    </span>
+                    <span
+                      className="text-xs font-semibold text-center w-6 shrink-0"
+                      style={{ color: getSkillColor(player.skillLevel) }}
+                    >
+                      {getSkillInitial(player.skillLevel)}
+                    </span>
+                  </div>
+                ))}
               </div>
-            ))}
+            </div>
           </div>
-        </div>
-      </div>
-      <SkillLegend />
+          <SkillLegend />
         </>
       )}
     </div>

@@ -66,7 +66,7 @@ export function HallDetailContent({ hall, schedules }: HallDetailContentProps) {
 
       <ScheduleCarousel schedules={schedules} />
 
-      <div className="mt-auto sticky bottom-0 left-0 right-0 w-full px-4 pb-4 max-w-md mx-auto">
+      <div className="mt-auto sticky bottom-0 left-0 right-0 w-full px-4 pb-4 max-w-md mx-auto z-20">
         <MobileNavigation />
       </div>
     </div>

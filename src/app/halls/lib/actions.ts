@@ -13,6 +13,11 @@ import {
 } from "@/db";
 import { getDb } from "@/lib/db";
 import { requireTenant } from "@/lib/session-utils";
+import {
+  parseTenantPlayersCsv,
+  serializeTenantPlayersCsv,
+  type TenantPlayerCsvRecord,
+} from "./tenant-player-csv";
 
 async function getCourtNumbersByHallIds(
   db: ReturnType<typeof getDb>,
@@ -78,7 +83,9 @@ export async function getHallsForCurrentTenant(requestHeaders: Headers) {
   });
 }
 
-export async function getAvailableHallsForCurrentTenant(requestHeaders: Headers) {
+export async function getAvailableHallsForCurrentTenant(
+  requestHeaders: Headers,
+) {
   const db = getDb();
   const currentTenant = await requireTenant(requestHeaders);
 
@@ -219,6 +226,76 @@ export async function getTenantPlayersAction(
     .orderBy(tenantPlayers.name);
 
   return players;
+}
+
+export async function exportTenantPlayersCsvAction(requestHeaders: Headers) {
+  const db = getDb();
+  const currentTenant = await requireTenant(requestHeaders);
+
+  const players = await db
+    .select({
+      id: tenantPlayers.id,
+      name: tenantPlayers.name,
+      gender: tenantPlayers.gender,
+      skillLevel: tenantPlayers.skillLevel,
+    })
+    .from(tenantPlayers)
+    .where(eq(tenantPlayers.tenantId, currentTenant.id))
+    .orderBy(tenantPlayers.name);
+
+  const csvPlayers: TenantPlayerCsvRecord[] = players.map((player) => ({
+    id: player.id,
+    name: player.name,
+    gender: player.gender as TenantPlayerCsvRecord["gender"],
+    skillLevel: player.skillLevel as TenantPlayerCsvRecord["skillLevel"],
+  }));
+
+  return serializeTenantPlayersCsv(csvPlayers);
+}
+
+export async function importTenantPlayersCsvAction(
+  requestHeaders: Headers,
+  csvText: string,
+) {
+  const db = getDb();
+  const currentTenant = await requireTenant(requestHeaders);
+  const parsedPlayers = parseTenantPlayersCsv(csvText);
+  const playersByName = new Map(
+    parsedPlayers.map((player) => [player.name, player]),
+  );
+
+  if (playersByName.size === 0) {
+    throw new Error("CSV file does not contain any players.");
+  }
+
+  const importedPlayers = [...playersByName.values()];
+  const updatedAt = new Date();
+
+  await db.transaction(async (tx) => {
+    for (const player of importedPlayers) {
+      await tx
+        .insert(tenantPlayers)
+        .values({
+          tenantId: currentTenant.id,
+          name: player.name,
+          gender: player.gender,
+          skillLevel: player.skillLevel,
+          updatedAt,
+        })
+        .onConflictDoUpdate({
+          target: [tenantPlayers.tenantId, tenantPlayers.name],
+          set: {
+            gender: player.gender,
+            skillLevel: player.skillLevel,
+            updatedAt,
+          },
+        });
+    }
+  });
+
+  return {
+    importedCount: importedPlayers.length,
+  };
 }
 
 export async function registerPlayerToHallAction(

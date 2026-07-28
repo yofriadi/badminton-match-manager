@@ -12,6 +12,7 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
+import { TenantPlayersCsvActions } from "@/components/tenant-players-csv-actions";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
@@ -151,7 +152,7 @@ export function AddPlayerDialog({
 
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
-      <DialogContent>
+      <DialogContent className="max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>Add Player to Hall</DialogTitle>
           <DialogDescription>
@@ -159,7 +160,12 @@ export function AddPlayerDialog({
           </DialogDescription>
         </DialogHeader>
 
-        <div className="flex gap-2 mb-4">
+        <TenantPlayersCsvActions
+          onImportSuccess={loadTenantPlayers}
+          showExport={false}
+        />
+
+        <div className="flex gap-2">
           <Button
             variant={mode === "existing" ? "default" : "outline"}
             className="flex-1 rounded-2xl"
@@ -177,7 +183,7 @@ export function AddPlayerDialog({
         </div>
 
         {mode === "existing" ? (
-          <div className="space-y-4 py-4">
+          <div className="space-y-4 py-2">
             <div className="space-y-2">
               <Label>Select Players</Label>
               <MultiSelector

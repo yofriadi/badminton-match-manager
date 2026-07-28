@@ -66,10 +66,14 @@ export function HallCard({ hall, actionButton }: HallCardProps) {
     <Card className="mx-auto w-full max-w-3xl overflow-hidden">
       <CardHeader>
         <CardTitle className="text-2xl font-semibold">{hall.name}</CardTitle>
-        <p className="text-sm text-gray-500">{formatPriceRange(hall.priceRange)}</p>
+        <p className="text-sm text-gray-500">
+          {formatPriceRange(hall.priceRange)}
+        </p>
       </CardHeader>
       <CardContent className="flex flex-col gap-4">
-		    {blueprintHall.courtCount > 0 && <CourtLayout hall={blueprintHall as Hall} renderCard={false} />}
+        {blueprintHall.courtCount > 0 && (
+          <CourtLayout hall={blueprintHall as Hall} renderCard={false} />
+        )}
       </CardContent>
       {actionButton ? (
         <CardFooter className="flex w-full justify-center">
