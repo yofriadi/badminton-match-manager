@@ -1,10 +1,34 @@
 {
   "version": 1,
   "skills": {
+    "agent-browser": {
+      "source": "vercel-labs/agent-browser",
+      "sourceType": "github",
+      "skillPath": "skills/agent-browser/SKILL.md",
+      "computedHash": "228f87d57035100d9dc6efcfc05aafd4b6e3962adacaa04b8217ab2fadb15dc8"
+    },
     "cloudflare": {
       "source": "cloudflare/skills",
       "sourceType": "github",
       "computedHash": "b1025860ad52bd7183307d21858cad3a811b5bde454b7977ad2f664002956c4b"
+    },
+    "refactor": {
+      "source": "github/awesome-copilot",
+      "sourceType": "github",
+      "skillPath": "skills/refactor/SKILL.md",
+      "computedHash": "87789a786b96f99ba0680e89345a975106e10e7db1071c7cdc2e76d507c449d6"
+    },
+    "refactor-plan": {
+      "source": "github/awesome-copilot",
+      "sourceType": "github",
+      "skillPath": "skills/refactor-plan/SKILL.md",
+      "computedHash": "26f32d34d48e9a40e5dd91d877319c94c6b8537e204d95d187ba45b443276868"
+    },
+    "shadcn": {
+      "source": "shadcn/ui",
+      "sourceType": "github",
+      "skillPath": "skills/shadcn/SKILL.md",
+      "computedHash": "8f8bcc9024aa068245fac646d654a18c80280e4b06112ccd3e691a8c96cd66bd"
     },
     "web-perf": {
       "source": "cloudflare/skills",
