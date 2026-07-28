@@ -5,19 +5,16 @@ import { env } from "cloudflare:workers";
 import { getDb } from "./db";
 
 function getAuthBaseUrl() {
-  return (
-    env.BETTER_AUTH_URL ||
-    env.BETTER_AUTH_BASE_URL ||
-    env.VITE_BETTER_AUTH_URL ||
-    env.NEXT_PUBLIC_BETTER_AUTH_URL
-  );
+  return env.BETTER_AUTH_URL || "http://localhost:3000";
 }
 
 export function getAuth() {
   const db = getDb();
+  const baseURL = getAuthBaseUrl();
 
   return betterAuth({
-    baseURL: getAuthBaseUrl(),
+    baseURL,
+    trustedOrigins: [baseURL],
     database: drizzleAdapter(db, {
       provider: "sqlite",
       schema: {

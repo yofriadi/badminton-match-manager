@@ -13,13 +13,20 @@ import {
   getAvailableHallsForCurrentTenant,
   getHallsForCurrentTenant,
 } from "@/app/halls/lib/actions";
-import { getHallWithDetails, getHallSchedules } from "@/app/halls/[id]/lib/hall-service";
+import {
+  getHallWithDetails,
+  getHallSchedules,
+} from "@/app/halls/[id]/lib/hall-service";
 import { getScheduleById, getSchedulePlayers } from "@/app/schedules/lib/api";
 import { processScheduleRows } from "@/app/schedules/lib/schedule-processor";
 import type { ScheduleData } from "@/app/schedules/lib/types";
 import { getDb } from "@/lib/db";
 import { getHallById } from "@/lib/halls";
-import { getCurrentTenant, getSessionFromHeaders, requireTenant } from "@/lib/session-utils";
+import {
+  getCurrentTenant,
+  getSessionFromHeaders,
+  requireTenant,
+} from "@/lib/session-utils";
 
 function requestHeaders() {
   return getRequest().headers;
@@ -49,7 +56,7 @@ export const getAvailableTenantHallsServer = createServerFn({
 }).handler(async () => getAvailableHallsForCurrentTenant(requestHeaders()));
 
 export const getHallDetailServer = createServerFn({ method: "GET" })
-  .inputValidator((id: string) => id)
+  .validator((id: string) => id)
   .handler(async ({ data: hallId }) => {
     const hall = await getHallWithDetails(hallId);
 
@@ -114,7 +121,7 @@ export const getSchedulesServer = createServerFn({ method: "GET" }).handler(
 );
 
 export const getScheduleDetailServer = createServerFn({ method: "GET" })
-  .inputValidator((id: string) => id)
+  .validator((id: string) => id)
   .handler(async ({ data: scheduleId }) => {
     const schedule = await getScheduleById(scheduleId);
 

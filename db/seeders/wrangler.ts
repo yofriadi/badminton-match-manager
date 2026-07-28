@@ -1,3 +1,5 @@
+import { spawn } from "node:child_process";
+import { resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
 export type D1ExecutionTarget = "--local" | "--remote" | "--preview";
@@ -21,13 +23,7 @@ export function parseExecutionTarget(argv: string[]): D1ExecutionTarget {
 }
 
 function getDatabaseName() {
-  const databaseName = process.env.D1_DATABASE_NAME;
-
-  if (!databaseName) {
-    throw new Error("D1_DATABASE_NAME must be set.");
-  }
-
-  return databaseName;
+  return process.env.D1_DATABASE_NAME || "badminton";
 }
 
 export async function runD1Execute(options: {
@@ -37,10 +33,14 @@ export async function runD1Execute(options: {
   json?: boolean;
 }) {
   const databaseName = getDatabaseName();
+  const absoluteWranglerConfigPath = resolve(
+    getPackageDirectory(),
+    wranglerConfigPath,
+  );
   const args = [
     "wrangler",
     "-c",
-    wranglerConfigPath,
+    absoluteWranglerConfigPath,
     "d1",
     "execute",
     databaseName,
@@ -53,29 +53,49 @@ export async function runD1Execute(options: {
   }
 
   if (options.file) {
-    args.push("--file", options.file);
+    const absoluteFilePath = resolve(getPackageDirectory(), options.file);
+    args.push("--file", absoluteFilePath);
   } else if (options.command) {
     args.push("--command", options.command);
   } else {
     throw new Error("Either a SQL command or a SQL file is required.");
   }
 
-  const processHandle = Bun.spawn({
-    cmd: ["bunx", ...args],
-    cwd: getPackageDirectory(),
-    stdout: "pipe",
-    stderr: "pipe",
+  return new Promise<string>((resolve, reject) => {
+    const processHandle = spawn("pnpm", ["exec", ...args], {
+      cwd: getPackageDirectory(),
+      // Use shell to make it cross-platform compatible if needed,
+      // but pnpm should be in path on macOS/Linux.
+      shell: false,
+    });
+
+    let stdout = "";
+    let stderr = "";
+
+    processHandle.stdout?.on("data", (data) => {
+      stdout += data.toString();
+    });
+
+    processHandle.stderr?.on("data", (data) => {
+      stderr += data.toString();
+    });
+
+    processHandle.on("close", (code) => {
+      if (code !== 0) {
+        reject(
+          new Error(
+            stderr.trim() ||
+              stdout.trim() ||
+              `wrangler d1 execute failed with exit code ${code}`,
+          ),
+        );
+      } else {
+        resolve(stdout);
+      }
+    });
+
+    processHandle.on("error", (err) => {
+      reject(err);
+    });
   });
-
-  const [stdout, stderr, exitCode] = await Promise.all([
-    new Response(processHandle.stdout).text(),
-    new Response(processHandle.stderr).text(),
-    processHandle.exited,
-  ]);
-
-  if (exitCode !== 0) {
-    throw new Error(stderr || stdout || `wrangler d1 execute failed with exit code ${exitCode}`);
-  }
-
-  return stdout;
 }
