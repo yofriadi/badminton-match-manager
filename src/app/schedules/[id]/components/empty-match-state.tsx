@@ -16,7 +16,7 @@ export const EmptyMatchState: React.FC<EmptyMatchStateProps> = ({
   showAdjustButton = false,
 }) => {
   return (
-    <div className="min-h-screen bg-white max-w-7xl space-y-4 py-2 px-1 flex flex-col items-center justify-center">
+    <div className="bg-white w-full max-w-7xl space-y-4 py-12 px-4 flex flex-col items-center justify-center">
       <p className="text-center text-gray-500 py-8">{message}</p>
       {showAdjustButton && onAdjustRound && (
         <Button onClick={onAdjustRound}>

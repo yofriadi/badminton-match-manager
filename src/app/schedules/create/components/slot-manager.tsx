@@ -17,8 +17,8 @@ export function SlotManager({
   fieldArray,
   control,
   hallId,
-  courts: _courts,
-  isCourtsLoading: _isCourtsLoading,
+  courts,
+  isCourtsLoading,
 }: SlotManagerProps) {
   const { fields, append, remove } = fieldArray;
 
@@ -86,6 +86,8 @@ export function SlotManager({
                       values={slotField.value ?? []}
                       onValuesChange={(value) => slotField.onChange(value)}
                       disabled={!hallId}
+                      options={courts}
+                      isLoading={isCourtsLoading}
                     />
                   </FormControl>
                   <FormDescription>

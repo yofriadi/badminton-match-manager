@@ -157,7 +157,7 @@ export interface MatchmakingOptions {
   prioritizeFairPlay?: boolean;
 }
 
-const DEFAULT_OPTIONS: Required<MatchmakingOptions> = {
+export const DEFAULT_MATCHMAKING_OPTIONS: Required<MatchmakingOptions> = {
   strategy: "balanced",
   maxSkillGap: 1.5,
   avoidRepeatPartners: true,
@@ -176,10 +176,10 @@ export function generateMatches(
   numberOfSessions: number,
   startTime: string,
   sessionDuration: number,
-  frozenMatches: GeneratedMatch[] = [],
+  lockedMatches: GeneratedMatch[] = [],
   options: MatchmakingOptions = {},
 ): GeneratedMatch[] {
-  const settings = { ...DEFAULT_OPTIONS, ...options };
+  const settings = { ...DEFAULT_MATCHMAKING_OPTIONS, ...options };
   const matches: GeneratedMatch[] = [];
 
   // Filter players for Round 1 (Session 0)
@@ -243,12 +243,27 @@ export function generateMatches(
   };
   players.forEach(seedPlayer);
 
-  // Apply frozen matches (pre-existing matches for Session 0)
-  frozenMatches.forEach((match) => {
-    if (match.game === 1) {
-      matches.push(match);
+  // Generate matches for each session
+  for (let session = 0; session < numberOfSessions; session++) {
+    const sessionTime = calculateSessionTime(
+      startTime,
+      session,
+      sessionDuration,
+    );
+
+    // Apply locked matches for this specific session first
+    const sessionLockedMatches = lockedMatches.filter(
+      (m) => m.game === session + 1,
+    );
+    sessionLockedMatches.forEach((match) => {
+      // Add if not already in matches
+      if (
+        !matches.some((m) => m.game === match.game && m.number === match.number)
+      ) {
+        matches.push(match);
+      }
       match.players.forEach((playerName) => {
-        playerLastPlayed.set(playerName, 0);
+        playerLastPlayed.set(playerName, session);
         gamesPlayed.set(playerName, (gamesPlayed.get(playerName) ?? 0) + 1);
 
         if (match.players.length === 4) {
@@ -270,49 +285,107 @@ export function generateMatches(
           }
         }
       });
-    }
-  });
-
-  // Generate matches for each session
-  for (let session = 0; session < numberOfSessions; session++) {
-    const sessionTime = calculateSessionTime(
-      startTime,
-      session,
-      sessionDuration,
-    );
+    });
 
     // Use Round 1 pool for Session 0, otherwise use full pool
     const currentMales = session === 0 ? malePlayersR1 : malePlayersAll;
     const currentFemales = session === 0 ? femalePlayersR1 : femalePlayersAll;
 
-    const matchTypes = determineMatchTypes(
-      currentMales,
-      currentFemales,
-      numberOfCourts,
-      playerLastPlayed,
-      session,
-    );
-
-    for (
-      let courtIndex = 0;
-      courtIndex < numberOfCourts && courtIndex < matchTypes.length;
-      courtIndex++
-    ) {
+    for (let courtIndex = 0; courtIndex < numberOfCourts; courtIndex++) {
       const courtNumber = courtNumbers[courtIndex] ?? courtIndex + 1;
 
-      // Skip if court is already occupied by a frozen match
+      // Skip if court is already occupied by a locked match
       const isCourtOccupied = matches.some(
         (m) => m.game === session + 1 && m.number === courtNumber,
       );
       if (isCourtOccupied) continue;
 
-      const matchType = matchTypes[courtIndex];
-      if (!matchType) continue;
+      // Dynamically filter available players in this session (excluding players already selected in this session)
+      const availableMales = currentMales.filter(
+        (p) => session - (playerLastPlayed.get(p.name) ?? -2) >= 1,
+      );
+      const availableFemales = currentFemales.filter(
+        (p) => session - (playerLastPlayed.get(p.name) ?? -2) >= 1,
+      );
+
+      // Determine possible match types and their suitability scores based on sum of gamesPlayed
+      const possibleTypes: { type: MatchType; sumGames: number }[] = [];
+
+      // 1. Mix Doubles
+      if (availableMales.length >= 2 && availableFemales.length >= 2) {
+        const topMales = [...availableMales]
+          .sort(
+            (a, b) =>
+              (gamesPlayed.get(a.name) ?? 0) - (gamesPlayed.get(b.name) ?? 0),
+          )
+          .slice(0, 2);
+        const topFemales = [...availableFemales]
+          .sort(
+            (a, b) =>
+              (gamesPlayed.get(a.name) ?? 0) - (gamesPlayed.get(b.name) ?? 0),
+          )
+          .slice(0, 2);
+        const sumGames =
+          topMales.reduce((sum, p) => sum + (gamesPlayed.get(p.name) ?? 0), 0) +
+          topFemales.reduce(
+            (sum, p) => sum + (gamesPlayed.get(p.name) ?? 0),
+            0,
+          );
+        possibleTypes.push({ type: "Mix Doubles", sumGames });
+      }
+
+      // 2. Men Doubles
+      if (availableMales.length >= 4) {
+        const topMales = [...availableMales]
+          .sort(
+            (a, b) =>
+              (gamesPlayed.get(a.name) ?? 0) - (gamesPlayed.get(b.name) ?? 0),
+          )
+          .slice(0, 4);
+        const sumGames = topMales.reduce(
+          (sum, p) => sum + (gamesPlayed.get(p.name) ?? 0),
+          0,
+        );
+        possibleTypes.push({ type: "Men Doubles", sumGames });
+      }
+
+      // 3. Women Doubles
+      if (availableFemales.length >= 4) {
+        const topFemales = [...availableFemales]
+          .sort(
+            (a, b) =>
+              (gamesPlayed.get(a.name) ?? 0) - (gamesPlayed.get(b.name) ?? 0),
+          )
+          .slice(0, 4);
+        const sumGames = topFemales.reduce(
+          (sum, p) => sum + (gamesPlayed.get(p.name) ?? 0),
+          0,
+        );
+        possibleTypes.push({ type: "Women Doubles", sumGames });
+      }
+
+      if (possibleTypes.length === 0) {
+        continue;
+      }
+
+      // Sort possible types by sumGames ascending (preferring fewer games played total)
+      // Break ties: Mix Doubles first, then Men Doubles, then Women Doubles
+      possibleTypes.sort((a, b) => {
+        if (a.sumGames !== b.sumGames) return a.sumGames - b.sumGames;
+        const preference = {
+          "Mix Doubles": 0,
+          "Men Doubles": 1,
+          "Women Doubles": 2,
+        };
+        return preference[a.type] - preference[b.type];
+      });
+
+      const bestType = possibleTypes[0]!.type;
 
       const match = createBalancedMatch(
         session + 1,
         courtNumber,
-        matchType,
+        bestType,
         currentMales,
         currentFemales,
         playerLastPlayed,
@@ -349,39 +422,6 @@ function calculateSessionTime(
   const sessionMins = sessionMinutes % 60;
 
   return `${sessionHours.toString().padStart(2, "0")}:${sessionMins.toString().padStart(2, "0")}`;
-}
-
-/**
- * Determine optimal match types based on available players
- */
-function determineMatchTypes(
-  malePlayers: PlayerWithSkill[],
-  femalePlayers: PlayerWithSkill[],
-  numberOfCourts: number,
-  playerLastPlayed: Map<string, number>,
-  currentSession: number,
-): MatchType[] {
-  const types: MatchType[] = [];
-
-  const availableMales = malePlayers.filter(
-    (p) => currentSession - (playerLastPlayed.get(p.name) ?? -2) >= 1,
-  ).length;
-  const availableFemales = femalePlayers.filter(
-    (p) => currentSession - (playerLastPlayed.get(p.name) ?? -2) >= 1,
-  ).length;
-
-  for (let i = 0; i < numberOfCourts; i++) {
-    // Prefer mix doubles if balanced, then gender-specific
-    if (availableMales >= 2 && availableFemales >= 2) {
-      types.push("Mix Doubles");
-    } else if (availableMales >= 4) {
-      types.push("Men Doubles");
-    } else if (availableFemales >= 4) {
-      types.push("Women Doubles");
-    }
-  }
-
-  return types;
 }
 
 /**
@@ -467,7 +507,12 @@ function createBalancedMatch(
         const aGames = gamesPlayed.get(a.name) ?? 0;
         const bGames = gamesPlayed.get(b.name) ?? 0;
         if (aGames !== bGames) return aGames - bGames;
-        return Math.random() - 0.5;
+
+        const aLast = playerLastPlayed.get(a.name) ?? -2;
+        const bLast = playerLastPlayed.get(b.name) ?? -2;
+        if (aLast !== bLast) return aLast - bLast;
+
+        return a.id.localeCompare(b.id);
       })
       .slice(0, count * 2);
   };
@@ -486,33 +531,61 @@ function createBalancedMatch(
     p2: PlayerWithSkill,
     p3: PlayerWithSkill,
     p4: PlayerWithSkill,
+    isMixed?: boolean,
   ) => {
-    const pairings: [
+    let pairings: [
       [PlayerWithSkill, PlayerWithSkill],
       [PlayerWithSkill, PlayerWithSkill],
-    ][] = [
-      [
-        [p1, p2],
-        [p3, p4],
-      ],
-      [
-        [p1, p3],
-        [p2, p4],
-      ],
-      [
-        [p1, p4],
-        [p2, p3],
-      ],
-    ];
+    ][] = [];
 
+    if (isMixed) {
+      // In Mix Doubles, we are passing:
+      // p1 = m1, p2 = m2 (males)
+      // p3 = f1, p4 = f2 (females)
+      // To ensure each team has one male and one female, the only valid pairings are:
+      // 1. [m1, f1] vs [m2, f2] -> [[p1, p3], [p2, p4]]
+      // 2. [m1, f2] vs [m2, f1] -> [[p1, p4], [p2, p3]]
+      pairings = [
+        [
+          [p1, p3],
+          [p2, p4],
+        ],
+        [
+          [p1, p4],
+          [p2, p3],
+        ],
+      ];
+    } else {
+      pairings = [
+        [
+          [p1, p2],
+          [p3, p4],
+        ],
+        [
+          [p1, p3],
+          [p2, p4],
+        ],
+        [
+          [p1, p4],
+          [p2, p3],
+        ],
+      ];
+    }
+
+    const gamesSum = [p1, p2, p3, p4].reduce(
+      (sum, p) => sum + (gamesPlayed.get(p.name) ?? 0),
+      0,
+    );
     for (const [teamA, teamB] of pairings) {
-      const cost = calculateMatchCost(
+      const baseCost = calculateMatchCost(
         teamA,
         teamB,
         partnerHistory,
         opponentHistory,
         settings,
       );
+      // Large penalty for each game played by players to guarantee playing time fairness is prioritized above all else
+      const cost = baseCost + gamesSum * 10000;
       if (!bestMatch || cost < bestMatch.cost) {
         bestMatch = { players: [p1, p2, p3, p4], teamA, teamB, cost };
       }
@@ -524,34 +597,61 @@ function createBalancedMatch(
     const eligibleFemales = getEligible(availableFemales, 2);
 
     if (eligibleMales.length >= 2 && eligibleFemales.length >= 2) {
-      const m1 = eligibleMales[0];
-      const m2 = eligibleMales[1];
-      const f1 = eligibleFemales[0];
-      const f2 = eligibleFemales[1];
-      if (m1 && m2 && f1 && f2) {
-        evaluate(m1, m2, f1, f2);
+      // Evaluate all combinations of eligible males and females
+      for (let i = 0; i < eligibleMales.length; i++) {
+        for (let j = i + 1; j < eligibleMales.length; j++) {
+          for (let x = 0; x < eligibleFemales.length; x++) {
+            for (let y = x + 1; y < eligibleFemales.length; y++) {
+              const m1 = eligibleMales[i];
+              const m2 = eligibleMales[j];
+              const f1 = eligibleFemales[x];
+              const f2 = eligibleFemales[y];
+              if (m1 && m2 && f1 && f2) {
+                evaluate(m1, m2, f1, f2, true);
+              }
+            }
+          }
+        }
       }
     }
   } else if (matchType === "Men Doubles") {
     const eligible = getEligible(availableMales, 4);
     if (eligible.length >= 4) {
-      const p1 = eligible[0];
-      const p2 = eligible[1];
-      const p3 = eligible[2];
-      const p4 = eligible[3];
-      if (p1 && p2 && p3 && p4) {
-        evaluate(p1, p2, p3, p4);
+      // Evaluate all combinations of 4 players out of eligible list
+      for (let i = 0; i < eligible.length; i++) {
+        for (let j = i + 1; j < eligible.length; j++) {
+          for (let x = j + 1; x < eligible.length; x++) {
+            for (let y = x + 1; y < eligible.length; y++) {
+              const p1 = eligible[i];
+              const p2 = eligible[j];
+              const p3 = eligible[x];
+              const p4 = eligible[y];
+              if (p1 && p2 && p3 && p4) {
+                evaluate(p1, p2, p3, p4);
+              }
+            }
+          }
+        }
       }
     }
   } else if (matchType === "Women Doubles") {
     const eligible = getEligible(availableFemales, 4);
     if (eligible.length >= 4) {
-      const p1 = eligible[0];
-      const p2 = eligible[1];
-      const p3 = eligible[2];
-      const p4 = eligible[3];
-      if (p1 && p2 && p3 && p4) {
-        evaluate(p1, p2, p3, p4);
+      // Evaluate all combinations of 4 players out of eligible list
+      for (let i = 0; i < eligible.length; i++) {
+        for (let j = i + 1; j < eligible.length; j++) {
+          for (let x = j + 1; x < eligible.length; x++) {
+            for (let y = x + 1; y < eligible.length; y++) {
+              const p1 = eligible[i];
+              const p2 = eligible[j];
+              const p3 = eligible[x];
+              const p4 = eligible[y];
+              if (p1 && p2 && p3 && p4) {
+                evaluate(p1, p2, p3, p4);
+              }
+            }
+          }
+        }
       }
     }
   }

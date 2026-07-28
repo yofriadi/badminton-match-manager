@@ -34,6 +34,10 @@ export interface CourtSelectorProps {
   onValuesChange: (values: string[]) => void;
   disabled?: boolean;
   onError?: (error: string) => void;
+  /** Pre-loaded court options. When provided, the component skips its own fetch. */
+  options?: CourtOption[];
+  /** Loading state for pre-loaded options. */
+  isLoading?: boolean;
 }
 
 // Data types
@@ -111,6 +115,9 @@ export interface ScheduleConfirmationDialogProps {
   onConfirm: () => void;
   formData: ScheduleFormValues | null;
   isSubmitting: boolean;
+  halls?: HallOption[];
+  players?: PlayerOption[];
+  courts?: CourtOption[];
 }
 
 // Slot manager props
@@ -134,8 +141,7 @@ export interface ScheduleDateFieldProps extends FormFieldProps {
   minDate: Date;
 }
 
-export interface PriceFieldProps extends FormFieldProps {
-}
+export interface PriceFieldProps extends FormFieldProps {}
 
 export interface HallFormFieldProps {
   control: any;

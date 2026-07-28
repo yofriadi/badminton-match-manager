@@ -63,6 +63,7 @@ export const ScheduleCard: React.FC<ScheduleCardProps> = ({
                     key={`${courtNumber}-${courtIndex}`}
                     className="w-8 h-8"
                     viewBox="0 0 32 32"
+                    // eslint-disable-next-line jsx-a11y/prefer-tag-over-role -- SVG element; <img> is not semantically correct here
                     role="img"
                     aria-label={`Court ${courtNumber}`}
                   >

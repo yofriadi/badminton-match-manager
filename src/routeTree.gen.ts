@@ -9,33 +9,34 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as SignupRouteImport } from './routes/signup'
-import { Route as LoginRouteImport } from './routes/login'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as SettingsIndexRouteImport } from './routes/settings.index'
-import { Route as SchedulesIndexRouteImport } from './routes/schedules.index'
-import { Route as HallsIndexRouteImport } from './routes/halls.index'
-import { Route as SettingsProfileRouteImport } from './routes/settings.profile'
-import { Route as SchedulesCreateRouteImport } from './routes/schedules.create'
-import { Route as SchedulesIdRouteImport } from './routes/schedules.$id'
-import { Route as HallsCreateRouteImport } from './routes/halls.create'
-import { Route as HallsIdRouteImport } from './routes/halls.$id'
-import { Route as ApiSchedulesRouteImport } from './routes/api.schedules'
+import { Route as LoginRouteImport } from './routes/login'
+import { Route as SignupRouteImport } from './routes/signup'
 import { Route as AdminUsersRouteImport } from './routes/admin.users'
-import { Route as ApiTenantProfileRouteImport } from './routes/api.tenant.profile'
-import { Route as ApiTenantPlayersRouteImport } from './routes/api.tenant.players'
-import { Route as ApiTenantHallsRouteImport } from './routes/api.tenant.halls'
-import { Route as ApiAuthSplatRouteImport } from './routes/api.auth.$'
+import { Route as ApiSchedulesRouteImport } from './routes/api.schedules'
+import { Route as HallsIndexRouteImport } from './routes/halls.index'
+import { Route as HallsIdRouteImport } from './routes/halls.$id'
+import { Route as HallsCreateRouteImport } from './routes/halls.create'
+import { Route as SchedulesIndexRouteImport } from './routes/schedules.index'
+import { Route as SchedulesIdRouteImport } from './routes/schedules.$id'
+import { Route as SchedulesCreateRouteImport } from './routes/schedules.create'
+import { Route as SettingsIndexRouteImport } from './routes/settings.index'
+import { Route as SettingsProfileRouteImport } from './routes/settings.profile'
 import { Route as ApiAdminUsersRouteImport } from './routes/api.admin.users'
-import { Route as ApiSchedulesIdPlayersRouteImport } from './routes/api.schedules.$id.players'
-import { Route as ApiHallsHallIdRegisteredPlayersRouteImport } from './routes/api.halls.$hallId.registered-players'
-import { Route as ApiHallsHallIdPlayersRouteImport } from './routes/api.halls.$hallId.players'
+import { Route as ApiAuthSplatRouteImport } from './routes/api.auth.$'
+import { Route as ApiTenantHallsRouteImport } from './routes/api.tenant.halls'
+import { Route as ApiTenantPlayersRouteImport } from './routes/api.tenant.players'
+import { Route as ApiTenantProfileRouteImport } from './routes/api.tenant.profile'
 import { Route as ApiHallsHallIdCourtsRouteImport } from './routes/api.halls.$hallId.courts'
+import { Route as ApiHallsHallIdPlayersRouteImport } from './routes/api.halls.$hallId.players'
+import { Route as ApiHallsHallIdRegisteredPlayersRouteImport } from './routes/api.halls.$hallId.registered-players'
+import { Route as ApiSchedulesIdConfigRouteImport } from './routes/api.schedules.$id.config'
+import { Route as ApiSchedulesIdPlayersRouteImport } from './routes/api.schedules.$id.players'
 import { Route as ApiAdminUsersIdConfirmRouteImport } from './routes/api.admin.users.$id.confirm'
 
-const SignupRoute = SignupRouteImport.update({
-  id: '/signup',
-  path: '/signup',
+const IndexRoute = IndexRouteImport.update({
+  id: '/',
+  path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LoginRoute = LoginRouteImport.update({
@@ -43,54 +44,9 @@ const LoginRoute = LoginRouteImport.update({
   path: '/login',
   getParentRoute: () => rootRouteImport,
 } as any)
-const IndexRoute = IndexRouteImport.update({
-  id: '/',
-  path: '/',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const SettingsIndexRoute = SettingsIndexRouteImport.update({
-  id: '/settings/',
-  path: '/settings/',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const SchedulesIndexRoute = SchedulesIndexRouteImport.update({
-  id: '/schedules/',
-  path: '/schedules/',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const HallsIndexRoute = HallsIndexRouteImport.update({
-  id: '/halls/',
-  path: '/halls/',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const SettingsProfileRoute = SettingsProfileRouteImport.update({
-  id: '/settings/profile',
-  path: '/settings/profile',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const SchedulesCreateRoute = SchedulesCreateRouteImport.update({
-  id: '/schedules/create',
-  path: '/schedules/create',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const SchedulesIdRoute = SchedulesIdRouteImport.update({
-  id: '/schedules/$id',
-  path: '/schedules/$id',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const HallsCreateRoute = HallsCreateRouteImport.update({
-  id: '/halls/create',
-  path: '/halls/create',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const HallsIdRoute = HallsIdRouteImport.update({
-  id: '/halls/$id',
-  path: '/halls/$id',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ApiSchedulesRoute = ApiSchedulesRouteImport.update({
-  id: '/api/schedules',
-  path: '/api/schedules',
+const SignupRoute = SignupRouteImport.update({
+  id: '/signup',
+  path: '/signup',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AdminUsersRoute = AdminUsersRouteImport.update({
@@ -98,24 +54,49 @@ const AdminUsersRoute = AdminUsersRouteImport.update({
   path: '/admin/users',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ApiTenantProfileRoute = ApiTenantProfileRouteImport.update({
-  id: '/api/tenant/profile',
-  path: '/api/tenant/profile',
+const ApiSchedulesRoute = ApiSchedulesRouteImport.update({
+  id: '/api/schedules',
+  path: '/api/schedules',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ApiTenantPlayersRoute = ApiTenantPlayersRouteImport.update({
-  id: '/api/tenant/players',
-  path: '/api/tenant/players',
+const HallsIndexRoute = HallsIndexRouteImport.update({
+  id: '/halls/',
+  path: '/halls/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ApiTenantHallsRoute = ApiTenantHallsRouteImport.update({
-  id: '/api/tenant/halls',
-  path: '/api/tenant/halls',
+const HallsIdRoute = HallsIdRouteImport.update({
+  id: '/halls/$id',
+  path: '/halls/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ApiAuthSplatRoute = ApiAuthSplatRouteImport.update({
-  id: '/api/auth/$',
-  path: '/api/auth/$',
+const HallsCreateRoute = HallsCreateRouteImport.update({
+  id: '/halls/create',
+  path: '/halls/create',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SchedulesIndexRoute = SchedulesIndexRouteImport.update({
+  id: '/schedules/',
+  path: '/schedules/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SchedulesIdRoute = SchedulesIdRouteImport.update({
+  id: '/schedules/$id',
+  path: '/schedules/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SchedulesCreateRoute = SchedulesCreateRouteImport.update({
+  id: '/schedules/create',
+  path: '/schedules/create',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SettingsIndexRoute = SettingsIndexRouteImport.update({
+  id: '/settings/',
+  path: '/settings/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SettingsProfileRoute = SettingsProfileRouteImport.update({
+  id: '/settings/profile',
+  path: '/settings/profile',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApiAdminUsersRoute = ApiAdminUsersRouteImport.update({
@@ -123,10 +104,35 @@ const ApiAdminUsersRoute = ApiAdminUsersRouteImport.update({
   path: '/api/admin/users',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ApiSchedulesIdPlayersRoute = ApiSchedulesIdPlayersRouteImport.update({
-  id: '/$id/players',
-  path: '/$id/players',
-  getParentRoute: () => ApiSchedulesRoute,
+const ApiAuthSplatRoute = ApiAuthSplatRouteImport.update({
+  id: '/api/auth/$',
+  path: '/api/auth/$',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiTenantHallsRoute = ApiTenantHallsRouteImport.update({
+  id: '/api/tenant/halls',
+  path: '/api/tenant/halls',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiTenantPlayersRoute = ApiTenantPlayersRouteImport.update({
+  id: '/api/tenant/players',
+  path: '/api/tenant/players',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiTenantProfileRoute = ApiTenantProfileRouteImport.update({
+  id: '/api/tenant/profile',
+  path: '/api/tenant/profile',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiHallsHallIdCourtsRoute = ApiHallsHallIdCourtsRouteImport.update({
+  id: '/api/halls/$hallId/courts',
+  path: '/api/halls/$hallId/courts',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiHallsHallIdPlayersRoute = ApiHallsHallIdPlayersRouteImport.update({
+  id: '/api/halls/$hallId/players',
+  path: '/api/halls/$hallId/players',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const ApiHallsHallIdRegisteredPlayersRoute =
   ApiHallsHallIdRegisteredPlayersRouteImport.update({
@@ -134,15 +140,15 @@ const ApiHallsHallIdRegisteredPlayersRoute =
     path: '/api/halls/$hallId/registered-players',
     getParentRoute: () => rootRouteImport,
   } as any)
-const ApiHallsHallIdPlayersRoute = ApiHallsHallIdPlayersRouteImport.update({
-  id: '/api/halls/$hallId/players',
-  path: '/api/halls/$hallId/players',
-  getParentRoute: () => rootRouteImport,
+const ApiSchedulesIdConfigRoute = ApiSchedulesIdConfigRouteImport.update({
+  id: '/$id/config',
+  path: '/$id/config',
+  getParentRoute: () => ApiSchedulesRoute,
 } as any)
-const ApiHallsHallIdCourtsRoute = ApiHallsHallIdCourtsRouteImport.update({
-  id: '/api/halls/$hallId/courts',
-  path: '/api/halls/$hallId/courts',
-  getParentRoute: () => rootRouteImport,
+const ApiSchedulesIdPlayersRoute = ApiSchedulesIdPlayersRouteImport.update({
+  id: '/$id/players',
+  path: '/$id/players',
+  getParentRoute: () => ApiSchedulesRoute,
 } as any)
 const ApiAdminUsersIdConfirmRoute = ApiAdminUsersIdConfirmRouteImport.update({
   id: '/$id/confirm',
@@ -172,6 +178,7 @@ export interface FileRoutesByFullPath {
   '/api/halls/$hallId/courts': typeof ApiHallsHallIdCourtsRoute
   '/api/halls/$hallId/players': typeof ApiHallsHallIdPlayersRoute
   '/api/halls/$hallId/registered-players': typeof ApiHallsHallIdRegisteredPlayersRoute
+  '/api/schedules/$id/config': typeof ApiSchedulesIdConfigRoute
   '/api/schedules/$id/players': typeof ApiSchedulesIdPlayersRoute
   '/api/admin/users/$id/confirm': typeof ApiAdminUsersIdConfirmRoute
 }
@@ -197,6 +204,7 @@ export interface FileRoutesByTo {
   '/api/halls/$hallId/courts': typeof ApiHallsHallIdCourtsRoute
   '/api/halls/$hallId/players': typeof ApiHallsHallIdPlayersRoute
   '/api/halls/$hallId/registered-players': typeof ApiHallsHallIdRegisteredPlayersRoute
+  '/api/schedules/$id/config': typeof ApiSchedulesIdConfigRoute
   '/api/schedules/$id/players': typeof ApiSchedulesIdPlayersRoute
   '/api/admin/users/$id/confirm': typeof ApiAdminUsersIdConfirmRoute
 }
@@ -223,6 +231,7 @@ export interface FileRoutesById {
   '/api/halls/$hallId/courts': typeof ApiHallsHallIdCourtsRoute
   '/api/halls/$hallId/players': typeof ApiHallsHallIdPlayersRoute
   '/api/halls/$hallId/registered-players': typeof ApiHallsHallIdRegisteredPlayersRoute
+  '/api/schedules/$id/config': typeof ApiSchedulesIdConfigRoute
   '/api/schedules/$id/players': typeof ApiSchedulesIdPlayersRoute
   '/api/admin/users/$id/confirm': typeof ApiAdminUsersIdConfirmRoute
 }
@@ -250,6 +259,7 @@ export interface FileRouteTypes {
     | '/api/halls/$hallId/courts'
     | '/api/halls/$hallId/players'
     | '/api/halls/$hallId/registered-players'
+    | '/api/schedules/$id/config'
     | '/api/schedules/$id/players'
     | '/api/admin/users/$id/confirm'
   fileRoutesByTo: FileRoutesByTo
@@ -275,6 +285,7 @@ export interface FileRouteTypes {
     | '/api/halls/$hallId/courts'
     | '/api/halls/$hallId/players'
     | '/api/halls/$hallId/registered-players'
+    | '/api/schedules/$id/config'
     | '/api/schedules/$id/players'
     | '/api/admin/users/$id/confirm'
   id:
@@ -300,6 +311,7 @@ export interface FileRouteTypes {
     | '/api/halls/$hallId/courts'
     | '/api/halls/$hallId/players'
     | '/api/halls/$hallId/registered-players'
+    | '/api/schedules/$id/config'
     | '/api/schedules/$id/players'
     | '/api/admin/users/$id/confirm'
   fileRoutesById: FileRoutesById
@@ -330,11 +342,11 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/signup': {
-      id: '/signup'
-      path: '/signup'
-      fullPath: '/signup'
-      preLoaderRoute: typeof SignupRouteImport
+    '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/login': {
@@ -344,74 +356,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LoginRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/settings/': {
-      id: '/settings/'
-      path: '/settings'
-      fullPath: '/settings/'
-      preLoaderRoute: typeof SettingsIndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/schedules/': {
-      id: '/schedules/'
-      path: '/schedules'
-      fullPath: '/schedules/'
-      preLoaderRoute: typeof SchedulesIndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/halls/': {
-      id: '/halls/'
-      path: '/halls'
-      fullPath: '/halls/'
-      preLoaderRoute: typeof HallsIndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/settings/profile': {
-      id: '/settings/profile'
-      path: '/settings/profile'
-      fullPath: '/settings/profile'
-      preLoaderRoute: typeof SettingsProfileRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/schedules/create': {
-      id: '/schedules/create'
-      path: '/schedules/create'
-      fullPath: '/schedules/create'
-      preLoaderRoute: typeof SchedulesCreateRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/schedules/$id': {
-      id: '/schedules/$id'
-      path: '/schedules/$id'
-      fullPath: '/schedules/$id'
-      preLoaderRoute: typeof SchedulesIdRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/halls/create': {
-      id: '/halls/create'
-      path: '/halls/create'
-      fullPath: '/halls/create'
-      preLoaderRoute: typeof HallsCreateRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/halls/$id': {
-      id: '/halls/$id'
-      path: '/halls/$id'
-      fullPath: '/halls/$id'
-      preLoaderRoute: typeof HallsIdRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/schedules': {
-      id: '/api/schedules'
-      path: '/api/schedules'
-      fullPath: '/api/schedules'
-      preLoaderRoute: typeof ApiSchedulesRouteImport
+    '/signup': {
+      id: '/signup'
+      path: '/signup'
+      fullPath: '/signup'
+      preLoaderRoute: typeof SignupRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/admin/users': {
@@ -421,32 +370,67 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminUsersRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/api/tenant/profile': {
-      id: '/api/tenant/profile'
-      path: '/api/tenant/profile'
-      fullPath: '/api/tenant/profile'
-      preLoaderRoute: typeof ApiTenantProfileRouteImport
+    '/api/schedules': {
+      id: '/api/schedules'
+      path: '/api/schedules'
+      fullPath: '/api/schedules'
+      preLoaderRoute: typeof ApiSchedulesRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/api/tenant/players': {
-      id: '/api/tenant/players'
-      path: '/api/tenant/players'
-      fullPath: '/api/tenant/players'
-      preLoaderRoute: typeof ApiTenantPlayersRouteImport
+    '/halls/': {
+      id: '/halls/'
+      path: '/halls'
+      fullPath: '/halls/'
+      preLoaderRoute: typeof HallsIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/api/tenant/halls': {
-      id: '/api/tenant/halls'
-      path: '/api/tenant/halls'
-      fullPath: '/api/tenant/halls'
-      preLoaderRoute: typeof ApiTenantHallsRouteImport
+    '/halls/$id': {
+      id: '/halls/$id'
+      path: '/halls/$id'
+      fullPath: '/halls/$id'
+      preLoaderRoute: typeof HallsIdRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/api/auth/$': {
-      id: '/api/auth/$'
-      path: '/api/auth/$'
-      fullPath: '/api/auth/$'
-      preLoaderRoute: typeof ApiAuthSplatRouteImport
+    '/halls/create': {
+      id: '/halls/create'
+      path: '/halls/create'
+      fullPath: '/halls/create'
+      preLoaderRoute: typeof HallsCreateRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/schedules/': {
+      id: '/schedules/'
+      path: '/schedules'
+      fullPath: '/schedules/'
+      preLoaderRoute: typeof SchedulesIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/schedules/$id': {
+      id: '/schedules/$id'
+      path: '/schedules/$id'
+      fullPath: '/schedules/$id'
+      preLoaderRoute: typeof SchedulesIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/schedules/create': {
+      id: '/schedules/create'
+      path: '/schedules/create'
+      fullPath: '/schedules/create'
+      preLoaderRoute: typeof SchedulesCreateRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/settings/': {
+      id: '/settings/'
+      path: '/settings'
+      fullPath: '/settings/'
+      preLoaderRoute: typeof SettingsIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/settings/profile': {
+      id: '/settings/profile'
+      path: '/settings/profile'
+      fullPath: '/settings/profile'
+      preLoaderRoute: typeof SettingsProfileRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/admin/users': {
@@ -456,18 +440,39 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiAdminUsersRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/api/schedules/$id/players': {
-      id: '/api/schedules/$id/players'
-      path: '/$id/players'
-      fullPath: '/api/schedules/$id/players'
-      preLoaderRoute: typeof ApiSchedulesIdPlayersRouteImport
-      parentRoute: typeof ApiSchedulesRoute
+    '/api/auth/$': {
+      id: '/api/auth/$'
+      path: '/api/auth/$'
+      fullPath: '/api/auth/$'
+      preLoaderRoute: typeof ApiAuthSplatRouteImport
+      parentRoute: typeof rootRouteImport
     }
-    '/api/halls/$hallId/registered-players': {
-      id: '/api/halls/$hallId/registered-players'
-      path: '/api/halls/$hallId/registered-players'
-      fullPath: '/api/halls/$hallId/registered-players'
-      preLoaderRoute: typeof ApiHallsHallIdRegisteredPlayersRouteImport
+    '/api/tenant/halls': {
+      id: '/api/tenant/halls'
+      path: '/api/tenant/halls'
+      fullPath: '/api/tenant/halls'
+      preLoaderRoute: typeof ApiTenantHallsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/tenant/players': {
+      id: '/api/tenant/players'
+      path: '/api/tenant/players'
+      fullPath: '/api/tenant/players'
+      preLoaderRoute: typeof ApiTenantPlayersRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/tenant/profile': {
+      id: '/api/tenant/profile'
+      path: '/api/tenant/profile'
+      fullPath: '/api/tenant/profile'
+      preLoaderRoute: typeof ApiTenantProfileRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/halls/$hallId/courts': {
+      id: '/api/halls/$hallId/courts'
+      path: '/api/halls/$hallId/courts'
+      fullPath: '/api/halls/$hallId/courts'
+      preLoaderRoute: typeof ApiHallsHallIdCourtsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/halls/$hallId/players': {
@@ -477,12 +482,26 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiHallsHallIdPlayersRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/api/halls/$hallId/courts': {
-      id: '/api/halls/$hallId/courts'
-      path: '/api/halls/$hallId/courts'
-      fullPath: '/api/halls/$hallId/courts'
-      preLoaderRoute: typeof ApiHallsHallIdCourtsRouteImport
+    '/api/halls/$hallId/registered-players': {
+      id: '/api/halls/$hallId/registered-players'
+      path: '/api/halls/$hallId/registered-players'
+      fullPath: '/api/halls/$hallId/registered-players'
+      preLoaderRoute: typeof ApiHallsHallIdRegisteredPlayersRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/api/schedules/$id/config': {
+      id: '/api/schedules/$id/config'
+      path: '/$id/config'
+      fullPath: '/api/schedules/$id/config'
+      preLoaderRoute: typeof ApiSchedulesIdConfigRouteImport
+      parentRoute: typeof ApiSchedulesRoute
+    }
+    '/api/schedules/$id/players': {
+      id: '/api/schedules/$id/players'
+      path: '/$id/players'
+      fullPath: '/api/schedules/$id/players'
+      preLoaderRoute: typeof ApiSchedulesIdPlayersRouteImport
+      parentRoute: typeof ApiSchedulesRoute
     }
     '/api/admin/users/$id/confirm': {
       id: '/api/admin/users/$id/confirm'
@@ -495,10 +514,12 @@ declare module '@tanstack/react-router' {
 }
 
 interface ApiSchedulesRouteChildren {
+  ApiSchedulesIdConfigRoute: typeof ApiSchedulesIdConfigRoute
   ApiSchedulesIdPlayersRoute: typeof ApiSchedulesIdPlayersRoute
 }
 
 const ApiSchedulesRouteChildren: ApiSchedulesRouteChildren = {
+  ApiSchedulesIdConfigRoute: ApiSchedulesIdConfigRoute,
   ApiSchedulesIdPlayersRoute: ApiSchedulesIdPlayersRoute,
 }
 

@@ -27,13 +27,24 @@ export function CourtSelector({
   onValuesChange,
   disabled,
   onError,
+  options: preloadedOptions,
+  isLoading: isPreloading,
 }: CourtSelectorProps) {
   const [courtOptions, setCourtOptions] = useState<
     Array<{ label: string; value: string; number: number }>
   >([]);
   const [isLoadingCourts, setIsLoadingCourts] = useState(false);
 
+  // Use pre-loaded options when provided by a parent; otherwise use independently fetched data.
+  const effectiveOptions = preloadedOptions ?? courtOptions;
+  const effectiveLoading = isPreloading ?? isLoadingCourts;
+
   useEffect(() => {
+    // Skip independent fetch when pre-loaded options are provided by the parent.
+    if (preloadedOptions !== undefined) {
+      return;
+    }
+
     const loadCourts = async () => {
       if (!hallId) {
         setCourtOptions([]);
@@ -64,11 +75,11 @@ export function CourtSelector({
     };
 
     loadCourts();
-  }, [hallId, onError]);
+  }, [hallId, onError, preloadedOptions]);
 
   const getCourtNumbers = (courtIds: string[]) => {
     return courtIds.map((id) => {
-      const court = courtOptions.find((option) => option.value === id);
+      const court = effectiveOptions.find((option) => option.value === id);
       return court ? `Court ${court.number}` : id;
     });
   };
@@ -92,16 +103,18 @@ export function CourtSelector({
               : !hallId
                 ? "Select a hall first"
                 : values.length === 0
-                  ? isLoadingCourts
+                  ? effectiveLoading
                     ? "Loading courts..."
-                    : "Select courts"
+                    : effectiveOptions.length === 0
+                      ? "No courts available"
+                      : "Select courts"
                   : ""
           }
         />
       </MultiSelectorTrigger>
       <MultiSelectorContent>
         <MultiSelectorList>
-          {courtOptions.map((option) => (
+          {effectiveOptions.map((option) => (
             <MultiSelectorItem key={option.value} value={option.value}>
               {option.label}
             </MultiSelectorItem>

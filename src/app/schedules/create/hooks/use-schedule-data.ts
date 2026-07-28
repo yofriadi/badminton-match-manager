@@ -31,9 +31,10 @@ export function useScheduleData(hallId?: string): UseScheduleDataResult {
     try {
       setIsLoadingHalls(true);
       setHallsError(null);
-      const halls = await fetchJson<Array<{ id: string; name: string }>>(
-        "/api/tenant/halls",
-      );
+      const halls =
+        await fetchJson<Array<{ id: string; name: string }>>(
+          "/api/tenant/halls",
+        );
       const options = halls.map((hall) => ({
         label: hall.name,
         value: hall.id,
@@ -89,14 +90,16 @@ export function useScheduleData(hallId?: string): UseScheduleDataResult {
     try {
       setIsLoadingCourts(true);
       setCourtsError(null);
-      const courts = await fetchJson<Array<{ id: string; number: number }>>(
-        `/api/halls/${hallId}/courts`,
-      );
-      const options = courts.map((court) => ({
-        label: `Court ${court.number}`,
-        value: court.id,
-        number: court.number,
-      }));
+      const courts = await fetchJson<
+        Array<{ id: string; number: number; isEnabled: number | boolean }>
+      >(`/api/halls/${hallId}/courts`);
+      const options = courts
+        .filter((court) => Boolean(court.isEnabled))
+        .map((court) => ({
+          label: `Court ${court.number}`,
+          value: court.id,
+          number: court.number,
+        }));
       setCourts(options);
     } catch (error) {
       console.error("Failed to load courts:", error);

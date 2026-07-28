@@ -38,9 +38,7 @@ export function PlayerSelector({
       try {
         setIsLoadingPlayers(true);
         const players = hallId
-          ? await fetchJson<Player[]>(
-              `/api/halls/${hallId}/registered-players`,
-            )
+          ? await fetchJson<Player[]>(`/api/halls/${hallId}/registered-players`)
           : [];
         const options = players.map((player: Player) => ({
           label: `${player.name} (${player.skillLevel})`,
@@ -89,7 +87,9 @@ export function PlayerSelector({
               : values.length === 0
                 ? isLoadingPlayers
                   ? "Loading registered players..."
-                  : "Select registered players"
+                  : playerOptions.length === 0
+                    ? "No registered players for this hall"
+                    : "Select registered players"
                 : ""
           }
         />

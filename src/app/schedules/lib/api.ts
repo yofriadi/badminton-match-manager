@@ -64,6 +64,10 @@ export async function getScheduleById(
     date: format(schedule.scheduleDate, "MMM d"),
     tags: schedule.tags || [],
     sessions,
+    numberOfSessions: schedule.numberOfSessions ?? null,
+    generatedMatches: schedule.generatedMatches ?? null,
+    manualSubstitutions: schedule.manualSubstitutions ?? null,
+    matchmakingOptions: schedule.matchmakingOptions ?? null,
   };
 }
 

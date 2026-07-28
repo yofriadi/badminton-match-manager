@@ -1,10 +1,8 @@
 "use client";
 
-import React from "react";
-import { Sparkles, Target, Users, Repeat, Scale } from "lucide-react";
+import React, { useState, useEffect } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
 import {
   Dialog,
   DialogContent,
@@ -21,6 +19,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Toggle } from "@/components/ui/toggle";
+import { Sparkles, Zap, Users, Trophy, Heart } from "lucide-react";
 import type {
   MatchmakingOptions,
   MatchmakingStrategy,
@@ -29,7 +29,7 @@ import type {
 interface MatchmakingSettingsDialogProps {
   options: MatchmakingOptions;
   onOpenChange?: (open: boolean) => void;
-  onUpdateOptions: (options: MatchmakingOptions) => void;
+  onSaveOptions: (options: MatchmakingOptions) => Promise<void>;
 }
 
 const STRATEGY_CONFIG: Record<
@@ -37,45 +37,67 @@ const STRATEGY_CONFIG: Record<
   {
     label: string;
     description: string;
-    icon: React.ElementType;
-    badge?: string;
+    icon: React.FC<{ className?: string }>;
+    badge: string;
   }
 > = {
   balanced: {
     label: "Balanced",
-    description: "Equal weight for skill, variety, and fairness",
-    icon: Scale,
+    description:
+      "Creates evenly matched games by minimizing skill gaps between teams.",
+    icon: Zap,
     badge: "Recommended",
   },
   variety: {
     label: "Variety",
-    description: "Maximize unique pairings and new partnerships",
-    icon: Repeat,
+    description: "Maximizes unique pairings so players meet different people.",
+    icon: Users,
+    badge: "Social",
   },
   competitive: {
     label: "Competitive",
-    description: "Tight skill gaps for evenly-matched games",
-    icon: Target,
+    description:
+      "Pits the strongest against the strongest for high-stakes matches.",
+    icon: Trophy,
+    badge: "Ranked",
   },
   social: {
     label: "Social",
-    description: "Fair rotation ensuring equal court time",
-    icon: Users,
+    description: "Relaxes skill balancing in favor of fun and casual mixing.",
+    icon: Heart,
+    badge: "Casual",
   },
 };
 
 export const MatchmakingSettingsDialog: React.FC<
   MatchmakingSettingsDialogProps
-> = ({ options, onUpdateOptions }) => {
-  const currentStrategy = options.strategy || "balanced";
+> = ({ options, onSaveOptions }) => {
+  const [open, setOpen] = useState(false);
+  const [draft, setDraft] = useState<MatchmakingOptions>(options);
+
+  useEffect(() => {
+    if (open) {
+      setDraft(options);
+    }
+  }, [open, options]);
+
+  const currentStrategy = draft.strategy || "balanced";
   const strategyInfo = STRATEGY_CONFIG[currentStrategy];
+  const handleSave = async () => {
+    try {
+      await onSaveOptions(draft);
+      setOpen(false);
+    } catch {
+      // dialog stays open; caller shows toast
+    }
+  };
 
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button variant="outline" size="sm" className="gap-2">
           <Sparkles className="h-4 w-4" />
-          Algorithm
+          Auto Matching
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[560px] gap-0 p-0 overflow-hidden">
@@ -114,8 +136,8 @@ export const MatchmakingSettingsDialog: React.FC<
             <Select
               value={currentStrategy}
               onValueChange={(value) =>
-                onUpdateOptions({
-                  ...options,
+                setDraft({
+                  ...draft,
                   strategy: value as MatchmakingStrategy,
                 })
               }
@@ -182,10 +204,10 @@ export const MatchmakingSettingsDialog: React.FC<
               id="avoid-partners"
               label="Avoid Repeat Partners"
               description="Prioritize pairing players with new partners each round"
-              checked={options.avoidRepeatPartners ?? true}
+              checked={draft.avoidRepeatPartners ?? true}
               onCheckedChange={(checked) =>
-                onUpdateOptions({
-                  ...options,
+                setDraft({
+                  ...draft,
                   avoidRepeatPartners: checked,
                 })
               }
@@ -195,10 +217,10 @@ export const MatchmakingSettingsDialog: React.FC<
               id="avoid-opponents"
               label="Avoid Repeat Opponents"
               description="Minimize repeated matchups against the same opponents"
-              checked={options.avoidRepeatOpponents ?? true}
+              checked={draft.avoidRepeatOpponents ?? true}
               onCheckedChange={(checked) =>
-                onUpdateOptions({
-                  ...options,
+                setDraft({
+                  ...draft,
                   avoidRepeatOpponents: checked,
                 })
               }
@@ -208,10 +230,10 @@ export const MatchmakingSettingsDialog: React.FC<
               id="prioritize-fairness"
               label="Prioritize Fair Play"
               description="Ensure balanced court time distribution for all players"
-              checked={options.prioritizeFairPlay ?? true}
+              checked={draft.prioritizeFairPlay ?? true}
               onCheckedChange={(checked) =>
-                onUpdateOptions({
-                  ...options,
+                setDraft({
+                  ...draft,
                   prioritizeFairPlay: checked,
                 })
               }
@@ -221,11 +243,11 @@ export const MatchmakingSettingsDialog: React.FC<
 
         <div className="px-6 py-4 bg-slate-50 dark:bg-slate-900/50 border-t flex items-center justify-between">
           <div className="text-xs text-muted-foreground">
-            Changes apply to new matches
+            Changes apply when saved
           </div>
-          <DialogTrigger asChild>
-            <Button size="sm">Done</Button>
-          </DialogTrigger>
+          <Button size="sm" onClick={handleSave}>
+            Save Changes
+          </Button>
         </div>
       </DialogContent>
     </Dialog>
@@ -248,24 +270,19 @@ function SettingToggle({
   onCheckedChange,
 }: SettingToggleProps) {
   return (
-    <div className="flex items-start gap-4 p-4 rounded-lg border border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700 transition-colors bg-white dark:bg-slate-900/30">
-      <Checkbox
-        id={id}
-        checked={checked}
-        onCheckedChange={(state) => onCheckedChange(state === true)}
-        className="mt-0.5"
-      />
-      <div className="flex-1 space-y-1">
-        <Label
-          htmlFor={id}
-          className="text-sm font-medium leading-none cursor-pointer peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-        >
+    <div className="flex items-center justify-between gap-4">
+      <div className="flex-1 space-y-0.5">
+        <Label htmlFor={id} className="text-sm font-medium">
           {label}
         </Label>
-        <p className="text-xs text-muted-foreground leading-relaxed">
-          {description}
-        </p>
+        <p className="text-xs text-muted-foreground">{description}</p>
       </div>
+      <Toggle
+        id={id}
+        pressed={checked}
+        onPressedChange={onCheckedChange}
+        className="cursor-pointer"
+      />
     </div>
   );
 }

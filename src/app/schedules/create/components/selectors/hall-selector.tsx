@@ -15,9 +15,10 @@ export function HallSelector({ value, onChange, onError }: HallSelectorProps) {
   useEffect(() => {
     const loadHalls = async () => {
       try {
-        const halls = await fetchJson<Array<{ id: string; name: string }>>(
-          "/api/tenant/halls",
-        );
+        const halls =
+          await fetchJson<Array<{ id: string; name: string }>>(
+            "/api/tenant/halls",
+          );
         const options = halls.map((hall) => ({
           label: hall.name,
           value: hall.id,
@@ -44,8 +45,15 @@ export function HallSelector({ value, onChange, onError }: HallSelectorProps) {
       options={hallOptions}
       value={value}
       onChange={onChange}
-      placeholder={isLoadingHalls ? "Loading halls..." : "Select a hall"}
+      placeholder={
+        isLoadingHalls
+          ? "Loading halls..."
+          : hallOptions.length === 0
+            ? "No halls registered"
+            : "Select a hall"
+      }
       searchPlaceholder={isLoadingHalls ? "Loading..." : "Search halls..."}
+      emptyMessage="No halls registered. Please register a hall first."
     />
   );
 }

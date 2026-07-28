@@ -105,7 +105,10 @@ export function useScheduleForm(): UseScheduleFormResult {
       setPendingFormData(null);
 
       // Redirect to the schedule detail page
-      navigate({ to: `/schedules/${schedule.id}` as never });
+      navigate({
+        to: "/schedules/$id",
+        params: { id: schedule.id },
+      });
     } catch (error) {
       console.error("Form submission error", error);
       toast.error("Failed to create the schedule", {

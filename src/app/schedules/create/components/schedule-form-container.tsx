@@ -2,6 +2,14 @@
 
 import { Form } from "@/components/ui/form";
 import AnimatedCtaButton from "@/components/ui/animated-cta-button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 
 import { HallFormField } from "./form-fields/hall-form-field";
 import { PlayersFormField } from "./form-fields/players-form-field";
@@ -32,51 +40,96 @@ export function ScheduleFormContainer({
     minSelectableDate,
   } = useScheduleForm();
 
-  const { courts, isLoadingCourts } = useScheduleData(hallId);
+  const {
+    courts,
+    isLoadingCourts,
+    halls,
+    isLoadingHalls,
+    hallsError,
+    refetchHalls,
+    players,
+  } = useScheduleData(hallId);
+
+  const hasNoHalls = !isLoadingHalls && !hallsError && halls.length === 0;
 
   return (
     <>
-      <Form {...form}>
-        <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-8">
-          <HallFormField control={form.control} />
+      {hasNoHalls ? (
+        <Card>
+          <CardHeader>
+            <CardTitle>No Halls Registered</CardTitle>
+            <CardDescription>
+              You need to register at least one hall before creating a schedule.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <p className="text-sm text-muted-foreground">
+              Go to the Halls page to add a hall to your tenant.
+            </p>
+          </CardContent>
+        </Card>
+      ) : (
+        <Form {...form}>
+          <form
+            onSubmit={form.handleSubmit(handleSubmit)}
+            className="space-y-8"
+          >
+            {hallsError && (
+              <div className="rounded-lg border border-destructive/20 bg-destructive/10 p-4 text-sm text-destructive">
+                <p className="font-medium">Failed to load halls</p>
+                <p className="mt-1">{hallsError}</p>
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  className="mt-2"
+                  onClick={refetchHalls}
+                >
+                  Retry
+                </Button>
+              </div>
+            )}
 
-          <ScheduleDateField
-            control={form.control}
-            name="scheduleDate"
-            label="Schedule Date"
-            description="Pick the date schedule, time is set per court group."
-            minDate={minSelectableDate}
-          />
+            <HallFormField control={form.control} />
 
-          <PriceField
-            control={form.control}
-            name="price"
-            label="Price (IDR)"
-            description="Total price per person for this session schedule."
-          />
+            <ScheduleDateField
+              control={form.control}
+              name="scheduleDate"
+              label="Schedule Date"
+              description="Pick the date schedule, time is set per court group."
+              minDate={minSelectableDate}
+            />
 
-          <PlayersFormField control={form.control} hallId={hallId} />
+            <PriceField
+              control={form.control}
+              name="price"
+              label="Price (IDR)"
+              description="Total price per person for this session schedule."
+            />
 
-          <SlotManager
-            fieldArray={{ fields, append, remove }}
-            control={form.control}
-            hallId={hallId}
-            courts={courts}
-            isCourtsLoading={isLoadingCourts}
-          />
+            <PlayersFormField control={form.control} hallId={hallId} />
 
-          <div className="flex justify-center">
-            <AnimatedCtaButton
-              type="submit"
-              width="220px"
-              height="52px"
-              disabled={form.formState.isSubmitting}
-            >
-              {form.formState.isSubmitting ? "Creating..." : "Create"}
-            </AnimatedCtaButton>
-          </div>
-        </form>
-      </Form>
+            <SlotManager
+              fieldArray={{ fields, append, remove }}
+              control={form.control}
+              hallId={hallId}
+              courts={courts}
+              isCourtsLoading={isLoadingCourts}
+            />
+
+            <div className="flex justify-center">
+              <AnimatedCtaButton
+                type="submit"
+                width="220px"
+                height="52px"
+                disabled={form.formState.isSubmitting}
+              >
+                {form.formState.isSubmitting ? "Creating..." : "Create"}
+              </AnimatedCtaButton>
+            </div>
+          </form>
+        </Form>
+      )}
 
       <ScheduleConfirmationDialog
         isOpen={showConfirmDialog}
@@ -84,6 +137,9 @@ export function ScheduleFormContainer({
         onConfirm={handleConfirmCreate}
         formData={pendingFormData}
         isSubmitting={isCreating}
+        halls={halls}
+        players={players}
+        courts={courts}
       />
     </>
   );
