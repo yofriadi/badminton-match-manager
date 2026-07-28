@@ -1,7 +1,7 @@
 {
   "version": "6",
   "dialect": "sqlite",
-  "id": "2ca4c1d0-1ad6-4086-ba2b-315926713645",
+  "id": "86a69100-0c55-4bce-9241-13ae0fbaf665",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
     "accounts": {
@@ -102,10 +102,7 @@
       "indexes": {
         "accounts_provider_account_unique": {
           "name": "accounts_provider_account_unique",
-          "columns": [
-            "provider_id",
-            "account_id"
-          ],
+          "columns": ["provider_id", "account_id"],
           "isUnique": true
         }
       },
@@ -114,12 +111,8 @@
           "name": "accounts_user_id_users_id_fk",
           "tableFrom": "accounts",
           "tableTo": "users",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["user_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -164,18 +157,12 @@
       "indexes": {
         "court_halls_hall_number": {
           "name": "court_halls_hall_number",
-          "columns": [
-            "hall_id",
-            "number"
-          ],
+          "columns": ["hall_id", "number"],
           "isUnique": true
         },
         "court_halls_hall_id": {
           "name": "court_halls_hall_id",
-          "columns": [
-            "hall_id",
-            "id"
-          ],
+          "columns": ["hall_id", "id"],
           "isUnique": true
         }
       },
@@ -184,12 +171,8 @@
           "name": "court_halls_hall_id_halls_id_fk",
           "tableFrom": "court_halls",
           "tableTo": "halls",
-          "columnsFrom": [
-            "hall_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["hall_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -278,12 +261,8 @@
           "name": "court_sessions_schedule_id_schedules_id_fk",
           "tableFrom": "court_sessions",
           "tableTo": "schedules",
-          "columnsFrom": [
-            "schedule_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["schedule_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -337,12 +316,8 @@
           "name": "hall_tenant_registered_players_hall_id_halls_id_fk",
           "tableFrom": "hall_tenant_registered_players",
           "tableTo": "halls",
-          "columnsFrom": [
-            "hall_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["hall_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -350,12 +325,8 @@
           "name": "hall_tenant_registered_players_tenant_id_tenants_id_fk",
           "tableFrom": "hall_tenant_registered_players",
           "tableTo": "tenants",
-          "columnsFrom": [
-            "tenant_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["tenant_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -363,22 +334,15 @@
           "name": "hall_tenant_registered_players_tenant_player_id_tenant_players_id_fk",
           "tableFrom": "hall_tenant_registered_players",
           "tableTo": "tenant_players",
-          "columnsFrom": [
-            "tenant_player_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["tenant_player_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
       },
       "compositePrimaryKeys": {
         "hall_tenant_registered_players_hall_id_tenant_player_id_pk": {
-          "columns": [
-            "hall_id",
-            "tenant_player_id"
-          ],
+          "columns": ["hall_id", "tenant_player_id"],
           "name": "hall_tenant_registered_players_hall_id_tenant_player_id_pk"
         }
       },
@@ -423,12 +387,8 @@
           "name": "hall_tenants_hall_id_halls_id_fk",
           "tableFrom": "hall_tenants",
           "tableTo": "halls",
-          "columnsFrom": [
-            "hall_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["hall_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -436,22 +396,15 @@
           "name": "hall_tenants_tenant_id_tenants_id_fk",
           "tableFrom": "hall_tenants",
           "tableTo": "tenants",
-          "columnsFrom": [
-            "tenant_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["tenant_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
       },
       "compositePrimaryKeys": {
         "hall_tenants_hall_id_tenant_id_pk": {
-          "columns": [
-            "hall_id",
-            "tenant_id"
-          ],
+          "columns": ["hall_id", "tenant_id"],
           "name": "hall_tenants_hall_id_tenant_id_pk"
         }
       },
@@ -637,51 +590,37 @@
       "indexes": {
         "order_verifications_order_id_unique": {
           "name": "order_verifications_order_id_unique",
-          "columns": [
-            "order_id"
-          ],
+          "columns": ["order_id"],
           "isUnique": true
         },
         "idx_order_verification_store_code": {
           "name": "idx_order_verification_store_code",
-          "columns": [
-            "store_code"
-          ],
+          "columns": ["store_code"],
           "isUnique": false
         },
         "idx_order_verification_order_id": {
           "name": "idx_order_verification_order_id",
-          "columns": [
-            "order_id"
-          ],
+          "columns": ["order_id"],
           "isUnique": false
         },
         "idx_order_verification_status": {
           "name": "idx_order_verification_status",
-          "columns": [
-            "status"
-          ],
+          "columns": ["status"],
           "isUnique": false
         },
         "idx_order_verification_order_at": {
           "name": "idx_order_verification_order_at",
-          "columns": [
-            "order_at"
-          ],
+          "columns": ["order_at"],
           "isUnique": false
         },
         "idx_order_verification_order_type": {
           "name": "idx_order_verification_order_type",
-          "columns": [
-            "order_type"
-          ],
+          "columns": ["order_type"],
           "isUnique": false
         },
         "idx_order_verification_metadata": {
           "name": "idx_order_verification_metadata",
-          "columns": [
-            "metadata"
-          ],
+          "columns": ["metadata"],
           "isUnique": false
         }
       },
@@ -735,12 +674,8 @@
           "name": "schedule_courts_schedule_id_schedules_id_fk",
           "tableFrom": "schedule_courts",
           "tableTo": "schedules",
-          "columnsFrom": [
-            "schedule_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["schedule_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -748,12 +683,8 @@
           "name": "schedule_courts_hall_id_halls_id_fk",
           "tableFrom": "schedule_courts",
           "tableTo": "halls",
-          "columnsFrom": [
-            "hall_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["hall_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -761,23 +692,15 @@
           "name": "schedule_courts_court_id_court_halls_id_fk",
           "tableFrom": "schedule_courts",
           "tableTo": "court_halls",
-          "columnsFrom": [
-            "court_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["court_id"],
+          "columnsTo": ["id"],
           "onDelete": "restrict",
           "onUpdate": "no action"
         }
       },
       "compositePrimaryKeys": {
         "schedule_courts_schedule_id_court_id_start_at_pk": {
-          "columns": [
-            "schedule_id",
-            "court_id",
-            "start_at"
-          ],
+          "columns": ["schedule_id", "court_id", "start_at"],
           "name": "schedule_courts_schedule_id_court_id_start_at_pk"
         }
       },
@@ -822,12 +745,8 @@
           "name": "schedule_players_schedule_id_schedules_id_fk",
           "tableFrom": "schedule_players",
           "tableTo": "schedules",
-          "columnsFrom": [
-            "schedule_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["schedule_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -835,22 +754,15 @@
           "name": "schedule_players_tenant_player_id_tenant_players_id_fk",
           "tableFrom": "schedule_players",
           "tableTo": "tenant_players",
-          "columnsFrom": [
-            "tenant_player_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["tenant_player_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
       },
       "compositePrimaryKeys": {
         "schedule_players_schedule_id_tenant_player_id_pk": {
-          "columns": [
-            "schedule_id",
-            "tenant_player_id"
-          ],
+          "columns": ["schedule_id", "tenant_player_id"],
           "name": "schedule_players_schedule_id_tenant_player_id_pk"
         }
       },
@@ -916,6 +828,27 @@
           "notNull": true,
           "autoincrement": false
         },
+        "number_of_sessions": {
+          "name": "number_of_sessions",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "frozen_matches": {
+          "name": "frozen_matches",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "matchmaking_options": {
+          "name": "matchmaking_options",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
         "created_at": {
           "name": "created_at",
           "type": "integer",
@@ -937,12 +870,8 @@
           "name": "schedules_tenant_id_tenants_id_fk",
           "tableFrom": "schedules",
           "tableTo": "tenants",
-          "columnsFrom": [
-            "tenant_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["tenant_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -950,12 +879,8 @@
           "name": "schedules_hall_id_halls_id_fk",
           "tableFrom": "schedules",
           "tableTo": "halls",
-          "columnsFrom": [
-            "hall_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["hall_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -1027,9 +952,7 @@
       "indexes": {
         "sessions_token_unique": {
           "name": "sessions_token_unique",
-          "columns": [
-            "token"
-          ],
+          "columns": ["token"],
           "isUnique": true
         }
       },
@@ -1038,12 +961,8 @@
           "name": "sessions_user_id_users_id_fk",
           "tableFrom": "sessions",
           "tableTo": "users",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["user_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -1108,10 +1027,7 @@
       "indexes": {
         "tenant_players_tenant_name": {
           "name": "tenant_players_tenant_name",
-          "columns": [
-            "tenant_id",
-            "name"
-          ],
+          "columns": ["tenant_id", "name"],
           "isUnique": true
         }
       },
@@ -1120,12 +1036,8 @@
           "name": "tenant_players_tenant_id_tenants_id_fk",
           "tableFrom": "tenant_players",
           "tableTo": "tenants",
-          "columnsFrom": [
-            "tenant_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["tenant_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -1190,9 +1102,7 @@
       "indexes": {
         "tenants_user_id_unique": {
           "name": "tenants_user_id_unique",
-          "columns": [
-            "user_id"
-          ],
+          "columns": ["user_id"],
           "isUnique": true
         }
       },
@@ -1201,12 +1111,8 @@
           "name": "tenants_user_id_users_id_fk",
           "tableFrom": "tenants",
           "tableTo": "users",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["user_id"],
+          "columnsTo": ["id"],
           "onDelete": "set null",
           "onUpdate": "no action"
         }
@@ -1280,9 +1186,7 @@
       "indexes": {
         "users_email_unique": {
           "name": "users_email_unique",
-          "columns": [
-            "email"
-          ],
+          "columns": ["email"],
           "isUnique": true
         }
       },
@@ -1340,10 +1244,7 @@
       "indexes": {
         "verifications_identifier_value_unique": {
           "name": "verifications_identifier_value_unique",
-          "columns": [
-            "identifier",
-            "value"
-          ],
+          "columns": ["identifier", "value"],
           "isUnique": true
         }
       },

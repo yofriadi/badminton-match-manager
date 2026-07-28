@@ -7,6 +7,7 @@ describe("buildAdminSeedSql", () => {
     const sql = buildAdminSeedSql({
       userId: "user-id",
       accountId: "account-id",
+      tenantId: "tenant-id",
       email: "Admin.O'Neil@Example.COM",
       passwordHash: "hash'with quote",
       now: 1_234,
@@ -22,6 +23,7 @@ describe("buildAdminSeedSql", () => {
     const sql = buildAdminSeedSql({
       userId: "user-id",
       accountId: "account-id",
+      tenantId: "tenant-id",
       email: "admin@example.com",
       passwordHash: "hashed-password",
       now: 5_678,
@@ -32,6 +34,7 @@ describe("buildAdminSeedSql", () => {
     expect(sql).toContain("account_id = users.id");
     expect(sql).toContain("SELECT id");
     expect(sql).toContain("LIMIT 1");
+    expect(sql).toContain("INSERT INTO tenants");
   });
 });
 

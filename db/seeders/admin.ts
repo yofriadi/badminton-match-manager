@@ -1,9 +1,10 @@
-import { rm } from "node:fs/promises";
+import { rm, writeFile } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 import { hashPassword } from "better-auth/crypto";
 import { parseExecutionTarget, runD1Execute } from "./wrangler";
 
 const ADMIN_NAME = "Admin";
+
 function getSeedersDirectory() {
   return fileURLToPath(new URL(".", import.meta.url));
 }
@@ -15,6 +16,7 @@ function escapeSqlLiteral(value: string) {
 export function buildAdminSeedSql(input: {
   userId: string;
   accountId: string;
+  tenantId: string;
   email: string;
   passwordHash: string;
   now: number;
@@ -88,6 +90,42 @@ WHERE provider_id = 'credential'
     WHERE email = '${escapedEmail}'
     LIMIT 1
   );
+
+INSERT INTO tenants (
+  id,
+  name,
+  description,
+  contact_info,
+  created_at,
+  updated_at,
+  user_id
+)
+SELECT
+  '${input.tenantId}',
+  '${escapedName}',
+  NULL,
+  '{}',
+  ${input.now},
+  ${input.now},
+  users.id
+FROM users
+WHERE users.email = '${escapedEmail}'
+  AND NOT EXISTS (
+    SELECT 1
+    FROM tenants
+    WHERE tenants.user_id = users.id
+  );
+
+UPDATE tenants
+SET
+  name = '${escapedName}',
+  updated_at = ${input.now}
+WHERE user_id = (
+  SELECT id
+  FROM users
+  WHERE email = '${escapedEmail}'
+  LIMIT 1
+);
 `.trim();
 }
 
@@ -103,13 +141,14 @@ async function main() {
   const sql = buildAdminSeedSql({
     userId: crypto.randomUUID(),
     accountId: crypto.randomUUID(),
+    tenantId: crypto.randomUUID(),
     email: adminEmail,
     passwordHash: await hashPassword(adminPassword),
     now: Date.now(),
   });
   const target = parseExecutionTarget(process.argv.slice(2));
 
-  await Bun.write(sqlFile, sql);
+  await writeFile(sqlFile, sql, "utf-8");
 
   try {
     const output = await runD1Execute({
@@ -123,7 +162,9 @@ async function main() {
   }
 }
 
-if (import.meta.main) {
+const isMain =
+  process.argv[1] && fileURLToPath(import.meta.url) === process.argv[1];
+if (isMain) {
   main().catch((error) => {
     console.error(error);
     process.exitCode = 1;

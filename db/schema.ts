@@ -8,6 +8,15 @@ import {
   uniqueIndex,
   real,
 } from "drizzle-orm/sqlite-core";
+import type {
+  ScheduleManualSubstitution,
+  ScheduleRoundOverride,
+} from "@/app/schedules/lib/types";
+
+import {
+  type MatchmakingOptions,
+  DEFAULT_MATCHMAKING_OPTIONS,
+} from "@/app/schedules/lib/match-generator";
 
 const createId = () => crypto.randomUUID();
 const now = () => new Date();
@@ -66,9 +75,7 @@ export type OrderVerification = typeof orderVerifications.$inferSelect;
 export type NewOrderVerification = typeof orderVerifications.$inferInsert;
 
 export const tenants = sqliteTable("tenants", {
-  id: text("id")
-    .primaryKey()
-    .$defaultFn(createId),
+  id: text("id").primaryKey().$defaultFn(createId),
   name: text("name").notNull(),
   description: text("description"),
   contactInfo: text("contact_info", { mode: "json" })
@@ -90,9 +97,7 @@ export type Tenant = typeof tenants.$inferSelect;
 export type NewTenant = typeof tenants.$inferInsert;
 
 export const halls = sqliteTable("halls", {
-  id: text("id")
-    .primaryKey()
-    .$defaultFn(createId),
+  id: text("id").primaryKey().$defaultFn(createId),
   name: text("name").notNull(),
   address: text("address"),
   description: text("description"),
@@ -136,9 +141,7 @@ export type NewHallTenant = typeof hallTenants.$inferInsert;
 export const courtHalls = sqliteTable(
   "court_halls",
   {
-    id: text("id")
-      .primaryKey()
-      .$defaultFn(createId),
+    id: text("id").primaryKey().$defaultFn(createId),
     hallId: text("hall_id")
       .notNull()
       .references(() => halls.id, { onDelete: "cascade" }),
@@ -159,9 +162,7 @@ export type NewCourtHall = typeof courtHalls.$inferInsert;
 export const tenantPlayers = sqliteTable(
   "tenant_players",
   {
-    id: text("id")
-      .primaryKey()
-      .$defaultFn(createId),
+    id: text("id").primaryKey().$defaultFn(createId),
     tenantId: text("tenant_id")
       .notNull()
       .references(() => tenants.id, { onDelete: "cascade" }),
@@ -211,9 +212,7 @@ export type NewHallTenantRegisteredPlayer =
   typeof hallTenantRegisteredPlayers.$inferInsert;
 
 export const schedules = sqliteTable("schedules", {
-  id: text("id")
-    .primaryKey()
-    .$defaultFn(createId),
+  id: text("id").primaryKey().$defaultFn(createId),
   tenantId: text("tenant_id")
     .notNull()
     .references(() => tenants.id, { onDelete: "cascade" }),
@@ -228,6 +227,16 @@ export const schedules = sqliteTable("schedules", {
     .$type<string[]>()
     .notNull()
     .$defaultFn(createEmptyStringArray),
+  numberOfSessions: integer("number_of_sessions"),
+  manualSubstitutions: text("manual_substitutions", { mode: "json" })
+    .$type<ScheduleManualSubstitution[]>()
+    .$defaultFn(() => []),
+  generatedMatches: text("generated_matches", { mode: "json" }).$type<
+    ScheduleRoundOverride[]
+  >(),
+  matchmakingOptions: text("matchmaking_options", { mode: "json" })
+    .$type<MatchmakingOptions>()
+    .$defaultFn(() => DEFAULT_MATCHMAKING_OPTIONS),
   createdAt: integer("created_at", { mode: "timestamp_ms" })
     .notNull()
     .$defaultFn(now),
@@ -252,16 +261,16 @@ export const scheduleCourts = sqliteTable(
     startAt: integer("start_at", { mode: "timestamp_ms" }).notNull(),
     endAt: integer("end_at", { mode: "timestamp_ms" }).notNull(),
   },
-  (table) => [primaryKey({ columns: [table.scheduleId, table.courtId, table.startAt] })],
+  (table) => [
+    primaryKey({ columns: [table.scheduleId, table.courtId, table.startAt] }),
+  ],
 );
 
 export type ScheduleCourt = typeof scheduleCourts.$inferSelect;
 export type NewScheduleCourt = typeof scheduleCourts.$inferInsert;
 
 export const courtSessions = sqliteTable("court_sessions", {
-  id: text("id")
-    .primaryKey()
-    .$defaultFn(createId),
+  id: text("id").primaryKey().$defaultFn(createId),
   scheduleId: text("schedule_id")
     .notNull()
     .references(() => schedules.id, { onDelete: "cascade" }),
@@ -294,16 +303,16 @@ export const schedulePlayers = sqliteTable(
       .$defaultFn(now),
     updatedAt: integer("updated_at", { mode: "timestamp_ms" }),
   },
-  (table) => [primaryKey({ columns: [table.scheduleId, table.tenantPlayerId] })],
+  (table) => [
+    primaryKey({ columns: [table.scheduleId, table.tenantPlayerId] }),
+  ],
 );
 
 export type SchedulePlayer = typeof schedulePlayers.$inferSelect;
 export type NewSchedulePlayer = typeof schedulePlayers.$inferInsert;
 
 export const users = sqliteTable("users", {
-  id: text("id")
-    .primaryKey()
-    .$defaultFn(createId),
+  id: text("id").primaryKey().$defaultFn(createId),
   email: text("email").notNull().unique(),
   name: text("name").notNull(),
   emailVerified: integer("email_verified", { mode: "boolean" })
@@ -320,9 +329,7 @@ export const users = sqliteTable("users", {
 });
 
 export const sessions = sqliteTable("sessions", {
-  id: text("id")
-    .primaryKey()
-    .$defaultFn(createId),
+  id: text("id").primaryKey().$defaultFn(createId),
   expiresAt: integer("expires_at", { mode: "timestamp_ms" }).notNull(),
   token: text("token").notNull().unique(),
   createdAt: integer("created_at", { mode: "timestamp_ms" })
@@ -341,9 +348,7 @@ export const sessions = sqliteTable("sessions", {
 export const accounts = sqliteTable(
   "accounts",
   {
-    id: text("id")
-      .primaryKey()
-      .$defaultFn(createId),
+    id: text("id").primaryKey().$defaultFn(createId),
     accountId: text("account_id").notNull(),
     providerId: text("provider_id").notNull(),
     userId: text("user_id")
@@ -378,9 +383,7 @@ export const accounts = sqliteTable(
 export const verifications = sqliteTable(
   "verifications",
   {
-    id: text("id")
-      .primaryKey()
-      .$defaultFn(createId),
+    id: text("id").primaryKey().$defaultFn(createId),
     identifier: text("identifier").notNull(),
     value: text("value").notNull(),
     expiresAt: integer("expires_at", { mode: "timestamp_ms" }).notNull(),

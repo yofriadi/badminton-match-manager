@@ -1,3 +1,4 @@
+import { fileURLToPath } from "node:url";
 import { parseExecutionTarget, runD1Execute } from "./wrangler";
 
 async function main() {
@@ -10,7 +11,9 @@ async function main() {
   console.log(output.trim() || "Hall seed completed");
 }
 
-if (import.meta.main) {
+const isMain =
+  process.argv[1] && fileURLToPath(import.meta.url) === process.argv[1];
+if (isMain) {
   main().catch((error) => {
     console.error("Failed to seed halls", error);
     process.exitCode = 1;
