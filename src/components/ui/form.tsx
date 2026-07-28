@@ -90,8 +90,7 @@ function FormLabel({
   className,
   ...props
 }: React.ComponentProps<typeof Label>) {
-
-  const { error, formItemId } = useFormField()
+  const { error, formItemId } = useFormField();
 
   return (
     <Label

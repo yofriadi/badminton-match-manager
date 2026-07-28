@@ -14,10 +14,7 @@ function SchedulesRoute() {
   const schedules = Route.useLoaderData();
 
   return (
-    <AppPageLayout
-      buttonLink="/schedules/create"
-      buttonText="Create Schedule"
-    >
+    <AppPageLayout buttonLink="/schedules/create" buttonText="Create Schedule">
       <ScheduleList schedules={schedules} />
     </AppPageLayout>
   );

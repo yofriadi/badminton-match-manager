@@ -21,13 +21,19 @@ export function ScheduleCarousel({ schedules }: ScheduleCarouselProps) {
         Upcoming Schedules
       </p>
       <Carousel>
-        <CarouselContent>
+        <CarouselContent className="py-1 px-4">
           {schedules.map((schedule, index) => (
-            <CarouselItem key={`${schedule.hallId}-${schedule.date}-${index}`}>
+            <CarouselItem
+              key={`${schedule.hallId}-${schedule.date}-${index}`}
+              className={
+                schedules.length > 1
+                  ? "basis-[82%] sm:basis-[75%] md:basis-[480px]"
+                  : "basis-full"
+              }
+            >
               <ScheduleCard
                 schedule={schedule}
                 detailHref={`/schedules/${schedule.id}`}
-                className="ml-4"
               />
             </CarouselItem>
           ))}

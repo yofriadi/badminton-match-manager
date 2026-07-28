@@ -95,11 +95,8 @@ export const CourtPlaying: React.FC = () => {
           const courtsForGame = courtsByGame[gameNumber] ?? [];
 
           return (
-            <Carousel
-              key={gameNumber}
-              opts={{ align: "start" }}
-            >
-              <CarouselContent className="touch-pan-x">
+            <Carousel key={gameNumber}>
+              <CarouselContent className="touch-pan-x py-1 px-4">
                 {courtsForGame.map((court) => {
                   const courtKey = `${court.game}-${court.number}`;
                   const isSelected = selectedCourt === courtKey;
@@ -107,7 +104,11 @@ export const CourtPlaying: React.FC = () => {
                   return (
                     <CarouselItem
                       key={courtKey}
-                      className="basis-[85%] sm:basis-[60%] md:basis-[320px]"
+                      className={
+                        courtsForGame.length > 1
+                          ? "basis-[82%] sm:basis-[75%] md:basis-[480px]"
+                          : "basis-full"
+                      }
                     >
                       <Card
                         className={`w-full overflow-hidden border-1 transition-all cursor-pointer ${

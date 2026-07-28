@@ -24,12 +24,7 @@ export function AppPageLayout({
 
       {showCtaButton && (
         <div className="flex w-full justify-center items-center mt-4 mb-8">
-          <AnimatedCtaButton
-            asChild
-            width="300px"
-            height="60px"
-            disabled={false}
-          >
+          <AnimatedCtaButton asChild disabled={false}>
             <RouterLink href={buttonLink}>
               <AnimatedCtaContent>{buttonText}</AnimatedCtaContent>
             </RouterLink>

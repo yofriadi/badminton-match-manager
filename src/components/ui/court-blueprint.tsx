@@ -10,8 +10,35 @@ export interface Court {
   time: string;
 }
 
-export const CourtBlueprint = ({ court }: { court: Court }) => {
+export const CourtBlueprint = ({
+  court,
+  players,
+}: {
+  court: Court;
+  players?: { name: string; gender: string }[];
+}) => {
   const [P1 = "—", P2 = "—", P3 = "—", P4 = "—"] = court.players;
+
+  const getGenderColor = (playerName: string, defaultColor: string) => {
+    if (!playerName || playerName === "—") return defaultColor;
+    const matchedPlayer = players?.find(
+      (p) => p.name.toLowerCase() === playerName.toLowerCase(),
+    );
+    if (matchedPlayer) {
+      const gender = matchedPlayer.gender.toLowerCase();
+      if (gender === "male" || gender === "men") {
+        return "#1E3A8A"; // Blue
+      }
+      if (gender === "female" || gender === "women") {
+        return "#9D174D"; // Pink
+      }
+    }
+    // Fallback if not found in list or list not provided:
+    if (court.type === "Men Doubles") return "#1E3A8A";
+    if (court.type === "Women Doubles") return "#9D174D";
+    return defaultColor;
+  };
+
   return (
     <div className="relative aspect-[133/200] overflow-hidden">
       <svg
@@ -124,11 +151,35 @@ export const CourtBlueprint = ({ court }: { court: Court }) => {
 
         {/* === Names (auto-wrap to two lines if multi-syllable) === */}
         {/* top left / top right */}
-        <NameLabel x={85} y={92} name={P1} fill="#1E3A8A" opacity={0.6} />
-        <NameLabel x={181} y={92} name={P2} fill="#9D174D" opacity={0.6} />
+        <NameLabel
+          x={85}
+          y={92}
+          name={P1}
+          fill={getGenderColor(P1, "#1E3A8A")}
+          opacity={0.6}
+        />
+        <NameLabel
+          x={181}
+          y={92}
+          name={P2}
+          fill={getGenderColor(P2, "#9D174D")}
+          opacity={0.6}
+        />
         {/* bottom left / bottom right */}
-        <NameLabel x={85} y={309} name={P3} fill="#9D174D" opacity={0.6} />
-        <NameLabel x={181} y={309} name={P4} fill="#1E3A8A" opacity={0.6} />
+        <NameLabel
+          x={85}
+          y={309}
+          name={P3}
+          fill={getGenderColor(P3, "#9D174D")}
+          opacity={0.6}
+        />
+        <NameLabel
+          x={181}
+          y={309}
+          name={P4}
+          fill={getGenderColor(P4, "#1E3A8A")}
+          opacity={0.6}
+        />
 
         {/* Court number */}
         <text

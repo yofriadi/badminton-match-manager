@@ -62,9 +62,7 @@ export default function SignUpPage() {
         },
         {
           onSuccess: () => {
-            toast.success(
-              "Account created. Wait admin approval, then log in.",
-            );
+            toast.success("Account created. Wait admin approval, then log in.");
             authClient.signOut().finally(() => {
               navigate({ to: "/login" });
             });

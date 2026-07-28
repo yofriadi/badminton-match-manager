@@ -32,9 +32,9 @@ const AnimatedCtaContent = ({
 
 const AnimatedCtaButton = ({
   children,
-  width = "600px",
-  height = "100px",
-  className,
+  width = "max-content",
+  height = "58px",
+  className = "px-14 text-base",
   disabled = false,
   asChild = false,
   type = "button",

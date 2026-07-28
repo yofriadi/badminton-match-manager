@@ -24,11 +24,7 @@ function SettingsRoute() {
       <div className="flex min-h-[calc(100vh-140px)] max-w-md flex-col justify-end pb-4 mx-auto">
         <div className="space-y-4">
           {settingsOptions.map((option) => (
-            <Link
-              key={option.href}
-              to={option.href}
-              className="block"
-            >
+            <Link key={option.href} to={option.href} className="block">
               <Card>
                 <CardContent className="flex items-center justify-between">
                   <div className="flex items-center gap-4">

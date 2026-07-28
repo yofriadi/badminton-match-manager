@@ -7,7 +7,9 @@ export const Route = createFileRoute("/api/schedules")({
     handlers: {
       POST: async ({ request }: { request: Request }) => {
         await requireApiVerifiedSession(request);
-        const body = (await request.json()) as Parameters<typeof createSchedule>[1];
+        const body = (await request.json()) as Parameters<
+          typeof createSchedule
+        >[1];
         const schedule = await createSchedule(request.headers, body);
         return Response.json(schedule);
       },

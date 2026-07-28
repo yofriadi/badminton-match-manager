@@ -64,6 +64,7 @@ export function Combobox({
         <Button
           type="button"
           variant="outline"
+          // eslint-disable-next-line jsx-a11y/prefer-tag-over-role -- ARIA combobox pattern requires role attribute on a button trigger
           role="combobox"
           aria-expanded={open}
           aria-controls={listId}

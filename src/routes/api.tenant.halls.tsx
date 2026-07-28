@@ -21,7 +21,10 @@ export const Route = createFileRoute("/api/tenant/halls")({
           return Response.json({ error: "Missing hallId" }, { status: 400 });
         }
 
-        const result = await addHallToTenantAction(request.headers, body.hallId);
+        const result = await addHallToTenantAction(
+          request.headers,
+          body.hallId,
+        );
         return Response.json(result);
       },
     },
