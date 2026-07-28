@@ -5,10 +5,10 @@ import { requireTenant } from "./session-utils";
 export async function updateTenantAction(
   requestHeaders: Headers,
   data: {
-  name: string;
-  description: string | null;
-  contactInfo: Record<string, unknown>;
-},
+    name: string;
+    description: string | null;
+    contactInfo: Record<string, unknown>;
+  },
 ) {
   const db = getDb();
   const tenant = await requireTenant(requestHeaders);

@@ -53,17 +53,19 @@ export async function getHalls() {
     hallRows.map((hall) => hall.id),
   );
 
-	return hallRows.map((hall) => {
-		const courtNumbers = courtNumbersByHallId.get(hall.id) ?? [];
-		const layoutCourtCount =
-			hall.layout.rows.reduce((count, row) => count + row.courts.length, 0);
+  return hallRows.map((hall) => {
+    const courtNumbers = courtNumbersByHallId.get(hall.id) ?? [];
+    const layoutCourtCount = hall.layout.rows.reduce(
+      (count, row) => count + row.courts.length,
+      0,
+    );
 
-		return {
-			...hall,
-			courtCount: courtNumbers.length || layoutCourtCount,
-			courtNumbers,
-		};
-	});
+    return {
+      ...hall,
+      courtCount: courtNumbers.length || layoutCourtCount,
+      courtNumbers,
+    };
+  });
 }
 
 export async function getHallById(id: string) {
@@ -90,7 +92,7 @@ export async function getHallById(id: string) {
     players,
     courtNumbers,
   });
-	const courtCount = courtNumbers.length || hallWithBlueprint.courtCount;
+  const courtCount = courtNumbers.length || hallWithBlueprint.courtCount;
 
   return {
     ...hall,

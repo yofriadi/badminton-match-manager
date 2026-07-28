@@ -24,7 +24,7 @@ export async function requireVerifiedRoute() {
 export async function requireAdminRoute() {
   const session = await requireVerifiedRoute();
 
-  if (session.user.role !== "admin") {
+  if ((session.user as unknown as { role: string }).role !== "admin") {
     throw redirect({ to: "/login" });
   }
 

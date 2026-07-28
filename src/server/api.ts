@@ -29,7 +29,7 @@ export async function requireApiVerifiedSession(request: Request) {
 export async function requireApiAdminSession(request: Request) {
   const session = await requireApiVerifiedSession(request);
 
-  if (session.user.role !== "admin") {
+  if ((session.user as unknown as { role: string }).role !== "admin") {
     throw new Response("Forbidden", { status: 403 });
   }
 
